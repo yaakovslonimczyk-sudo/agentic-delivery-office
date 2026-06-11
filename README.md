@@ -85,6 +85,26 @@ a first feature through the loop described in `ORCHESTRATION.md`.
    shortcuts during the MVP slice are tracked in a list that the hardening
    phase must resolve — cuts never silently ship.
 
+## Office Board — live visibility
+
+A zero-dependency local dashboard that shows the org chart in real time:
+which agent holds the ball right now (animated pass from the orchestrator),
+each agent's tier/model, cumulative tokens, run count, and an engagement log.
+
+```bash
+node .claude/board/server.js        # from the project root
+# open http://localhost:5599
+```
+
+How it works: the `office-board.sh` hook fires on every Agent-tool spawn
+(PreToolUse) and return (PostToolUse — the return carries the subagent's
+token usage), appending events to `.claude/board/events.jsonl`; the server
+streams them to the browser over SSE. Hooks only see start/end of each
+engagement, so token counters settle when an agent reports back — for
+mid-run token streaming you'd graduate to Claude Code's OpenTelemetry
+metrics. Agents outside the roster (e.g. ad-hoc general-purpose spawns)
+appear automatically as amber "contractor" cards.
+
 ## External agent dependency (Phase B)
 
 The Design phase uses two user-level agents expected at `~/.claude/agents/`:

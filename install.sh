@@ -14,13 +14,15 @@ TARGET="$(cd "$TARGET" && pwd)"
 
 echo "Installing agent methodology kit into: $TARGET"
 
-mkdir -p "$TARGET/.claude/agents" "$TARGET/.claude/hooks"
+mkdir -p "$TARGET/.claude/agents" "$TARGET/.claude/hooks" "$TARGET/.claude/board"
 
-# Agents and hooks: copy (overwrite — these are the methodology, keep them in sync)
+# Agents, hooks, board: copy (overwrite — these are the methodology, keep them in sync)
 cp "$KIT_DIR/.claude/agents/"*.md "$TARGET/.claude/agents/"
 cp "$KIT_DIR/.claude/hooks/"*.sh "$TARGET/.claude/hooks/"
+cp "$KIT_DIR/.claude/board/server.js" "$KIT_DIR/.claude/board/index.html" "$TARGET/.claude/board/"
 chmod +x "$TARGET/.claude/hooks/"*.sh
-echo "  ✓ agents (8) and hooks installed"
+echo "  ✓ agents (9), hooks, and Office Board installed"
+echo "    live board: run 'node .claude/board/server.js' in the project, open http://localhost:5599"
 
 # Orchestration protocol: copy (overwrite — methodology)
 cp "$KIT_DIR/ORCHESTRATION.md" "$TARGET/ORCHESTRATION.md"
