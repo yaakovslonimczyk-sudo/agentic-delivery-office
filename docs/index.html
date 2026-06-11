@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Agentic Delivery Office — Yaakov Slonimczyk</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 740px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #1a1a1a; }
+  h1 { font-size: 2.2em; line-height: 1.2; }
+  h2 { margin-top: 1.6em; }
+  img { max-width: 100%; height: auto; }
+  pre { background: #f4f4f4; padding: 14px; overflow-x: auto; font-size: 0.9em; }
+  code { background: #f4f4f4; padding: 1px 4px; }
+  blockquote { border-left: 3px solid #1a1a1a; margin-left: 0; padding-left: 18px; font-style: italic; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 2em 0; }
+</style>
+</head>
+<body>
+<h1>The Agentic Delivery Office</h1>
+<h2>How I run AI sub-agents like a consulting firm — and why the org chart matters more than the prompts</h2>
+<p><em>By Yaakov Slonimczyk — Solution Architect</em></p>
+<hr>
+<p>I&#39;ve spent twenty-plus years as a solution architect, which means I&#39;ve spent twenty-plus years watching the same truth reassert itself in every technology cycle: <strong>structure beats talent</strong>. A mediocre team with clear roles, honest reviews, and staged approvals ships; a brilliant team without them debates.</p>
+<p>When I started orchestrating AI coding agents seriously, I made the mistake everyone makes first: I treated the model as a very fast developer and myself as a very patient reviewer. It worked — the way reviewing every line of a junior&#39;s output &quot;works.&quot; The bottleneck was me.</p>
+<p>So I did what an architect does: I stopped prompting and started <strong>staffing</strong>. The result is a methodology I now install in every project — a portable kit of agent definitions, a delivery protocol, and mechanical quality gates. This article is the executive summary. Five principles, five drawings.</p>
+<hr>
+<h2>1. The boundary is the product</h2>
+<p>Everything in this methodology rests on one mechanism: a sub-agent gets a <strong>completely fresh context window</strong>. It doesn&#39;t see my conversation. It receives a self-contained brief — spec, paths, conventions, a contract for what to return — and it sends back conclusions. Everything in between, dies with it.</p>
+<p><img src="https://raw.githubusercontent.com/yaakovslonimczyk-sudo/agentic-delivery-office/main/article/images/fig05-context-isolation.png" alt="What crosses the boundary"></p>
+<p><em>Fig. 05 — The context boundary: a 1k-token brief goes in; 0.5k tokens of conclusions come out; 150k tokens of exploration die inside.</em></p>
+<p>Most people read this as a cost feature: the specialist can burn 150,000 tokens reading files and running tests, and the orchestrator only pays for the summary. True, but secondary. The real product is <strong>judgment quality</strong>: a reviewer who never saw the implementer&#39;s reasoning cannot inherit the implementer&#39;s blind spots. We separate authors from reviewers in human organizations for exactly this reason. Fresh eyes are not a limitation of the architecture. They are the mechanism.</p>
+<p>The corollary: total tokens go <em>up</em> — a full delivery cycle runs 3–5× the tokens of a single-agent session. What you&#39;re buying is context hygiene in the one context that must survive the whole engagement. Which brings us to the org chart.</p>
+<h2>2. One persistent mind, two benches</h2>
+<p><img src="https://raw.githubusercontent.com/yaakovslonimczyk-sudo/agentic-delivery-office/main/article/images/fig01-org-chart.png" alt="The org chart"></p>
+<p><em>Fig. 01 — The Agentic Delivery Office: client, orchestrator, and two benches of specialists who never talk to each other.</em></p>
+<p>The <strong>orchestrator</strong> — the main session — is the solution architect of the operation, and structurally it cannot be anything else: sub-agents can&#39;t spawn sub-agents, can&#39;t pause for human input, and remember nothing between invocations. The main session is the only entity that persists across the whole engagement, so it holds what matters: the spec, every verdict I&#39;ve given, the list of shortcuts taken. It delegates everything verbose and presents me <strong>decisions, never logs</strong>.</p>
+<p>The specialists split into two benches, and the split is the first thing most people get wrong. My early roster looked like a company org chart: CEO agent, CFO agent, BizDev agent. Delete that instinct. <strong>An agent earns its seat through two things only: distinct tool access and a verifiable deliverable.</strong> A &quot;CFO agent&quot; with no spreadsheet and no pricing data is the same model wearing a hat — you pay spawn overhead to receive opinions.</p>
+<p>The business lenses survive, but transformed: one grounded <em>business-reviewer</em> invoked once per lens — CFO, BizDev, BI, CEO — under a hard rule: <strong>every finding cites a number it computed, data it fetched, or a document it can quote — or the finding is omitted.</strong> The CFO lens reads the actual infra config and fetches actual provider pricing. Eloquence without evidence doesn&#39;t get a seat.</p>
+<h2>3. Gates ordered by cost: retire direction risk before the money moves</h2>
+<p><img src="https://raw.githubusercontent.com/yaakovslonimczyk-sudo/agentic-delivery-office/main/article/images/fig02-three-gates.png" alt="Three gates"></p>
+<p><em>Fig. 02 — Concept ($) → Gate 1 → Design ($$) → Gate 2 → Build ($$$). Each gate approves the cheap artifact before the next order of magnitude of spend.</em></p>
+<p>Validation artifacts have wildly different costs. A clickable mockup plus a component diagram costs a fraction of a full High-Level Design; an HLD costs a fraction of a hardened build. So the protocol stages them:</p>
+<p><strong>Phase A — Concept.</strong> An explorer maps the codebase; a mockup-builder produces a clickable HTML prototype of the primary flows (static, no backend, real labels — verified clickable before it reaches me); the planner draws the component diagram. <strong>Gate 1, the only question that matters: right product, right shape?</strong> Judging a running mockup takes minutes — plans hide what demos reveal.</p>
+<p><strong>Phase B — Design.</strong> Only after Gate 1 do the expensive design artifacts get produced: the full HLD elaborating the approved shape (with a mandatory <em>&quot;deviations from approved concept&quot;</em> section — agents don&#39;t get to silently redesign what I approved), then the executive deck derived from the finished HLD, numbers reconciled. <strong>Gate 2 approves the design and hands me a stakeholder-ready package as a by-product.</strong></p>
+<p><strong>Phase C — Build &amp; Harden.</strong> Tests written from the spec — never from the implementation, so they can&#39;t rationalize its bugs. Implementation with every deliberate shortcut tracked on a list the hardening phase must resolve. Then the review swarm.</p>
+<p>Each human gate spends pennies of my attention before the next order of magnitude of agent spend. Direction errors — the expensive kind — die at the mockup, for the price of a demo.</p>
+<h2>4. The loop that converges: critics, refuters, and a hard cap</h2>
+<p><img src="https://raw.githubusercontent.com/yaakovslonimczyk-sudo/agentic-delivery-office/main/article/images/fig03-review-loop.png" alt="The review-fix loop"></p>
+<p><em>Fig. 03 — Parallel lens reviews → refuters kill weak findings → fix verified blockers → max two rounds → deliver with residuals.</em></p>
+<p>Here&#39;s the failure mode nobody warns you about in autonomous review loops: <strong>an LLM asked to review will always find something.</strong> In a human workflow, weak feedback gets filtered by you. In an autonomous fix loop, every plausible-but-wrong finding triggers rework — and two unbounded critics will oscillate forever, each &quot;fix&quot; triggering the other&#39;s next objection.</p>
+<p>Three rules make the loop converge:</p>
+<ol>
+<li><strong>The verdict contract.</strong> Every reviewer tags findings BLOCKING or NON-BLOCKING, cites evidence it personally verified, and — critically — is told that returning <code>APPROVED</code> is a fully acceptable outcome. Silence is a valid answer. This single sentence is the most portable quality mechanism in the whole system.</li>
+<li><strong>The refuter.</strong> Every blocking finding gets an adversary whose only job is to prove it wrong. Hallucinated objections die before causing rework. Nearly pure token cost, nearly pure precision gain.</li>
+<li><strong>The hard cap.</strong> Two fix rounds, then escalate to the human. A loop that can&#39;t converge shouldn&#39;t pretend to.</li>
+</ol>
+<p>What reaches me is already-criticized, already-fixed work — with the residual findings listed honestly as my backlog, not smoothed over.</p>
+<h2>5. Pay for judgment, not for difficulty</h2>
+<p><img src="https://raw.githubusercontent.com/yaakovslonimczyk-sudo/agentic-delivery-office/main/article/images/fig04-model-routing.png" alt="Model routing"></p>
+<p><em>Fig. 04 — Route by failure visibility: grounded agents run a tier below; judging agents run the frontier. Tiers are relative — never hardcoded.</em></p>
+<p>Token optimization is where most multi-agent setups quietly destroy themselves, because the intuitive rule — put cheap models on easy tasks — is wrong. The correct routing criterion:</p>
+<blockquote>
+<p><strong>Model tier should be proportional to how <em>silent</em> the agent&#39;s failure is — not how hard its task is.</strong></p>
+</blockquote>
+<p>The test-writer can run a junior model: its tests <em>run</em> — failures are caught mechanically. The mockup-builder faces me at Gate 1 — failures are visible. The DB reviewer must attach <code>EXPLAIN</code> output — claims are grounded. But the code reviewer? A shallow <code>APPROVED</code> from a weak model is <em>indistinguishable</em> from a real one. That&#39;s the most expensive token saving in the system. The judging tier — planner, code and security reviewers, and above all the refuters, who hold veto power — runs the frontier, always. A refuter must never be weaker than the finding it judges; otherwise the cheap model overrules the smart one.</p>
+<p>Two operational rules complete it. <strong>Tiers are relative to the frontier, never hardcoded</strong> — the frontier moves every few months; senior agents inherit the session model automatically, and the junior tier is one line in the project roster. And <strong>assignments evolve like personnel</strong>: an agent whose junior-tier output causes rework twice gets promoted; a senior whose findings are never challenged across three deliveries gets a trial demotion — every move logged with a date and a reason, like the personnel file it is. In practice the junior bench carries about half the token volume, so the routing cuts 30–40% of spend without touching the part you never cut.</p>
+<hr>
+<h2>What the human is left doing</h2>
+<p>Six touchpoints. Ambiguity at intake, two design gates, an optional demo check, an escalation that should be rare, and the deploy button. Everything else — exploration, prototyping, design documents, the executive deck, tests, implementation, a multi-lens adversarial review — runs unattended, with quality enforced by contracts and hooks rather than by my vigilance.</p>
+<p>That inversion is the point. I didn&#39;t remove myself from the process; I moved myself to where judgment is scarce and leverage is highest — the same thing a good architect does in a human organization. The agents didn&#39;t replace the team. They let me finally afford one.</p>
+<h2>Get the kit</h2>
+<p>Everything in this article ships as an open, portable kit — the nine agent definitions, the orchestration protocol, the quality-gate hooks, the CLAUDE.md template, and ports for other AI coding tools:</p>
+<p><strong><a href="https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office">github.com/yaakovslonimczyk-sudo/agentic-delivery-office</a></strong></p>
+<pre><code class="language-bash">git clone https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office.git
+cd agentic-delivery-office
+./install.sh /path/to/your/project
+</code></pre>
+<p>Then fill the business context in the generated <code>CLAUDE.md</code> — it&#39;s what grounds the business lenses — and run one real feature through the gates before trusting the office unattended. If you want to argue with the org chart, the issues tab is open.</p>
+<hr>
+<p><em>Yaakov Slonimczyk is a solution architect and economist working across fintech and retail operations in Latin America and Israel.</em></p>
+
+</body>
+</html>
