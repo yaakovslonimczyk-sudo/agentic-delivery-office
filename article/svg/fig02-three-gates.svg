@@ -1,0 +1,85 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#DCE9F7"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#FF8B7E"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" fill="#142F54"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+
+  <text x="800" y="56" text-anchor="middle" fill="#DCE9F7" font-size="26" font-weight="bold">THREE GATES, ORDERED BY COST</text>
+  <text x="800" y="86" text-anchor="middle" fill="#A9C1DD" font-size="16" font-style="italic">each gate approves the cheap artifact before the next order of magnitude of spend</text>
+
+  <!-- Phase A step -->
+  <rect x="80" y="560" width="360" height="200" rx="6" fill="#1B3A63" stroke="#8FD8EA" stroke-width="3"/>
+  <rect x="80" y="560" width="360" height="44" fill="#8FD8EA"/>
+  <text x="260" y="589" text-anchor="middle" fill="#1B3A63" font-size="17" font-weight="bold">PHASE A · CONCEPT</text>
+  <text x="260" y="634" text-anchor="middle" fill="#DCE9F7" font-size="15">clickable mockup</text>
+  <text x="260" y="658" text-anchor="middle" fill="#DCE9F7" font-size="15">HL component diagram</text>
+  <text x="260" y="694" text-anchor="middle" fill="#8FD8EA" font-size="26" font-weight="bold">$</text>
+  <text x="260" y="730" text-anchor="middle" fill="#A9C1DD" font-size="13" font-style="italic">hours, not days — fully agent-built</text>
+
+  <!-- Gate 1 -->
+  <line x1="440" y1="660" x2="540" y2="660" stroke="#DCE9F7" stroke-width="2" marker-end="url(#arr)"/>
+  <g>
+    <polygon points="595,520 670,595 595,670 520,595" fill="#FFC861" stroke="#DCE9F7" stroke-width="2.5"/>
+    <text x="595" y="585" text-anchor="middle" fill="#142F54" font-size="16" font-weight="bold">GATE 1</text>
+    <text x="595" y="607" text-anchor="middle" fill="#142F54" font-size="12">right product?</text>
+    <text x="595" y="624" text-anchor="middle" fill="#142F54" font-size="12">right shape?</text>
+  </g>
+  <line x1="595" y1="670" x2="595" y2="742" stroke="#FF8B7E" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrR)"/>
+  <text x="595" y="766" text-anchor="middle" fill="#FF8B7E" font-size="13" font-weight="bold">adjust fast / kill cheap</text>
+
+  <!-- Phase B step -->
+  <line x1="670" y1="595" x2="720" y2="595" stroke="#DCE9F7" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="720" y="380" width="360" height="200" rx="6" fill="#1B3A63" stroke="#DCE9F7" stroke-width="3"/>
+  <rect x="720" y="380" width="360" height="44" fill="#DCE9F7"/>
+  <text x="900" y="409" text-anchor="middle" fill="#142F54" font-size="17" font-weight="bold">PHASE B · DESIGN</text>
+  <text x="900" y="454" text-anchor="middle" fill="#DCE9F7" font-size="15">full HLD (from the approved shape)</text>
+  <text x="900" y="478" text-anchor="middle" fill="#DCE9F7" font-size="15">executive deck (from the HLD)</text>
+  <text x="900" y="514" text-anchor="middle" fill="#8FD8EA" font-size="26" font-weight="bold">$$</text>
+  <text x="900" y="550" text-anchor="middle" fill="#A9C1DD" font-size="13" font-style="italic">deviations from approved concept: flagged, never silent</text>
+
+  <!-- Gate 2 -->
+  <line x1="1080" y1="480" x2="1140" y2="480" stroke="#DCE9F7" stroke-width="2" marker-end="url(#arr)"/>
+  <g>
+    <polygon points="1195,340 1270,415 1195,490 1120,415" fill="#FFC861" stroke="#DCE9F7" stroke-width="2.5"/>
+    <text x="1195" y="405" text-anchor="middle" fill="#142F54" font-size="16" font-weight="bold">GATE 2</text>
+    <text x="1195" y="427" text-anchor="middle" fill="#142F54" font-size="12">design approved,</text>
+    <text x="1195" y="444" text-anchor="middle" fill="#142F54" font-size="12">stakeholder pack</text>
+  </g>
+
+  <!-- Phase C step -->
+  <line x1="1270" y1="415" x2="1310" y2="415" stroke="#DCE9F7" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="1310" y="180" width="260" height="320" rx="6" fill="#1B3A63" stroke="#FF8B7E" stroke-width="3"/>
+  <rect x="1310" y="180" width="260" height="44" fill="#FF8B7E"/>
+  <text x="1440" y="209" text-anchor="middle" fill="#1B3A63" font-size="16" font-weight="bold">PHASE C · BUILD</text>
+  <text x="1440" y="252" text-anchor="middle" fill="#DCE9F7" font-size="14">MVP slice + shortcuts list</text>
+  <text x="1440" y="276" text-anchor="middle" fill="#DCE9F7" font-size="14">tests-first from the spec</text>
+  <text x="1440" y="300" text-anchor="middle" fill="#DCE9F7" font-size="14">parallel review swarm</text>
+  <text x="1440" y="324" text-anchor="middle" fill="#DCE9F7" font-size="14">refuters · fix · max 2 rounds</text>
+  <text x="1440" y="366" text-anchor="middle" fill="#8FD8EA" font-size="26" font-weight="bold">$$$</text>
+  <text x="1440" y="404" text-anchor="middle" fill="#A9C1DD" font-size="13" font-style="italic">the swarm runs ONCE,</text>
+  <text x="1440" y="422" text-anchor="middle" fill="#A9C1DD" font-size="13" font-style="italic">on an approved design</text>
+  <text x="1440" y="470" text-anchor="middle" fill="#DCE9F7" font-size="14" font-weight="bold">→ delivery, with residuals</text>
+
+  <!-- baseline cost arrow -->
+  <line x1="80" y1="810" x2="1570" y2="810" stroke="#DCE9F7" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="120" y="838" fill="#A9C1DD" font-size="14" font-style="italic">spend per phase rises an order of magnitude →  direction risk is retired before the money moves</text>
+
+  <!-- title block stamp -->
+  <g font-family="Menlo, Courier New, monospace">
+    <rect x="1150" y="828" width="420" height="58" fill="#142F54" stroke="#DCE9F7" stroke-width="1.5"/>
+    <line x1="1150" y1="848" x2="1570" y2="848" stroke="#DCE9F7" stroke-width="1"/>
+    <line x1="1150" y1="867" x2="1570" y2="867" stroke="#DCE9F7" stroke-width="1"/>
+    <text x="1160" y="842" font-size="11" font-weight="bold" fill="#DCE9F7">YAAKOV SLONIMCZYK — SOLUTION ARCHITECT</text>
+    <text x="1160" y="861" font-size="10" fill="#A9C1DD">SERIES: THE AGENTIC DELIVERY OFFICE</text>
+    <text x="1160" y="880" font-size="10" fill="#FF8B7E">FIG. 02 · THREE GATES, COST-ORDERED · REV A · 2026</text>
+  </g>
+</svg>

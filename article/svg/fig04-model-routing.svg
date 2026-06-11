@@ -1,0 +1,87 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#DCE9F7"/>
+    </marker>
+    <linearGradient id="axis" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8FD8EA"/>
+      <stop offset="1" stop-color="#FF8B7E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#142F54"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+
+  <text x="800" y="56" text-anchor="middle" fill="#DCE9F7" font-size="26" font-weight="bold">MODEL ROUTING: PAY FOR JUDGMENT, NOT FOR DIFFICULTY</text>
+  <text x="800" y="88" text-anchor="middle" fill="#A9C1DD" font-size="16" font-style="italic">model tier is proportional to how SILENT the agent's failure is</text>
+
+  <!-- axis -->
+  <rect x="120" y="140" width="1360" height="14" rx="7" fill="url(#axis)"/>
+  <text x="120" y="186" fill="#8FD8EA" font-size="16" font-weight="bold">FAILURE IS VISIBLE</text>
+  <text x="120" y="208" fill="#A9C1DD" font-size="13">output checked by ground truth</text>
+  <text x="1480" y="186" text-anchor="end" fill="#FF8B7E" font-size="16" font-weight="bold">FAILURE IS SILENT</text>
+  <text x="1480" y="208" text-anchor="end" fill="#A9C1DD" font-size="13">judgment acted on, unverified</text>
+
+  <!-- JUNIOR zone -->
+  <rect x="100" y="240" width="650" height="430" rx="8" fill="#1B3A63" stroke="#8FD8EA" stroke-width="2.5"/>
+  <rect x="100" y="240" width="650" height="48" fill="#8FD8EA"/>
+  <text x="425" y="272" text-anchor="middle" fill="#1B3A63" font-size="18" font-weight="bold">JUNIOR TIER — one below the frontier</text>
+  <g font-size="15" fill="#DCE9F7">
+    <text x="140" y="330" font-weight="bold">explorer</text><text x="430" y="330" fill="#A9C1DD" font-size="13">brief gets re-checked downstream</text>
+    <text x="140" y="380" font-weight="bold">mockup builder</text><text x="430" y="380" fill="#A9C1DD" font-size="13">faces the human at Gate 1</text>
+    <text x="140" y="430" font-weight="bold">test writer</text><text x="430" y="430" fill="#A9C1DD" font-size="13">tests RUN — self-verifying</text>
+    <text x="140" y="480" font-weight="bold">DB reviewer</text><text x="430" y="480" fill="#A9C1DD" font-size="13">EXPLAIN output required</text>
+    <text x="140" y="530" font-weight="bold">design reviewer</text><text x="430" y="530" fill="#A9C1DD" font-size="13">screenshots required</text>
+    <text x="140" y="580" font-weight="bold">business reviewer</text><text x="430" y="580" fill="#A9C1DD" font-size="13">evidence-or-silence contract</text>
+  </g>
+  <line x1="130" y1="348" x2="720" y2="348" stroke="#34597F" stroke-width="1"/>
+  <line x1="130" y1="398" x2="720" y2="398" stroke="#34597F" stroke-width="1"/>
+  <line x1="130" y1="448" x2="720" y2="448" stroke="#34597F" stroke-width="1"/>
+  <line x1="130" y1="498" x2="720" y2="498" stroke="#34597F" stroke-width="1"/>
+  <line x1="130" y1="548" x2="720" y2="548" stroke="#34597F" stroke-width="1"/>
+  <text x="425" y="636" text-anchor="middle" fill="#8FD8EA" font-size="14" font-weight="bold">~half the token volume → 30-40% saved at near-zero risk</text>
+
+  <!-- SENIOR zone -->
+  <rect x="850" y="240" width="650" height="430" rx="8" fill="#1B3A63" stroke="#FF8B7E" stroke-width="2.5"/>
+  <rect x="850" y="240" width="650" height="48" fill="#FF8B7E"/>
+  <text x="1175" y="272" text-anchor="middle" fill="#1B3A63" font-size="18" font-weight="bold">SENIOR TIER — the frontier itself</text>
+  <g font-size="15" fill="#DCE9F7">
+    <text x="890" y="330" font-weight="bold">orchestrator</text><text x="1180" y="330" fill="#A9C1DD" font-size="13">carries all state, errors compound</text>
+    <text x="890" y="380" font-weight="bold">planner</text><text x="1180" y="380" fill="#A9C1DD" font-size="13">wrong plans poison every phase</text>
+    <text x="890" y="430" font-weight="bold">code reviewer</text><text x="1180" y="430" fill="#A9C1DD" font-size="13">shallow APPROVED looks real</text>
+    <text x="890" y="480" font-weight="bold">security reviewer</text><text x="1180" y="480" fill="#A9C1DD" font-size="13">what it misses, ships</text>
+    <text x="890" y="530" font-weight="bold">refuters</text><text x="1180" y="530" fill="#A9C1DD" font-size="13">veto power over reviewers</text>
+    <text x="890" y="580" font-weight="bold">HLD + deck architects</text><text x="1180" y="580" fill="#A9C1DD" font-size="13">stakeholder-facing judgment</text>
+  </g>
+  <line x1="880" y1="348" x2="1470" y2="348" stroke="#34597F" stroke-width="1"/>
+  <line x1="880" y1="398" x2="1470" y2="398" stroke="#34597F" stroke-width="1"/>
+  <line x1="880" y1="448" x2="1470" y2="448" stroke="#34597F" stroke-width="1"/>
+  <line x1="880" y1="498" x2="1470" y2="498" stroke="#34597F" stroke-width="1"/>
+  <line x1="880" y1="548" x2="1470" y2="548" stroke="#34597F" stroke-width="1"/>
+  <text x="1175" y="636" text-anchor="middle" fill="#FF8B7E" font-size="14" font-weight="bold">the part you never cut</text>
+
+  <!-- promotion arrows -->
+  <line x1="750" y1="420" x2="850" y2="420" stroke="#DCE9F7" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="800" y="404" text-anchor="middle" fill="#DCE9F7" font-size="12" font-weight="bold">promote:</text>
+  <text x="800" y="442" text-anchor="middle" fill="#A9C1DD" font-size="11">2 strikes of rework</text>
+  <line x1="850" y1="500" x2="750" y2="500" stroke="#A9C1DD" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="800" y="486" text-anchor="middle" fill="#A9C1DD" font-size="12" font-weight="bold">trial-demote:</text>
+  <text x="800" y="522" text-anchor="middle" fill="#A9C1DD" font-size="11">~3 clean deliveries</text>
+
+  <!-- roster note -->
+  <rect x="100" y="706" width="1400" height="84" rx="6" fill="#DCE9F7"/>
+  <text x="800" y="740" text-anchor="middle" fill="#142F54" font-size="16" font-weight="bold">TIERS ARE RELATIVE TO THE FRONTIER — NEVER HARDCODED MODEL NAMES</text>
+  <text x="800" y="768" text-anchor="middle" fill="#3A5070" font-size="14">SENIOR inherits the session automatically; JUNIOR is one line in the project roster. Frontier moves → update one line.</text>
+
+  <!-- title block stamp -->
+  <g font-family="Menlo, Courier New, monospace">
+    <rect x="1150" y="828" width="420" height="58" fill="#142F54" stroke="#DCE9F7" stroke-width="1.5"/>
+    <line x1="1150" y1="848" x2="1570" y2="848" stroke="#DCE9F7" stroke-width="1"/>
+    <line x1="1150" y1="867" x2="1570" y2="867" stroke="#DCE9F7" stroke-width="1"/>
+    <text x="1160" y="842" font-size="11" font-weight="bold" fill="#DCE9F7">YAAKOV SLONIMCZYK — SOLUTION ARCHITECT</text>
+    <text x="1160" y="861" font-size="10" fill="#A9C1DD">SERIES: THE AGENTIC DELIVERY OFFICE</text>
+    <text x="1160" y="880" font-size="10" fill="#FF8B7E">FIG. 04 · SILENT-FAILURE MODEL ROUTING · REV A · 2026</text>
+  </g>
+</svg>

@@ -1,0 +1,122 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#DCE9F7"/>
+    </marker>
+    <marker id="arrT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8FD8EA"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#FF8B7E"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" fill="#142F54"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+
+  <text x="800" y="56" text-anchor="middle" fill="#DCE9F7" font-size="26" font-weight="bold">THE INTERNAL REVIEW-AND-FIX LOOP</text>
+  <text x="800" y="86" text-anchor="middle" fill="#A9C1DD" font-size="16" font-style="italic">already-criticized, already-fixed work reaches the human — not already-debated work</text>
+
+  <!-- input -->
+  <rect x="60" y="380" width="200" height="120" rx="6" fill="#DCE9F7"/>
+  <text x="160" y="428" text-anchor="middle" fill="#142F54" font-size="17" font-weight="bold">THE DIFF</text>
+  <text x="160" y="452" text-anchor="middle" fill="#142F54" font-size="17" font-weight="bold">+ THE SPEC</text>
+  <text x="160" y="480" text-anchor="middle" fill="#44608C" font-size="12" font-style="italic">nothing else — cold context</text>
+
+  <!-- fan to reviewers -->
+  <g stroke="#DCE9F7" stroke-width="2">
+    <line x1="260" y1="420" x2="350" y2="200" marker-end="url(#arr)"/>
+    <line x1="260" y1="430" x2="350" y2="320" marker-end="url(#arr)"/>
+    <line x1="260" y1="440" x2="350" y2="440" marker-end="url(#arr)"/>
+    <line x1="260" y1="450" x2="350" y2="560" marker-end="url(#arr)"/>
+    <line x1="260" y1="460" x2="350" y2="680" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- reviewer chips -->
+  <g font-size="15" font-weight="bold" fill="#DCE9F7">
+    <rect x="354" y="166" width="240" height="66" rx="33" fill="#1B3A63" stroke="#DCE9F7" stroke-width="2"/>
+    <text x="474" y="194" text-anchor="middle">code reviewer</text>
+    <text x="474" y="216" text-anchor="middle" font-size="11" font-weight="normal" fill="#A9C1DD">correctness · spec compliance</text>
+    <rect x="354" y="286" width="240" height="66" rx="33" fill="#1B3A63" stroke="#DCE9F7" stroke-width="2"/>
+    <text x="474" y="314" text-anchor="middle">security reviewer</text>
+    <text x="474" y="336" text-anchor="middle" font-size="11" font-weight="normal" fill="#A9C1DD">traces every attack path</text>
+    <rect x="354" y="406" width="240" height="66" rx="33" fill="#1B3A63" stroke="#8FD8EA" stroke-width="2"/>
+    <text x="474" y="434" text-anchor="middle">DB reviewer</text>
+    <text x="474" y="456" text-anchor="middle" font-size="11" font-weight="normal" fill="#A9C1DD">EXPLAIN output or silence</text>
+    <rect x="354" y="526" width="240" height="66" rx="33" fill="#1B3A63" stroke="#8FD8EA" stroke-width="2"/>
+    <text x="474" y="554" text-anchor="middle">design reviewer</text>
+    <text x="474" y="576" text-anchor="middle" font-size="11" font-weight="normal" fill="#A9C1DD">screenshots, never source-only</text>
+    <rect x="354" y="646" width="240" height="66" rx="33" fill="#1B3A63" stroke="#8FD8EA" stroke-width="2"/>
+    <text x="474" y="674" text-anchor="middle">business lenses</text>
+    <text x="474" y="696" text-anchor="middle" font-size="11" font-weight="normal" fill="#A9C1DD">CFO · BizDev · BI · CEO</text>
+  </g>
+  <text x="474" y="142" text-anchor="middle" fill="#8FD8EA" font-size="14" font-weight="bold">IN PARALLEL — fresh context each</text>
+
+  <!-- converge to findings -->
+  <g stroke="#DCE9F7" stroke-width="2">
+    <line x1="594" y1="200" x2="690" y2="410" marker-end="url(#arr)"/>
+    <line x1="594" y1="320" x2="690" y2="425" marker-end="url(#arr)"/>
+    <line x1="594" y1="440" x2="690" y2="440" marker-end="url(#arr)"/>
+    <line x1="594" y1="560" x2="690" y2="455" marker-end="url(#arr)"/>
+    <line x1="594" y1="680" x2="690" y2="470" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- findings -->
+  <rect x="694" y="360" width="220" height="160" rx="6" fill="#1B3A63" stroke="#DCE9F7" stroke-width="2.5"/>
+  <text x="804" y="392" text-anchor="middle" fill="#DCE9F7" font-size="16" font-weight="bold">FINDINGS</text>
+  <rect x="714" y="408" width="180" height="30" rx="4" fill="#FF8B7E"/>
+  <text x="804" y="429" text-anchor="middle" fill="#1B3A63" font-size="13" font-weight="bold">BLOCKING — evidence cited</text>
+  <rect x="714" y="446" width="180" height="30" rx="4" fill="#34597F"/>
+  <text x="804" y="467" text-anchor="middle" fill="#DCE9F7" font-size="13">non-blocking → backlog</text>
+  <text x="804" y="502" text-anchor="middle" fill="#8FD8EA" font-size="12" font-style="italic">"APPROVED" is a valid answer</text>
+
+  <!-- refuter -->
+  <line x1="914" y1="440" x2="1000" y2="440" stroke="#FF8B7E" stroke-width="2.5" marker-end="url(#arrR)"/>
+  <rect x="1004" y="370" width="230" height="140" rx="6" fill="#1B3A63" stroke="#FF8B7E" stroke-width="3"/>
+  <text x="1119" y="404" text-anchor="middle" fill="#FF8B7E" font-size="16" font-weight="bold">THE REFUTER</text>
+  <text x="1119" y="430" text-anchor="middle" fill="#DCE9F7" font-size="13">one per blocking finding:</text>
+  <text x="1119" y="450" text-anchor="middle" fill="#DCE9F7" font-size="13" font-style="italic">"try to prove it wrong"</text>
+  <text x="1119" y="482" text-anchor="middle" fill="#A9C1DD" font-size="12">never on a weaker model</text>
+  <text x="1119" y="498" text-anchor="middle" fill="#A9C1DD" font-size="12">than the finding it judges</text>
+
+  <!-- refuted demote -->
+  <line x1="1119" y1="510" x2="1119" y2="592" stroke="#A9C1DD" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="1135" y="556" fill="#A9C1DD" font-size="13" font-style="italic">refuted → demoted, with note</text>
+
+  <!-- confirmed -> fix -->
+  <line x1="1234" y1="440" x2="1320" y2="440" stroke="#DCE9F7" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="1277" y="424" text-anchor="middle" fill="#DCE9F7" font-size="12" font-weight="bold">confirmed</text>
+  <rect x="1324" y="385" width="180" height="110" rx="6" fill="#8FD8EA"/>
+  <text x="1414" y="430" text-anchor="middle" fill="#1B3A63" font-size="17" font-weight="bold">FIX</text>
+  <text x="1414" y="456" text-anchor="middle" fill="#14385F" font-size="12">verified blockers only —</text>
+  <text x="1414" y="473" text-anchor="middle" fill="#14385F" font-size="12">no opportunistic refactors</text>
+
+  <!-- loop back -->
+  <path d="M 1414 385 L 1414 130 L 474 130" fill="none" stroke="#8FD8EA" stroke-width="2.5" stroke-dasharray="8 5" marker-end="url(#arrT)"/>
+  <rect x="850" y="104" width="220" height="48" rx="24" fill="#142F54" stroke="#8FD8EA" stroke-width="2"/>
+  <text x="960" y="126" text-anchor="middle" fill="#8FD8EA" font-size="14" font-weight="bold">RE-REVIEW · MAX × 2</text>
+  <text x="960" y="144" text-anchor="middle" fill="#A9C1DD" font-size="11">then the human decides</text>
+
+  <!-- deliver -->
+  <line x1="1414" y1="495" x2="1414" y2="600" stroke="#DCE9F7" stroke-width="2.5" marker-end="url(#arr)"/>
+  <rect x="1264" y="604" width="300" height="120" rx="6" fill="#DCE9F7"/>
+  <text x="1414" y="640" text-anchor="middle" fill="#142F54" font-size="16" font-weight="bold">DELIVERY</text>
+  <text x="1414" y="666" text-anchor="middle" fill="#44608C" font-size="13">fixed · waived · residuals —</text>
+  <text x="1414" y="686" text-anchor="middle" fill="#44608C" font-size="13">real test output, honest gaps</text>
+  <text x="1414" y="708" text-anchor="middle" fill="#8A6210" font-size="12" font-style="italic">to the human, once</text>
+
+  <!-- bottom note -->
+  <text x="60" y="836" fill="#DCE9F7" font-size="15" font-style="italic">the contract that makes it converge: every finding cites evidence or is omitted — silence is a valid review outcome.</text>
+
+  <!-- title block stamp -->
+  <g font-family="Menlo, Courier New, monospace">
+    <rect x="1150" y="828" width="420" height="58" fill="#142F54" stroke="#DCE9F7" stroke-width="1.5"/>
+    <line x1="1150" y1="848" x2="1570" y2="848" stroke="#DCE9F7" stroke-width="1"/>
+    <line x1="1150" y1="867" x2="1570" y2="867" stroke="#DCE9F7" stroke-width="1"/>
+    <text x="1160" y="842" font-size="11" font-weight="bold" fill="#DCE9F7">YAAKOV SLONIMCZYK — SOLUTION ARCHITECT</text>
+    <text x="1160" y="861" font-size="10" fill="#A9C1DD">SERIES: THE AGENTIC DELIVERY OFFICE</text>
+    <text x="1160" y="880" font-size="10" fill="#FF8B7E">FIG. 03 · THE REVIEW-FIX LOOP · REV A · 2026</text>
+  </g>
+</svg>

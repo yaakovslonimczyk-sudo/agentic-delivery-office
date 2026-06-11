@@ -1,0 +1,85 @@
+# <PROJECT NAME>
+
+<!-- Fill every <PLACEHOLDER>. Delete sections that don't apply. Keep this file
+     under ~200 lines — it loads into every session and every subagent. -->
+
+## What this project is
+
+<ONE PARAGRAPH: what it does, for whom, and the current phase (MVP / growth /
+maintenance).>
+
+## Business context
+
+<!-- This section is the ground truth for the business-reviewer lenses.
+     Without it, the CFO/BizDev/CEO lenses have nothing to check against. -->
+
+- **Who pays / business model**: <e.g. SaaS $X/seat; internal tool, budget Y>
+- **Cost constraints**: <e.g. infra must stay under $Z/month at N users;
+  LLM cost per conversation must stay under $0.0X>
+- **Strategy / current priority**: <e.g. time-to-market over polish; or:
+  reliability over features — paying customers depend on it>
+- **PRD / spec location**: <docs/PRD.md, or link>
+- **Explicit non-goals**: <what we are deliberately NOT building>
+
+## Architecture in 5 lines
+
+<Stack, main components, where data lives, external services. Just enough for
+an agent to orient; details belong in docs/.>
+
+## Conventions
+
+- <Language/framework versions>
+- <Error handling pattern>
+- <Test framework and where tests live>
+- <Naming patterns that matter>
+
+## Commands
+
+- Test: `<command>`
+- Lint: `<command>`
+- Build: `<command>`
+- Run dev: `<command>`
+
+## Team roster (model tiers — relative to the frontier, never absolute)
+
+- **SENIOR tier** = the session model (automatic via `model: inherit`):
+  planner, code-reviewer, security-reviewer, refuters, hld-architect,
+  deck-architect. Fixed — never demoted.
+- **JUNIOR tier model**: `<one tier below the current frontier — e.g. the
+  current mid-tier model alias. UPDATE THIS LINE when the frontier moves>`
+- **JUNIOR-assigned agents**: explorer, mockup-builder, test-writer,
+  db-reviewer, design-reviewer, business-reviewer — the orchestrator passes
+  the JUNIOR model above as the spawn-time override for these.
+- **Promotions/demotions log** (evidence-driven, see ORCHESTRATION.md
+  "Performance reviews"):
+  <!-- - 2026-06-15: explorer → SENIOR. Reason: brief missed the queue consumer twice; reviewers caught it both times. -->
+
+## Orchestrator conduct
+
+You (the main session) are the orchestrator and act as my Solution Architect:
+delegate verbose work to subagents and keep only conclusions; at gates,
+present decisions (artifact, rationale, open question, options) — never raw
+subagent output; carry my gate verdicts into every downstream prompt; report
+honestly what was verified vs skipped.
+
+## Orchestration
+
+For any non-trivial change, follow the protocol in `ORCHESTRATION.md`:
+Phase A (concept): explore → clickable mockup + HL component diagram →
+★ GATE 1: human approves the concept ★. Phase B (design): HLD (hld-architect)
+→ executive deck (deck-architect) → ★ GATE 2: human approves the design ★.
+Phase C (build): split plan → MVP slice → tests-first → complete → parallel
+reviews → verify blockers → fix → deliver. HLD/deck are never produced before
+Gate 1; the review swarm never runs before Gate 2.
+
+- The optional MVP demo check (C3) <IS / IS NOT> required for this project
+  (default: IS for greenfield work).
+- Business-reviewer lenses relevant to this project: <CFO, BizDev, BI, CEO —
+  remove the ones that don't apply>.
+- Never `git push` without explicit human instruction.
+
+## Definition of done
+
+A change is deliverable when: tests pass (real output shown), reviewers
+returned APPROVED or all verified blockers are fixed, and the delivery
+message lists residual non-blocking findings honestly.
