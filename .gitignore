@@ -3,3 +3,4 @@
 node_modules/
 .claude/board/events.jsonl
 .claude/launch.json
+patent/
