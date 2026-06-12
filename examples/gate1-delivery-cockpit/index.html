@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Delivery Office Cockpit</title>
+<style>
+  /* ── RESET & TOKENS ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:         #142F54;
+    --panel:      #1B3A63;
+    --line:       #DCE9F7;
+    --cyan:       #8FD8EA;
+    --amber:      #FFC861;
+    --coral:      #FF8B7E;
+    --sec:        #A9C1DD;
+    --grid-line:  rgba(220,233,247,0.06);
+    --success:    #6DDBA8;
+    --killed:     #4A5568;
+    --killed-text:#718096;
+    --mono:       'Menlo', 'Courier New', monospace;
+    --ui:         'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    font-family: var(--ui);
+    background: var(--bg);
+    color: var(--line);
+    min-height: 100vh;
+    /* blueprint grid */
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── TITLE BLOCK STAMP ── */
+  .title-block {
+    position: fixed;
+    bottom: 12px;
+    right: 16px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--sec);
+    text-align: right;
+    line-height: 1.5;
+    border: 1px solid var(--grid-line);
+    padding: 6px 8px;
+    background: rgba(20,47,84,0.85);
+    z-index: 1000;
+    pointer-events: none;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── TOP NAV ── */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: var(--panel);
+    border-bottom: 1px solid rgba(143,216,234,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--sec); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--sec);
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all .15s;
+    font-family: var(--ui);
+  }
+  .nav-tab:hover { color: var(--line); border-color: rgba(143,216,234,0.3); }
+  .nav-tab.active { color: var(--cyan); border-color: var(--cyan); background: rgba(143,216,234,0.07); }
+
+  .oos-tag {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--sec);
+    border: 1px dashed var(--sec);
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 5px;
+    opacity: 0.6;
+    vertical-align: middle;
+  }
+
+  /* ── VIEWS ── */
+  .view { display: none; padding: 28px; max-width: 1200px; margin: 0 auto; padding-bottom: 60px; }
+  .view.active { display: block; }
+
+  /* ── ENGAGEMENTS LIST ── */
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+  .list-title { font-size: 22px; font-weight: 700; color: var(--line); }
+  .list-sub { font-size: 12px; color: var(--sec); margin-top: 2px; font-family: var(--mono); }
+
+  .filter-row { display: flex; gap: 8px; align-items: center; }
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid rgba(143,216,234,0.3);
+    background: transparent;
+    color: var(--sec);
+    font-family: var(--ui);
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--cyan); color: var(--line); }
+  .filter-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(255,200,97,0.08); }
+
+  .engagements-table { width: 100%; border-collapse: collapse; }
+  .engagements-table thead tr {
+    border-bottom: 1px solid rgba(143,216,234,0.2);
+    font-size: 11px;
+    color: var(--sec);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .engagements-table thead th { padding: 8px 16px; text-align: left; }
+  .engagements-table tbody tr {
+    border-bottom: 1px solid rgba(220,233,247,0.07);
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .engagements-table tbody tr:hover { background: rgba(27,58,99,0.7); }
+  .engagements-table tbody tr.killed { opacity: 0.45; cursor: default; }
+  .engagements-table tbody tr.killed:hover { background: transparent; }
+  .engagements-table td { padding: 14px 16px; font-size: 13px; }
+
+  .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .phase-a { background: rgba(143,216,234,0.12); color: var(--cyan); border: 1px solid rgba(143,216,234,0.3); }
+  .phase-b { background: rgba(255,200,97,0.1); color: var(--amber); border: 1px solid rgba(255,200,97,0.3); }
+  .phase-c { background: rgba(109,219,168,0.1); color: var(--success); border: 1px solid rgba(109,219,168,0.3); }
+  .phase-killed { background: rgba(74,85,104,0.3); color: var(--killed-text); border: 1px solid rgba(74,85,104,0.5); }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .pulse-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .pulse-amber { background: var(--amber); animation: pulse-anim 1.4s infinite; }
+  .pulse-cyan  { background: var(--cyan);  animation: pulse-anim 2s infinite; }
+  .pulse-coral { background: var(--coral); animation: pulse-anim 1.2s infinite; }
+  @keyframes pulse-anim {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.85); }
+  }
+
+  .token-meta { font-family: var(--mono); font-size: 11px; color: var(--sec); }
+
+  .action-hint {
+    font-size: 11px;
+    color: var(--cyan);
+    opacity: 0.8;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    display: none;
+  }
+  .empty-state.visible { display: block; }
+  .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.5; }
+  .empty-title { font-size: 18px; color: var(--line); margin-bottom: 10px; }
+  .empty-sub { font-size: 13px; color: var(--sec); max-width: 480px; margin: 0 auto; line-height: 1.6; font-style: italic; }
+
+  /* ── GATE SCREENS (shared chrome) ── */
+  .gate-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .back-btn {
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid rgba(143,216,234,0.35);
+    background: transparent;
+    color: var(--cyan);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--ui);
+    transition: all .15s;
+  }
+  .back-btn:hover { background: rgba(143,216,234,0.08); }
+  .gate-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255,200,97,0.4);
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+  .gate-title { font-size: 20px; font-weight: 700; color: var(--line); }
+  .gate-sub { font-size: 12px; color: var(--sec); font-family: var(--mono); }
+
+  .skip-link {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--sec);
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.7;
+    font-family: var(--mono);
+  }
+  .skip-link:hover { color: var(--cyan); opacity: 1; }
+
+  /* ── GATE 1 LAYOUT ── */
+  .gate1-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+  .g-panel {
+    background: var(--panel);
+    border: 1px solid rgba(143,216,234,0.15);
+    border-radius: 6px;
+    padding: 20px;
+  }
+  .g-panel-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(143,216,234,0.15);
+  }
+
+  /* browser frame mockup */
+  .browser-frame {
+    border: 1px solid rgba(143,216,234,0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .browser-bar {
+    background: rgba(20,47,84,0.9);
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid rgba(143,216,234,0.15);
+  }
+  .browser-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .bd-r { background: var(--coral); }
+  .bd-y { background: var(--amber); }
+  .bd-g { background: var(--success); }
+  .browser-url {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--sec);
+    margin-left: 8px;
+  }
+  .browser-body {
+    background: rgba(20,47,84,0.5);
+    padding: 14px;
+    min-height: 130px;
+    position: relative;
+  }
+  /* wireframe sketch inside browser */
+  .wf-bar { height: 8px; border-radius: 2px; background: rgba(143,216,234,0.25); margin-bottom: 6px; }
+  .wf-nav { display: flex; gap: 4px; margin-bottom: 10px; }
+  .wf-nav-i { width: 30px; height: 6px; border-radius: 2px; background: rgba(143,216,234,0.2); }
+  .wf-card { border: 1px solid rgba(143,216,234,0.2); border-radius: 3px; padding: 6px; margin-bottom: 6px; }
+  .wf-row { display: flex; gap: 4px; margin-bottom: 3px; }
+  .wf-col { flex: 1; height: 5px; border-radius: 1px; background: rgba(220,233,247,0.12); }
+  .wf-badge { width: 40px; height: 5px; border-radius: 8px; background: rgba(255,200,97,0.3); }
+
+  /* checklist */
+  .flow-checklist { list-style: none; }
+  .flow-checklist li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--sec);
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(220,233,247,0.06);
+  }
+  .flow-checklist li:last-child { border-bottom: none; }
+  .check-icon { color: var(--success); font-size: 13px; flex-shrink: 0; }
+
+  /* component diagram */
+  .comp-diagram { margin-bottom: 16px; }
+  .comp-row { display: flex; align-items: center; gap: 0; justify-content: center; margin-bottom: 8px; }
+  .comp-box {
+    background: rgba(20,47,84,0.8);
+    border: 1px solid rgba(143,216,234,0.35);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--line);
+    text-align: center;
+    min-width: 90px;
+    position: relative;
+  }
+  .comp-box.accent { border-color: var(--cyan); color: var(--cyan); }
+  .comp-arrow { color: var(--sec); font-size: 14px; padding: 0 4px; flex-shrink: 0; }
+  .comp-sub { font-size: 8px; color: var(--sec); display: block; margin-top: 2px; }
+  .comp-row-2 { display: flex; gap: 8px; justify-content: center; }
+
+  /* key decisions */
+  .decision-list { list-style: none; }
+  .decision-list li {
+    padding: 8px 10px;
+    border-left: 2px solid var(--amber);
+    background: rgba(255,200,97,0.05);
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .decision-list li:last-child { margin-bottom: 0; }
+  .decision-q { color: var(--line); margin-bottom: 3px; }
+  .decision-alt { font-size: 11px; color: var(--sec); }
+  .decision-alt span { color: var(--coral); text-decoration: line-through; }
+
+  /* ── DECISION BAR ── */
+  .decision-bar {
+    background: rgba(255,200,97,0.06);
+    border: 1px solid rgba(255,200,97,0.3);
+    border-radius: 6px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .decision-bar-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: auto;
+  }
+  .btn {
+    padding: 9px 22px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--ui);
+    font-weight: 600;
+    border: none;
+    transition: all .15s;
+  }
+  .btn-approve {
+    background: var(--success);
+    color: #0A2012;
+  }
+  .btn-approve:hover { filter: brightness(1.1); }
+  .btn-adjust {
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--amber);
+  }
+  .btn-adjust:hover { background: rgba(255,200,97,0.1); }
+  .btn-kill {
+    background: transparent;
+    color: var(--coral);
+    border: 1px solid var(--coral);
+  }
+  .btn-kill:hover { background: rgba(255,139,126,0.1); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid rgba(143,216,234,0.4);
+    font-size: 12px;
+    padding: 7px 16px;
+  }
+  .btn-secondary:hover { background: rgba(143,216,234,0.08); }
+  .btn-primary {
+    background: var(--cyan);
+    color: var(--bg);
+    font-size: 12px;
+    padding: 7px 16px;
+  }
+  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-danger {
+    background: var(--coral);
+    color: #2D0F0A;
+    font-size: 12px;
+    padding: 7px 16px;
+  }
+  .btn-danger:hover { filter: brightness(1.1); }
+
+  /* ── ADJUSTMENTS BOX ── */
+  .adj-box {
+    display: none;
+    margin-top: 16px;
+    background: var(--panel);
+    border: 1px solid rgba(255,200,97,0.25);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .adj-box.open { display: block; }
+  .adj-label { font-size: 11px; color: var(--amber); font-family: var(--mono); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .adj-textarea {
+    width: 100%;
+    min-height: 80px;
+    background: rgba(20,47,84,0.8);
+    border: 1px solid rgba(143,216,234,0.25);
+    border-radius: 4px;
+    color: var(--line);
+    font-family: var(--ui);
+    font-size: 13px;
+    padding: 10px;
+    resize: vertical;
+    outline: none;
+  }
+  .adj-textarea:focus { border-color: rgba(143,216,234,0.5); }
+  .adj-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+
+  /* ── KILL DIALOG ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,20,40,0.7);
+    z-index: 800;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.open { display: flex; }
+  .dialog {
+    background: var(--panel);
+    border: 1px solid rgba(255,139,126,0.4);
+    border-radius: 8px;
+    padding: 28px;
+    max-width: 420px;
+    width: 90%;
+  }
+  .dialog-title { font-size: 16px; font-weight: 700; color: var(--coral); margin-bottom: 10px; }
+  .dialog-body { font-size: 13px; color: var(--sec); margin-bottom: 20px; line-height: 1.6; }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--panel);
+    border: 1px solid rgba(143,216,234,0.3);
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--line);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    animation: toast-in .2s ease, toast-out .3s ease 2.5s forwards;
+    font-family: var(--ui);
+  }
+  .toast.success { border-color: rgba(109,219,168,0.5); }
+  .toast.info    { border-color: rgba(255,200,97,0.5); }
+  .toast.warn    { border-color: rgba(255,139,126,0.5); }
+  @keyframes toast-in  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toast-out { from { opacity: 1; } to { opacity: 0; } }
+
+  /* ── GATE 2 ── */
+  .hld-card {
+    background: rgba(20,47,84,0.6);
+    border: 1px solid rgba(143,216,234,0.15);
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .hld-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(143,216,234,0.08);
+    font-size: 12px;
+  }
+  .hld-section:last-child { border-bottom: none; }
+  .hld-section-num { font-family: var(--mono); color: var(--sec); font-size: 11px; width: 20px; flex-shrink: 0; }
+  .hld-section-name { color: var(--line); flex: 1; }
+  .hld-section-status { font-size: 11px; font-family: var(--mono); }
+  .s-ok { color: var(--success); }
+  .s-none { color: var(--sec); font-style: italic; }
+
+  .slides-row { display: flex; gap: 12px; margin-bottom: 16px; }
+  .slide-thumb {
+    flex: 1;
+    border: 1px solid rgba(143,216,234,0.2);
+    border-radius: 4px;
+    padding: 10px;
+    background: rgba(20,47,84,0.5);
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .slide-n { font-family: var(--mono); font-size: 9px; color: var(--sec); }
+  .slide-title-mock { height: 7px; background: rgba(143,216,234,0.25); border-radius: 2px; width: 70%; margin-bottom: 4px; }
+  .slide-body-mock { height: 5px; background: rgba(220,233,247,0.1); border-radius: 1px; margin-bottom: 2px; }
+
+  .reconcile-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--sec);
+    padding: 8px 12px;
+    background: rgba(109,219,168,0.06);
+    border: 1px solid rgba(109,219,168,0.2);
+    border-radius: 4px;
+  }
+  .reconcile-note .ok { color: var(--success); font-weight: 700; }
+
+  /* ── ESCALATION ── */
+  .finding-card {
+    background: rgba(255,139,126,0.06);
+    border: 1px solid rgba(255,139,126,0.3);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .finding-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .agent-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(255,139,126,0.15);
+    color: var(--coral);
+    border: 1px solid rgba(255,139,126,0.3);
+  }
+  .finding-title { font-size: 14px; font-weight: 700; color: var(--coral); }
+  .finding-body { font-size: 12px; color: var(--sec); line-height: 1.6; }
+  .code-ref {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cyan);
+    background: rgba(143,216,234,0.07);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .verdict-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,139,126,0.15);
+    font-size: 12px;
+  }
+  .verdict-confirmed { color: var(--coral); font-weight: 700; font-family: var(--mono); }
+
+  .fix-attempt {
+    background: var(--panel);
+    border: 1px solid rgba(143,216,234,0.12);
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .fix-attempt-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .fix-round { font-family: var(--mono); font-size: 10px; color: var(--sec); }
+  .fix-still-blocked { font-size: 11px; color: var(--coral); font-family: var(--mono); }
+  .fix-body { font-size: 12px; color: var(--sec); line-height: 1.5; }
+
+  .esc-decision-bar {
+    background: rgba(255,139,126,0.06);
+    border: 1px solid rgba(255,139,126,0.3);
+    border-radius: 6px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .esc-bar-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--coral);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .btn-accept-risk {
+    background: transparent;
+    color: var(--coral);
+    border: 1px solid var(--coral);
+  }
+  .btn-accept-risk:hover { background: rgba(255,139,126,0.1); }
+  .btn-r3 {
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--amber);
+  }
+  .btn-r3:hover { background: rgba(255,200,97,0.1); }
+  .btn-pull-back {
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid rgba(143,216,234,0.4);
+  }
+  .btn-pull-back:hover { background: rgba(143,216,234,0.08); }
+
+  /* ── LIVE BOARD / PROGRESS ── */
+  .progress-section { margin-bottom: 24px; }
+  .progress-label { font-family: var(--mono); font-size: 11px; color: var(--sec); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+  .step-list { list-style: none; }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+  .step-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .step-done { background: var(--success); }
+  .step-active { background: var(--amber); animation: pulse-anim 1.4s infinite; }
+  .step-pending { background: rgba(143,216,234,0.15); border: 1px solid rgba(143,216,234,0.25); }
+  .step-name { flex: 1; }
+  .step-status { font-family: var(--mono); font-size: 11px; color: var(--sec); }
+
+  /* org chart strip */
+  .org-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 16px;
+    background: var(--panel);
+    border: 1px solid rgba(143,216,234,0.15);
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  .org-node {
+    flex-shrink: 0;
+    text-align: center;
+    padding: 10px 14px;
+    border: 1px solid rgba(143,216,234,0.25);
+    border-radius: 5px;
+    background: rgba(20,47,84,0.7);
+    min-width: 90px;
+    position: relative;
+  }
+  .org-node.orch { border-color: var(--cyan); }
+  .org-node.working { border-color: var(--amber); background: rgba(255,200,97,0.07); animation: border-pulse 1.8s infinite; }
+  .org-node.idle { opacity: 0.5; }
+  @keyframes border-pulse {
+    0%, 100% { border-color: var(--amber); }
+    50% { border-color: rgba(255,200,97,0.3); }
+  }
+  .org-arrow { color: var(--sec); padding: 0 6px; font-size: 16px; flex-shrink: 0; }
+  .org-name { font-family: var(--mono); font-size: 10px; color: var(--line); }
+  .org-role { font-size: 9px; color: var(--sec); margin-top: 2px; }
+  .org-tokens { font-family: var(--mono); font-size: 10px; color: var(--amber); margin-top: 4px; }
+  .org-elapsed { font-family: var(--mono); font-size: 9px; color: var(--sec); }
+  .working-label {
+    position: absolute;
+    top: -9px; left: 50%; transform: translateX(-50%);
+    font-size: 8px;
+    background: var(--amber);
+    color: var(--bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  /* misc */
+  .section-heading {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--line);
+    margin: 20px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(143,216,234,0.12);
+  }
+
+  .killed-banner {
+    display: none;
+    background: rgba(74,85,104,0.3);
+    border: 1px solid rgba(74,85,104,0.5);
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--killed-text);
+    font-family: var(--mono);
+    margin-bottom: 12px;
+  }
+  .killed-banner.visible { display: block; }
+
+  /* gate2 pre-stage label */
+  .g2-pre { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .g2-pre-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); }
+
+  /* Token spend in table */
+  .tok { font-family: var(--mono); font-size: 11px; color: var(--sec); }
+  .time-spent { font-family: var(--mono); font-size: 11px; color: var(--sec); }
+
+  .eng-name { font-weight: 600; font-size: 14px; color: var(--line); }
+  .eng-name small { font-weight: 400; font-size: 12px; color: var(--sec); display: block; }
+
+  .tab-body-sep { height: 1px; background: rgba(143,216,234,0.1); margin: 20px 0; }
+
+  /* escalation icon */
+  .esc-icon { font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ── -->
+<nav class="top-nav">
+  <div class="nav-logo">Delivery Office · <span>COCKPIT</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('list')">Engagements</button>
+    <button class="nav-tab" onclick="showView('list'); activateFilter('all')">All Work</button>
+    <button class="nav-tab">Settings <span class="oos-tag">out of scope</span></button>
+    <button class="nav-tab">Analytics <span class="oos-tag">out of scope</span></button>
+    <button class="nav-tab">Team / Roles <span class="oos-tag">out of scope</span></button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 1 — ENGAGEMENTS LIST
+═════════════════════════════════════════════════════ -->
+<div id="view-list" class="view active">
+  <div class="list-header">
+    <div>
+      <div class="list-title">Engagements</div>
+      <div class="list-sub">ACTIVE WORK · 4 engagements · 2 awaiting decision</div>
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" id="filter-decision" onclick="activateFilter('decision')">⚡ Awaiting my decision</button>
+      <button class="filter-btn" id="filter-all" onclick="activateFilter('all')">All</button>
+      <span class="oos-tag">Notifications config</span>
+    </div>
+  </div>
+
+  <!-- Normal table -->
+  <table class="engagements-table" id="eng-table">
+    <thead>
+      <tr>
+        <th>Engagement</th>
+        <th>Phase</th>
+        <th>Status</th>
+        <th>Tokens spent</th>
+        <th>Time in phase</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="eng-tbody">
+      <!-- Row: Gate 1 -->
+      <tr id="row-voice" onclick="openGate1()" data-state="gate1">
+        <td>
+          <div class="eng-name">Voice-channel support
+            <small>Req #VCS-2026-001</small>
+          </div>
+        </td>
+        <td><span class="phase-chip phase-a">A · Concept</span></td>
+        <td>
+          <div class="status-badge">
+            <span class="pulse-dot pulse-amber"></span>
+            <span style="color:var(--amber);font-weight:600;">GATE 1 — AWAITING YOUR APPROVAL</span>
+          </div>
+        </td>
+        <td><span class="tok">42,830 tk</span></td>
+        <td><span class="time-spent">2d 4h</span></td>
+        <td><span class="action-hint">→ Review &amp; decide</span></td>
+      </tr>
+      <!-- Row: Tax FX working -->
+      <tr id="row-tax" onclick="openProgress('tax')" data-state="working">
+        <td>
+          <div class="eng-name">Tax FX calculator
+            <small>Req #TAX-2026-007</small>
+          </div>
+        </td>
+        <td><span class="phase-chip phase-b">B · Design</span></td>
+        <td>
+          <div class="status-badge">
+            <span class="pulse-dot pulse-cyan"></span>
+            <span style="color:var(--cyan);">Agents producing HLD</span>
+          </div>
+        </td>
+        <td><span class="tok">18,240 tk</span></td>
+        <td><span class="time-spent">6h 12m</span></td>
+        <td><span class="action-hint" style="color:var(--sec);">no action needed</span></td>
+      </tr>
+      <!-- Row: Webhook working -->
+      <tr id="row-webhook" onclick="openProgress('webhook')" data-state="working">
+        <td>
+          <div class="eng-name">Webhook idempotency fix
+            <small>Req #WHK-2026-019</small>
+          </div>
+        </td>
+        <td><span class="phase-chip phase-c">C · Build</span></td>
+        <td>
+          <div class="status-badge">
+            <span class="pulse-dot pulse-cyan"></span>
+            <span style="color:var(--cyan);">Review swarm — round 1 of 2</span>
+          </div>
+        </td>
+        <td><span class="tok">97,450 tk</span></td>
+        <td><span class="time-spent">1d 11h</span></td>
+        <td><span class="action-hint" style="color:var(--sec);">no action needed</span></td>
+      </tr>
+      <!-- Row: Inventory escalated -->
+      <tr id="row-inv" onclick="openEscalation()" data-state="escalated">
+        <td>
+          <div class="eng-name" style="color:var(--coral);">Inventory sync
+            <small style="color:var(--sec);">Req #INV-2026-003</small>
+          </div>
+        </td>
+        <td><span class="phase-chip phase-c">C · Build</span></td>
+        <td>
+          <div class="status-badge">
+            <span class="pulse-dot pulse-coral"></span>
+            <span class="esc-icon">⚠</span>
+            <span style="color:var(--coral);font-weight:600;">ESCALATED — 2 fix rounds exhausted</span>
+          </div>
+        </td>
+        <td><span class="tok">183,770 tk</span></td>
+        <td><span class="time-spent">4d 2h</span></td>
+        <td><span class="action-hint" style="color:var(--coral);">→ Human decision required</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Empty state (decision filter, all resolved) -->
+  <div class="empty-state" id="empty-state">
+    <div class="empty-icon">◉</div>
+    <div class="empty-title">Nothing needs you right now — the office is working.</div>
+    <div class="empty-sub">"Human judgment is the scarcest resource; we only spend it at gates."</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 2 — GATE 1 APPROVAL
+═════════════════════════════════════════════════════ -->
+<div id="view-gate1" class="view">
+  <div class="gate-header">
+    <button class="back-btn" id="back-gate1" onclick="goBack()">← Back</button>
+    <span class="gate-label">GATE 1</span>
+    <div>
+      <div class="gate-title">Voice-channel support — Concept Approval</div>
+      <div class="gate-sub">mockup-builder · hld-pre-architect · 2026-06-10 09:17 UTC — 42,830 tokens spent</div>
+    </div>
+    <span class="skip-link" onclick="openGate2()">demo: skip ahead to Gate 2 →</span>
+  </div>
+
+  <div id="killed-banner" class="killed-banner">
+    ENGAGEMENT KILLED — concept and learnings archived. Row greyed out in list.
+  </div>
+
+  <div class="gate1-layout">
+    <!-- LEFT: mockup + checklist -->
+    <div class="g-panel">
+      <div class="g-panel-title">Mockup Preview — Primary Flows Verified</div>
+
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <span class="browser-dot bd-r"></span>
+          <span class="browser-dot bd-y"></span>
+          <span class="browser-dot bd-g"></span>
+          <span class="browser-url">file://voice-channel-mockup/index.html</span>
+        </div>
+        <div class="browser-body">
+          <div class="wf-bar" style="width:40%;background:rgba(143,216,234,0.3)"></div>
+          <div class="wf-nav">
+            <div class="wf-nav-i"></div><div class="wf-nav-i"></div>
+            <div class="wf-nav-i"></div><div class="wf-nav-i"></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-row">
+              <div class="wf-col"></div><div class="wf-col"></div>
+              <div class="wf-badge"></div>
+            </div>
+            <div class="wf-row"><div class="wf-col"></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-row"><div class="wf-col"></div><div class="wf-col"></div></div>
+            <div class="wf-row"><div class="wf-col" style="flex:2"></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-row"><div class="wf-badge" style="background:rgba(109,219,168,0.25)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-panel-title" style="margin-top:12px;">Primary Flow Walkthrough</div>
+      <ul class="flow-checklist">
+        <li><span class="check-icon">✓</span> Customer initiates voice call → IVR routing</li>
+        <li><span class="check-icon">✓</span> Agent receives call + screen-pop with customer context</li>
+        <li><span class="check-icon">✓</span> Real-time AI assist panel (suggestion rail)</li>
+        <li><span class="check-icon">✓</span> Call wrap-up + CRM disposition write-back</li>
+        <li><span class="check-icon">✓</span> Supervisor listen-in / barge flow</li>
+        <li><span class="check-icon">✓</span> Error state: call drop / reconnect prompt</li>
+      </ul>
+    </div>
+
+    <!-- RIGHT: component diagram + key decisions -->
+    <div class="g-panel">
+      <div class="g-panel-title">HL Component Diagram</div>
+      <div class="comp-diagram">
+        <div class="comp-row">
+          <div class="comp-box accent">PSTN / SIP<span class="comp-sub">ReshetCall / Contaqt</span></div>
+          <span class="comp-arrow">→</span>
+          <div class="comp-box">Call Router<span class="comp-sub">Zowie CCaaS</span></div>
+          <span class="comp-arrow">→</span>
+          <div class="comp-box">Agent Desktop<span class="comp-sub">Payoneer Softphone</span></div>
+        </div>
+        <div class="comp-row" style="margin-top:6px;">
+          <div class="comp-box" style="min-width:120px;">AI Assist Engine<span class="comp-sub">Claude 3.5 Sonnet</span></div>
+          <span class="comp-arrow">↕</span>
+          <div class="comp-box">CRM Write-back<span class="comp-sub">Salesforce REST</span></div>
+        </div>
+      </div>
+
+      <div class="g-panel-title" style="margin-top:16px;">Key Decisions</div>
+      <ul class="decision-list">
+        <li>
+          <div class="decision-q">SIP trunking via ReshetCall (Contaqt) — lowest latency to LATAM PoPs</div>
+          <div class="decision-alt">Rejected: <span>AWS Connect native PSTN</span> — higher cost, no LATAM PoPs</div>
+        </li>
+        <li>
+          <div class="decision-q">AI assist rail — async Claude call (≤400ms P95), suggestion streamed to agent</div>
+          <div class="decision-alt">Rejected: <span>synchronous blocking call</span> — unacceptable latency for live agent</div>
+        </li>
+        <li>
+          <div class="decision-q">CRM write-back: queue + retry (SQS), not synchronous — decouples call flow from CRM SLA</div>
+          <div class="decision-alt">Rejected: <span>direct REST in call path</span> — CRM timeouts would drop calls</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Adjustment textarea (hidden until "Request Adjustments" clicked) -->
+  <div class="adj-box" id="adj-box">
+    <div class="adj-label">Adjustment request — mockup-builder will be re-engaged</div>
+    <textarea class="adj-textarea" id="adj-text" placeholder="Describe what needs to change in the concept or mockup…"></textarea>
+    <div class="adj-actions">
+      <button class="btn btn-secondary" onclick="closeAdj()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAdj()">Send to mockup-builder →</button>
+    </div>
+  </div>
+
+  <!-- Decision bar -->
+  <div class="decision-bar" id="gate1-decision-bar">
+    <span class="decision-bar-label">⬡ GATE 1 DECISION</span>
+    <button class="btn btn-approve" onclick="approveGate1()">✓  APPROVE CONCEPT</button>
+    <button class="btn btn-adjust"  onclick="requestAdj()">✎  REQUEST ADJUSTMENTS</button>
+    <button class="btn btn-kill"    onclick="confirmKill()">✕  KILL</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 3 — GATE 2 APPROVAL
+═════════════════════════════════════════════════════ -->
+<div id="view-gate2" class="view">
+  <div class="gate-header">
+    <button class="back-btn" id="back-gate2" onclick="goBack()">← Back</button>
+    <span class="gate-label" style="border-color:rgba(109,219,168,0.5);color:var(--success);">GATE 2</span>
+    <div>
+      <div class="gate-title">Voice-channel support — HLD &amp; Deck Approval</div>
+      <div class="gate-sub">hld-architect · deck-builder · 2026-06-11 14:03 UTC — 89,120 tokens spent total</div>
+    </div>
+  </div>
+
+  <div class="gate1-layout">
+    <!-- LEFT: HLD summary -->
+    <div class="g-panel">
+      <div class="g-panel-title">HLD Summary Card</div>
+      <div class="hld-card">
+        <div class="hld-section"><span class="hld-section-num">1.</span><span class="hld-section-name">Executive Summary</span><span class="hld-section-status s-ok">✓ present</span></div>
+        <div class="hld-section"><span class="hld-section-num">2.</span><span class="hld-section-name">Context &amp; Drivers</span><span class="hld-section-status s-ok">✓ present</span></div>
+        <div class="hld-section"><span class="hld-section-num">3.</span><span class="hld-section-name">Architecture Overview</span><span class="hld-section-status s-ok">✓ present</span></div>
+        <div class="hld-section"><span class="hld-section-num">4.</span><span class="hld-section-name">NFRs &amp; SLAs</span><span class="hld-section-status s-ok">✓ present</span></div>
+        <div class="hld-section"><span class="hld-section-num">5.</span><span class="hld-section-name">Data Flow Diagrams</span><span class="hld-section-status s-ok">✓ present</span></div>
+        <div class="hld-section"><span class="hld-section-num">6.</span><span class="hld-section-name">Security &amp; Compliance</span><span class="hld-section-status s-ok">✓ present</span></div>
+        <div class="hld-section"><span class="hld-section-num">7.</span><span class="hld-section-name">Deviations from approved concept</span><span class="hld-section-status s-none">NONE — section present and empty</span></div>
+        <div class="hld-section"><span class="hld-section-num">8.</span><span class="hld-section-name">Delivery Phases &amp; Milestones</span><span class="hld-section-status s-ok">✓ present</span></div>
+      </div>
+
+      <div class="reconcile-note">
+        <span class="ok">✓</span>
+        <span>Deck numbers reconcile vs HLD — agent-verified, no delta.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: deck preview + decisions -->
+    <div class="g-panel">
+      <div class="g-panel-title">Deck Preview — 3 Key Slides</div>
+      <div class="slides-row">
+        <div class="slide-thumb">
+          <div class="slide-n">SLIDE 1 / EXEC SUMMARY</div>
+          <div class="slide-title-mock"></div>
+          <div class="slide-body-mock"></div>
+          <div class="slide-body-mock" style="width:80%"></div>
+          <div class="slide-body-mock" style="width:60%"></div>
+        </div>
+        <div class="slide-thumb">
+          <div class="slide-n">SLIDE 3 / ARCHITECTURE</div>
+          <div class="slide-title-mock"></div>
+          <!-- mini boxes -->
+          <div style="display:flex;gap:3px;margin-top:4px;">
+            <div style="flex:1;height:20px;border:1px solid rgba(143,216,234,0.25);border-radius:2px;"></div>
+            <div style="flex:1;height:20px;border:1px solid rgba(143,216,234,0.25);border-radius:2px;"></div>
+            <div style="flex:1;height:20px;border:1px solid rgba(143,216,234,0.25);border-radius:2px;"></div>
+          </div>
+        </div>
+        <div class="slide-thumb">
+          <div class="slide-n">SLIDE 6 / DELIVERY PLAN</div>
+          <div class="slide-title-mock"></div>
+          <div style="height:30px;background:repeating-linear-gradient(90deg,rgba(143,216,234,0.15) 0 20%,rgba(255,200,97,0.12) 20% 55%,rgba(109,219,168,0.1) 55% 100%);border-radius:2px;margin-top:4px;"></div>
+        </div>
+      </div>
+
+      <div class="g-panel-title" style="margin-top:4px;">Design Decisions Carried Through</div>
+      <ul class="decision-list">
+        <li>
+          <div class="decision-q">SIP trunk choice locked: ReshetCall confirmed in architecture diagrams</div>
+          <div class="decision-alt">Gate 1 decision carried — no re-evaluation needed</div>
+        </li>
+        <li>
+          <div class="decision-q">AI assist engine: Claude 3.5 Sonnet latency budget 400ms P95 — NFR section §4.2</div>
+          <div class="decision-alt">Gate 1 decision carried — NFR formalised</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="decision-bar" style="border-color:rgba(109,219,168,0.35);background:rgba(109,219,168,0.05);">
+    <span class="decision-bar-label" style="color:var(--success);">⬡ GATE 2 DECISION</span>
+    <button class="btn btn-approve" onclick="approveGate2()">✓  APPROVE HLD — COMMENCE BUILD</button>
+    <button class="btn btn-adjust" onclick="showToast('Adjustments sent — hld-architect re-engaged', 'info')">✎  REQUEST ADJUSTMENTS</button>
+    <button class="btn btn-kill" onclick="showToast('Engagement killed — archived', 'warn')">✕  KILL</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 4 — ESCALATION
+═════════════════════════════════════════════════════ -->
+<div id="view-escalation" class="view">
+  <div class="gate-header">
+    <button class="back-btn" id="back-escalation" onclick="goBack()">← Back</button>
+    <span class="gate-label" style="border-color:rgba(255,139,126,0.5);color:var(--coral);">ESCALATION</span>
+    <div>
+      <div class="gate-title">Inventory sync — Human Decision Required</div>
+      <div class="gate-sub">security-reviewer → fix-coordinator → re-reviewer · 2 rounds exhausted · 2026-06-11 22:41 UTC · 183,770 tokens spent</div>
+    </div>
+  </div>
+
+  <div class="section-heading">Unresolved Blocking Finding</div>
+  <div class="finding-card">
+    <div class="finding-header">
+      <span class="agent-badge">security-reviewer</span>
+      <span class="finding-title">Race condition on concurrent stock updates — SEVERITY HIGH</span>
+    </div>
+    <div class="finding-body">
+      <p>When two concurrent requests decrement the same SKU quantity, the read-modify-write is not atomic. Under load (&gt;40 rps on a single SKU) inventory can go negative, enabling oversell.</p>
+      <p style="margin-top:8px;">Evidence: <span class="code-ref">src/inventory/stock_service.ts:L214–L228</span> — no optimistic lock or DB-level serialization around <span class="code-ref">updateQty()</span></p>
+    </div>
+    <div class="verdict-row">
+      <span>Refuter verdict:</span>
+      <span class="verdict-confirmed">CONFIRMED — not a false positive</span>
+      <span style="color:var(--sec);font-size:11px;">Refuter: architectural-reviewer agent, 2026-06-11 20:12 UTC</span>
+    </div>
+  </div>
+
+  <div class="section-heading">Fix Attempts</div>
+
+  <div class="fix-attempt">
+    <div class="fix-attempt-header">
+      <span class="fix-round">ROUND 1 · 2026-06-11 18:04 UTC</span>
+      <span class="fix-still-blocked">✕ re-review: still blocked</span>
+    </div>
+    <div class="fix-body">
+      Fix applied: added <span class="code-ref">SELECT FOR UPDATE</span> advisory lock around <span class="code-ref">updateQty()</span>. Re-reviewer finding: lock is acquired <em>after</em> the initial SELECT, so the TOCTOU window remains. Concurrent reads still see stale value before lock acquisition.
+    </div>
+  </div>
+
+  <div class="fix-attempt">
+    <div class="fix-attempt-header">
+      <span class="fix-round">ROUND 2 · 2026-06-11 21:15 UTC</span>
+      <span class="fix-still-blocked">✕ re-review: still blocked</span>
+    </div>
+    <div class="fix-body">
+      Fix applied: moved to single atomic <span class="code-ref">UPDATE qty = qty - $delta WHERE qty &gt;= $delta RETURNING qty</span> SQL pattern. Re-reviewer finding: fix is correct at DB level but <span class="code-ref">stock_service.ts:L189</span> caches qty in Redis with a 30-second TTL — cache is not invalidated in the hot path, so the application layer still serves stale inventory to clients even after the DB fix.
+    </div>
+  </div>
+
+  <div class="section-heading">Your Decision</div>
+  <div class="esc-decision-bar">
+    <div class="esc-bar-label">⚠ HUMAN DECISION — 2 ROUNDS EXHAUSTED</div>
+    <button class="btn btn-accept-risk" onclick="escalationDecide('risk')">Accept risk &amp; deliver</button>
+    <button class="btn btn-r3" onclick="escalationDecide('r3')">Authorize round 3</button>
+    <button class="btn btn-pull-back" onclick="escalationDecide('pullback')">Pull back to design (Gate 2)</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 5 — PROGRESS / LIVE BOARD
+═════════════════════════════════════════════════════ -->
+<div id="view-progress" class="view">
+  <div class="gate-header">
+    <button class="back-btn" id="back-progress" onclick="goBack()">← Back</button>
+    <span class="gate-label" style="border-color:rgba(143,216,234,0.4);color:var(--cyan);">LIVE PROGRESS</span>
+    <div>
+      <div class="gate-title" id="progress-title">Tax FX calculator — Phase B · Design</div>
+      <div class="gate-sub" id="progress-sub">hld-architect running · no action needed · agents working autonomously</div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-label">Current Phase Steps</div>
+    <ul class="step-list" id="progress-steps"></ul>
+  </div>
+
+  <div class="section-heading">Live Agent Board</div>
+  <div class="org-strip" id="org-strip"></div>
+
+  <div style="margin-top:16px;font-size:12px;color:var(--sec);font-family:var(--mono);">
+    Next gate: GATE 2 — HLD &amp; deck review awaiting completion · estimated ~2h remaining at current pace
+  </div>
+  <div style="margin-top:12px;">
+    <span class="oos-tag" style="font-size:11px;">Historical analytics — out of scope</span>
+    <span style="margin-left:8px;font-size:11px;color:var(--sec);">Full agent logs: </span>
+    <span class="oos-tag" style="font-size:11px;">Notifications config — out of scope</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     OVERLAYS & DIALOGS
+═════════════════════════════════════════════════════ -->
+<!-- Kill confirm dialog -->
+<div class="overlay" id="kill-overlay">
+  <div class="dialog">
+    <div class="dialog-title">Kill this engagement?</div>
+    <div class="dialog-body">
+      The concept and learnings for <strong>Voice-channel support</strong> will be archived.<br/>
+      This action cannot be undone from the cockpit. Agents will be stopped immediately.
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" onclick="closeKill()">Cancel</button>
+      <button class="btn btn-danger" onclick="executeKill()">Kill &amp; archive</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- Title block stamp -->
+<div class="title-block">
+  YAAKOV SLONIMCZYK — SOLUTION ARCHITECT<br/>
+  THE AGENTIC DELIVERY OFFICE · COCKPIT
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+═════════════════════════════════════════════════════ -->
+<script>
+  // ── State ──
+  let currentView = 'list';
+  let previousView = 'list';
+  let filterMode = 'decision'; // 'decision' | 'all'
+  let engagementStates = {
+    voice: 'gate1',    // gate1 | phase-b-working | phase-c-working | killed
+    tax: 'working',
+    webhook: 'working',
+    inv: 'escalated',  // escalated | risk-accepted | r3 | gate2
+  };
+
+  // Progress data per engagement
+  const progressData = {
+    tax: {
+      title: 'Tax FX calculator — Phase B · Design',
+      sub: 'hld-architect running · no action needed · agents working autonomously',
+      steps: [
+        { name: 'Concept approved (Gate 1)', state: 'done', ts: '06-10 11:22' },
+        { name: 'Context intake — requirements parsed', state: 'done', ts: '06-11 09:01' },
+        { name: 'Architecture sketch — hld-pre-architect', state: 'done', ts: '06-11 11:45' },
+        { name: 'HLD drafting — hld-architect', state: 'active', ts: '⏳ running 6h 12m' },
+        { name: 'Deck generation — deck-builder', state: 'pending', ts: '' },
+        { name: 'Gate 2 review package ready', state: 'pending', ts: '' },
+      ],
+      agents: [
+        { name: 'orchestrator', role: 'Solution Architect', state: 'orch', tokens: '8,240', elapsed: '' },
+        { name: 'context-intake', role: 'Req Analyst', state: 'idle', tokens: '3,100', elapsed: '' },
+        { name: 'hld-pre-arch', role: 'Pre-Architect', state: 'idle', tokens: '5,920', elapsed: '' },
+        { name: 'hld-architect', role: 'HLD Author', state: 'working', tokens: '980', elapsed: '6h 12m' },
+        { name: 'deck-builder', role: 'Deck Author', state: 'idle', tokens: '—', elapsed: '' },
+      ]
+    },
+    webhook: {
+      title: 'Webhook idempotency fix — Phase C · Build',
+      sub: 'review-swarm running round 1 of 2 · no action needed',
+      steps: [
+        { name: 'Gate 2 approved', state: 'done', ts: '06-08 14:00' },
+        { name: 'Code generation — code-builder', state: 'done', ts: '06-09 10:30' },
+        { name: 'Unit tests — test-writer', state: 'done', ts: '06-10 08:15' },
+        { name: 'Security review — security-reviewer', state: 'active', ts: '⏳ running 1d 11h' },
+        { name: 'Architectural review — arch-reviewer', state: 'pending', ts: '' },
+        { name: 'Gate 3 / delivery sign-off', state: 'pending', ts: '' },
+      ],
+      agents: [
+        { name: 'orchestrator', role: 'Solution Architect', state: 'orch', tokens: '12,100', elapsed: '' },
+        { name: 'code-builder', role: 'Builder', state: 'idle', tokens: '48,320', elapsed: '' },
+        { name: 'test-writer', role: 'QA Author', state: 'idle', tokens: '22,440', elapsed: '' },
+        { name: 'security-rev', role: 'Security Rev.', state: 'working', tokens: '14,590', elapsed: '1d 11h' },
+        { name: 'arch-reviewer', role: 'Arch Rev.', state: 'idle', tokens: '—', elapsed: '' },
+      ]
+    }
+  };
+
+  // ── View router ──
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById('view-' + name);
+    if (el) el.classList.add('active');
+    currentView = name;
+  }
+
+  function goBack() {
+    showView('list');
+    renderTable();
+  }
+
+  // ── Filter ──
+  function activateFilter(mode) {
+    filterMode = mode;
+    document.getElementById('filter-decision').classList.toggle('active', mode === 'decision');
+    document.getElementById('filter-all').classList.toggle('active', mode === 'all');
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('eng-tbody');
+    const emptyState = document.getElementById('empty-state');
+    const table = document.getElementById('eng-table');
+
+    // Determine which rows need decisions
+    const awaitingDecision = ['row-voice', 'row-inv'].filter(id => {
+      if (id === 'row-voice') return !['killed', 'phase-b-working', 'phase-c-working'].includes(engagementStates.voice);
+      if (id === 'row-inv') return engagementStates.inv === 'escalated';
+      return false;
+    });
+
+    // Update voice row
+    const voiceRow = document.getElementById('row-voice');
+    if (engagementStates.voice === 'killed') {
+      voiceRow.classList.add('killed');
+      voiceRow.onclick = null;
+      voiceRow.cells[1].innerHTML = '<span class="phase-chip phase-killed">KILLED</span>';
+      voiceRow.cells[2].innerHTML = '<div class="status-badge"><span style="color:var(--killed-text);">Archived</span></div>';
+      voiceRow.cells[5].innerHTML = '';
+    } else if (engagementStates.voice === 'phase-b-working') {
+      voiceRow.classList.remove('killed');
+      voiceRow.onclick = () => openProgress('tax');
+      voiceRow.cells[1].innerHTML = '<span class="phase-chip phase-b">B · Design</span>';
+      voiceRow.cells[2].innerHTML = '<div class="status-badge"><span class="pulse-dot pulse-cyan"></span><span style="color:var(--cyan);">Agents producing HLD</span></div>';
+      voiceRow.cells[5].innerHTML = '<span class="action-hint" style="color:var(--sec);">no action needed</span>';
+    }
+
+    // Update inv row
+    const invRow = document.getElementById('row-inv');
+    if (engagementStates.inv !== 'escalated') {
+      invRow.classList.remove('killed');
+      if (engagementStates.inv === 'risk-accepted') {
+        invRow.cells[2].innerHTML = '<div class="status-badge"><span class="pulse-dot pulse-cyan"></span><span style="color:var(--cyan);">Risk accepted — delivering</span></div>';
+        invRow.cells[5].innerHTML = '<span class="action-hint" style="color:var(--sec);">no action needed</span>';
+      } else if (engagementStates.inv === 'r3') {
+        invRow.cells[2].innerHTML = '<div class="status-badge"><span class="pulse-dot pulse-cyan"></span><span style="color:var(--cyan);">Round 3 fix in progress</span></div>';
+        invRow.cells[5].innerHTML = '<span class="action-hint" style="color:var(--sec);">no action needed</span>';
+      } else if (engagementStates.inv === 'gate2') {
+        invRow.cells[1].innerHTML = '<span class="phase-chip phase-b">B · Design</span>';
+        invRow.cells[2].innerHTML = '<div class="status-badge"><span class="pulse-dot pulse-cyan"></span><span style="color:var(--cyan);">Pulled back to Gate 2 design</span></div>';
+        invRow.cells[5].innerHTML = '<span class="action-hint" style="color:var(--sec);">no action needed</span>';
+      }
+    }
+
+    // Show/hide rows based on filter
+    const allRows = document.querySelectorAll('#eng-tbody tr');
+    let visibleCount = 0;
+
+    if (filterMode === 'decision') {
+      allRows.forEach(row => {
+        const needsDecision =
+          (row.id === 'row-voice' && !['killed','phase-b-working','phase-c-working'].includes(engagementStates.voice)) ||
+          (row.id === 'row-inv' && engagementStates.inv === 'escalated');
+        row.style.display = needsDecision ? '' : 'none';
+        if (needsDecision) visibleCount++;
+      });
+    } else {
+      allRows.forEach(row => { row.style.display = ''; visibleCount++; });
+    }
+
+    const isEmpty = visibleCount === 0;
+    table.style.display = isEmpty ? 'none' : '';
+    emptyState.classList.toggle('visible', isEmpty);
+  }
+
+  // ── Open flows ──
+  function openGate1() {
+    previousView = 'list';
+    // reset adj box
+    document.getElementById('adj-box').classList.remove('open');
+    document.getElementById('killed-banner').classList.remove('visible');
+    document.getElementById('gate1-decision-bar').style.display = '';
+    showView('gate1');
+  }
+
+  function openGate2() {
+    previousView = currentView;
+    showView('gate2');
+  }
+
+  function openEscalation() {
+    previousView = 'list';
+    showView('escalation');
+  }
+
+  function openProgress(key) {
+    const data = progressData[key];
+    if (!data) return;
+    document.getElementById('progress-title').textContent = data.title;
+    document.getElementById('progress-sub').textContent = data.sub;
+
+    // Render steps
+    const stepsList = document.getElementById('progress-steps');
+    stepsList.innerHTML = '';
+    data.steps.forEach(s => {
+      const li = document.createElement('li');
+      li.className = 'step-item';
+      const dotClass = s.state === 'done' ? 'step-done' : s.state === 'active' ? 'step-active' : 'step-pending';
+      li.innerHTML = `
+        <span class="step-dot ${dotClass}"></span>
+        <span class="step-name" style="color:${s.state === 'pending' ? 'var(--sec)' : 'var(--line)'}">${s.name}</span>
+        <span class="step-status">${s.ts}</span>
+      `;
+      stepsList.appendChild(li);
+    });
+
+    // Render agents
+    const strip = document.getElementById('org-strip');
+    strip.innerHTML = '';
+    data.agents.forEach((ag, i) => {
+      if (i > 0) {
+        const arr = document.createElement('span');
+        arr.className = 'org-arrow';
+        arr.textContent = '→';
+        strip.appendChild(arr);
+      }
+      const node = document.createElement('div');
+      node.className = 'org-node' + (ag.state === 'orch' ? ' orch' : ag.state === 'working' ? ' working' : ' idle');
+      node.innerHTML = `
+        ${ag.state === 'working' ? '<span class="working-label">WORKING</span>' : ''}
+        <div class="org-name">${ag.name}</div>
+        <div class="org-role">${ag.role}</div>
+        <div class="org-tokens">${ag.tokens} tk</div>
+        ${ag.elapsed ? `<div class="org-elapsed">${ag.elapsed}</div>` : ''}
+      `;
+      strip.appendChild(node);
+    });
+
+    previousView = 'list';
+    showView('progress');
+  }
+
+  // ── Gate 1 decisions ──
+  function approveGate1() {
+    engagementStates.voice = 'phase-b-working';
+    showToast('Gate 1 approved — hld-architect dispatched', 'success');
+    goBack();
+  }
+
+  function requestAdj() {
+    document.getElementById('adj-box').classList.add('open');
+    document.getElementById('adj-text').focus();
+    // scroll to it
+    document.getElementById('adj-box').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function closeAdj() {
+    document.getElementById('adj-box').classList.remove('open');
+  }
+
+  function submitAdj() {
+    const text = document.getElementById('adj-text').value.trim();
+    if (!text) { showToast('Please describe the adjustments needed.', 'warn'); return; }
+    closeAdj();
+    showToast('Adjustments sent — mockup-builder re-engaged', 'info');
+    // Status stays gate1 (phase A, working on adjustments)
+    goBack();
+  }
+
+  function confirmKill() {
+    document.getElementById('kill-overlay').classList.add('open');
+  }
+
+  function closeKill() {
+    document.getElementById('kill-overlay').classList.remove('open');
+  }
+
+  function executeKill() {
+    closeKill();
+    engagementStates.voice = 'killed';
+    document.getElementById('killed-banner').classList.add('visible');
+    document.getElementById('gate1-decision-bar').style.display = 'none';
+    showToast('Engagement killed — concept and learnings archived', 'warn');
+    goBack();
+  }
+
+  // ── Gate 2 ──
+  function approveGate2() {
+    showToast('Gate 2 approved — build phase commencing · code-builder dispatched', 'success');
+    // brief delay then go back
+    setTimeout(() => { goBack(); }, 600);
+  }
+
+  // ── Escalation decisions ──
+  function escalationDecide(choice) {
+    if (choice === 'risk') {
+      engagementStates.inv = 'risk-accepted';
+      showToast('Risk accepted — delivery proceeding with documented risk', 'warn');
+    } else if (choice === 'r3') {
+      engagementStates.inv = 'r3';
+      showToast('Round 3 authorized — fix-coordinator re-engaged', 'info');
+    } else if (choice === 'pullback') {
+      engagementStates.inv = 'gate2';
+      showToast('Pulled back to design — hld-architect alerted', 'info');
+    }
+    goBack();
+  }
+
+  // ── Toast ──
+  function showToast(msg, type) {
+    const container = document.getElementById('toasts');
+    const t = document.createElement('div');
+    t.className = 'toast ' + (type || '');
+    t.textContent = msg;
+    container.appendChild(t);
+    setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 2900);
+  }
+
+  // ── Nav tab highlight sync ──
+  document.querySelectorAll('.nav-tab[onclick]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ── Init ──
+  renderTable();
+</script>
+</body>
+</html>
