@@ -24,6 +24,41 @@
     --ui:         'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
+  /* ── Live Board ── */
+  .lb-totals { display:flex; gap:12px; justify-content:center; margin-top:12px; font-family:var(--mono); font-size:12px; }
+  .lb-totals span { border:1px solid rgba(220,233,247,0.25); padding:4px 12px; background:var(--panel); color:var(--sec); }
+  .lb-totals b { color:var(--amber); }
+  .lb-orch { max-width:620px; margin:18px auto 24px; border:2px solid var(--line); background:var(--panel); border-radius:8px; overflow:hidden; }
+  .lb-orch-bar { background:var(--cyan); color:var(--panel); font-weight:bold; text-align:center; padding:8px; font-size:15px; }
+  .lb-orch-body { padding:9px 14px; text-align:center; color:var(--sec); font-size:13px; }
+  .lb-orch-body b { color:var(--line); }
+  .lb-benches { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1500px; margin:0 auto; }
+  .lb-bench { border:2px solid var(--line); border-radius:8px; background:rgba(0,0,0,0.1); }
+  .lb-bench.junior { border-color:var(--cyan); }
+  .lb-bench-bar { padding:8px 12px; font-weight:bold; font-size:13px; background:var(--line); color:var(--bg); }
+  .lb-bench.junior .lb-bench-bar { background:var(--cyan); color:var(--panel); }
+  .lb-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:11px; padding:13px; }
+  .lb-card { border:1.5px solid var(--line); background:var(--panel); border-radius:6px; padding:9px 11px; transition:box-shadow .3s; }
+  .lb-bench.junior .lb-card { border-color:var(--cyan); }
+  .lb-card h3 { font-size:13.5px; margin:0; display:flex; justify-content:space-between; align-items:center; color:var(--line); }
+  .lb-card .lb-model { font-family:var(--mono); font-size:9.5px; color:var(--sec); margin-top:2px; }
+  .lb-card .lb-stats { display:flex; justify-content:space-between; margin-top:7px; font-family:var(--mono); font-size:10.5px; color:var(--sec); }
+  .lb-card .lb-stats .lb-tok { color:var(--amber); font-weight:bold; }
+  .lb-card .lb-elapsed { color:var(--amber); }
+  .lb-card .lb-last { margin-top:5px; font-size:10px; color:var(--sec); font-style:italic; min-height:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lb-dot { width:8px; height:8px; border-radius:50%; background:rgba(169,193,221,0.3); display:inline-block; }
+  .lb-card.working { box-shadow:0 0 0 2px var(--amber), 0 0 16px rgba(255,200,97,0.45); }
+  .lb-card.working .lb-dot { background:var(--amber); animation:lbpulse 1s infinite; }
+  @keyframes lbpulse { 50% { opacity:.25; } }
+  .lb-log-panel { max-width:1500px; margin:20px auto 0; border:1.5px solid rgba(220,233,247,0.25); background:var(--panel); border-radius:6px; }
+  .lb-log-bar { padding:7px 12px; font-size:11px; font-weight:bold; color:var(--sec); border-bottom:1px solid rgba(220,233,247,0.15); font-family:var(--mono); }
+  .lb-log-panel ul { list-style:none; padding:8px 12px; margin:0; font-family:var(--mono); font-size:11px; max-height:150px; overflow-y:auto; }
+  .lb-log-panel li { padding:2px 0; color:var(--sec); }
+  .lb-log-panel li .lb-out { color:var(--cyan); }
+  .lb-log-panel li .lb-in { color:var(--line); }
+  .lb-log-panel li .lb-tokc { color:var(--amber); }
+  .lb-ball { position:fixed; width:13px; height:13px; border-radius:50%; background:var(--amber); box-shadow:0 0 12px var(--amber); z-index:90; pointer-events:none; transition:transform 1.05s cubic-bezier(.4,0,.6,1); }
+
   body {
     font-family: var(--ui);
     background: var(--bg);
@@ -769,6 +804,7 @@
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showView('list')">Engagements</button>
     <button class="nav-tab" onclick="showView('list'); activateFilter('all')">All Work</button>
+    <button class="nav-tab" onclick="showView('board'); startBoardSim()">Live Board <span style="color:var(--amber)">●</span></button>
     <button class="nav-tab">Settings <span class="oos-tag">out of scope</span></button>
     <button class="nav-tab">Analytics <span class="oos-tag">out of scope</span></button>
     <button class="nav-tab">Team / Roles <span class="oos-tag">out of scope</span></button>
@@ -1201,6 +1237,42 @@
   </div>
 </div>
 
+<!-- ── LIVE BOARD: the full org chart, who has the ball NOW ── -->
+<div id="view-board" class="view">
+  <div class="view-header" style="text-align:center; display:block;">
+    <h1 style="margin:0;">The Office, Live</h1>
+    <div style="font-family:var(--mono); font-size:12px; color:var(--sec); margin-top:6px;">
+      who has the ball right now · every pass logged · every token accounted
+    </div>
+    <div class="lb-totals">
+      <span>TOTAL SUBAGENT TOKENS <b id="lb-tokens">312.4k</b></span>
+      <span>ENGAGEMENTS TODAY <b id="lb-runs">14</b></span>
+      <span>HOLDING THE BALL <b id="lb-active">0</b></span>
+    </div>
+  </div>
+
+  <div class="lb-orch" id="lb-orch">
+    <div class="lb-orch-bar">THE ORCHESTRATOR · SOLUTION ARCHITECT</div>
+    <div class="lb-orch-body"><b>frontier (session model)</b> · persistent memory · briefs out, conclusions in</div>
+  </div>
+
+  <div class="lb-benches">
+    <div class="lb-bench senior">
+      <div class="lb-bench-bar">SENIOR BENCH — frontier (inherit) · never downgraded</div>
+      <div class="lb-cards" id="lb-senior"></div>
+    </div>
+    <div class="lb-bench junior">
+      <div class="lb-bench-bar">JUNIOR BENCH — one tier below · ground-truth checked</div>
+      <div class="lb-cards" id="lb-junior"></div>
+    </div>
+  </div>
+
+  <div class="lb-log-panel">
+    <div class="lb-log-bar">ENGAGEMENT LOG — the ball, pass by pass</div>
+    <ul id="lb-log"></ul>
+  </div>
+</div>
+
 <!-- Toast container -->
 <div class="toast-container" id="toasts"></div>
 
@@ -1488,6 +1560,111 @@
   }
 
   // ── Toast ──
+  // ── Live Board: full org chart + ball-passing simulation ──
+  const LB_AGENTS = [
+    { n:'planner',           bench:'senior', model:'inherit · frontier', tok:61400, runs:1 },
+    { n:'code-reviewer',     bench:'senior', model:'inherit · frontier', tok:57300, runs:1 },
+    { n:'security-reviewer', bench:'senior', model:'inherit · frontier', tok:48900, runs:1 },
+    { n:'refuter',           bench:'senior', model:'inherit · frontier', tok:21200, runs:2 },
+    { n:'hld-architect',     bench:'senior', model:'inherit · frontier', tok:0,     runs:0 },
+    { n:'deck-architect',    bench:'senior', model:'inherit · frontier', tok:0,     runs:0 },
+    { n:'explorer',          bench:'junior', model:'junior tier · roster', tok:48200, runs:1 },
+    { n:'mockup-builder',    bench:'junior', model:'junior tier · roster', tok:92800, runs:1 },
+    { n:'test-writer',       bench:'junior', model:'junior tier · roster', tok:0,     runs:0 },
+    { n:'db-reviewer',       bench:'junior', model:'junior tier · roster', tok:0,     runs:0 },
+    { n:'design-reviewer',   bench:'junior', model:'junior tier · roster', tok:0,     runs:0 },
+    { n:'business-reviewer', bench:'junior', model:'junior tier · roster', tok:33200, runs:1 },
+  ];
+  const LB_TASKS = {
+    'planner':'HL architecture: inventory sync rework','code-reviewer':'Cold review: webhook diff r2',
+    'security-reviewer':'Trace input through new endpoints','refuter':'Refute: N+1 claim on listing query',
+    'hld-architect':'HLD: tax FX calculator','deck-architect':'Exec deck from approved HLD',
+    'explorer':'Map session-handling flow','mockup-builder':'Mockup: reconciliation screen',
+    'test-writer':'Tests from spec: idempotency','db-reviewer':'EXPLAIN: stock update queries',
+    'design-reviewer':'Screenshot pass: agent console','business-reviewer':'CFO lens: storage cost delta',
+  };
+  let lbStarted = false, lbTotalTok = 312400, lbTotalRuns = 14;
+
+  function lbFmt(n){ return n>=1000 ? (n/1000).toFixed(1)+'k' : String(n); }
+
+  function lbRender(){
+    for (const a of LB_AGENTS){
+      if (!a.el){
+        a.el = document.createElement('div');
+        a.el.className = 'lb-card';
+        a.el.innerHTML = `<h3>${a.n} <span class="lb-dot"></span></h3>
+          <div class="lb-model">${a.model}</div>
+          <div class="lb-stats"><span class="lb-tok"></span><span class="lb-runs"></span><span class="lb-elapsed"></span></div>
+          <div class="lb-last"></div>`;
+        document.getElementById('lb-' + a.bench).appendChild(a.el);
+      }
+      a.el.classList.toggle('working', !!a.working);
+      a.el.querySelector('.lb-tok').textContent = lbFmt(a.tok) + ' tok';
+      a.el.querySelector('.lb-runs').textContent = a.runs + ' runs';
+      a.el.querySelector('.lb-last').textContent = a.last || '';
+    }
+    document.getElementById('lb-tokens').textContent = lbFmt(lbTotalTok);
+    document.getElementById('lb-runs').textContent = lbTotalRuns;
+    document.getElementById('lb-active').textContent = LB_AGENTS.filter(a=>a.working).length;
+  }
+
+  function lbBall(fromEl, toEl){
+    const f = fromEl.getBoundingClientRect(), t = toEl.getBoundingClientRect();
+    const b = document.createElement('div'); b.className = 'lb-ball';
+    b.style.transform = `translate(${f.left+f.width/2}px, ${f.top+f.height/2}px)`;
+    document.body.appendChild(b);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      b.style.transform = `translate(${t.left+t.width/2}px, ${t.top+t.height/2}px)`;
+    }));
+    setTimeout(()=>b.remove(), 1250);
+  }
+
+  function lbLog(html){
+    const li = document.createElement('li'); li.innerHTML = html;
+    const ul = document.getElementById('lb-log');
+    ul.prepend(li);
+    while (ul.children.length > 40) ul.removeChild(ul.lastChild);
+  }
+
+  function lbHHMM(){ return new Date().toTimeString().slice(0,8); }
+
+  function lbDispatch(){
+    if (currentView !== 'board') return;
+    const idle = LB_AGENTS.filter(a => !a.working);
+    if (!idle.length) return;
+    const a = idle[Math.floor(Math.random()*idle.length)];
+    a.working = true; a.startedAt = Date.now(); a.last = LB_TASKS[a.n];
+    lbBall(document.getElementById('lb-orch'), a.el);
+    lbLog(`${lbHHMM()} <span class="lb-out">→ ${a.n}</span> · ${a.last}`);
+    lbRender();
+    const workMs = 4000 + Math.random()*8000;
+    setTimeout(()=>{
+      a.working = false; a.runs++; lbTotalRuns++;
+      const tok = Math.round(8000 + Math.random()*60000);
+      a.tok += tok; lbTotalTok += tok;
+      if (currentView === 'board') {
+        lbBall(a.el, document.getElementById('lb-orch'));
+        lbLog(`${lbHHMM()} <span class="lb-in">← ${a.n}</span> returned · <span class="lb-tokc">${lbFmt(tok)} tok</span>`);
+      }
+      lbRender();
+    }, workMs);
+  }
+
+  function startBoardSim(){
+    lbRender();
+    if (lbStarted) return;
+    lbStarted = true;
+    setInterval(()=>{ // elapsed timers
+      for (const a of LB_AGENTS){
+        if (a.el) a.el.querySelector('.lb-elapsed').textContent =
+          a.working && a.startedAt ? Math.round((Date.now()-a.startedAt)/1000)+'s' : '';
+      }
+    }, 1000);
+    lbDispatch();
+    setTimeout(lbDispatch, 1200);
+    setInterval(()=>{ if (Math.random() < 0.75) lbDispatch(); }, 3200);
+  }
+
   function showToast(msg, type) {
     const container = document.getElementById('toasts');
     const t = document.createElement('div');
