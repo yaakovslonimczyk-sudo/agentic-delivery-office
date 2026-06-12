@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wa-support · Console</title>
+<style>
+  /* ── RESET & TOKENS ─────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --wa-dark:   #075E54;
+    --wa-green:  #25D366;
+    --wa-light:  #DCF8C6;
+    --wa-bubble: #FFFFFF;
+    --bg:        #F0F2F5;
+    --surface:   #FFFFFF;
+    --border:    #E0E0E0;
+    --text:      #1A1A1A;
+    --muted:     #667781;
+    --accent:    #075E54;
+    --danger:    #C0392B;
+    --warn:      #E67E22;
+    --info:      #2980B9;
+    --chip-ai:       #EAF7EF;
+    --chip-ai-text:  #1D7A3A;
+    --chip-rev:      #FFF3E0;
+    --chip-rev-text: #B45309;
+    --chip-esc:      #FDECEC;
+    --chip-esc-text: #C0392B;
+    --radius: 8px;
+    --shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+         background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── TOPBAR ─────────────────────────────────────── */
+  #topbar {
+    background: var(--wa-dark); color: #fff;
+    height: 52px; display: flex; align-items: center; padding: 0 20px;
+    gap: 16px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,.2);
+  }
+  #topbar .logo { font-weight: 700; font-size: 18px; letter-spacing: -.3px; }
+  #topbar .logo span { color: var(--wa-green); }
+  #topbar .sep { width: 1px; height: 24px; background: rgba(255,255,255,.3); margin: 0 4px; }
+  #topbar .tenant-selector {
+    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+    color: #fff; border-radius: 6px; padding: 4px 10px; font-size: 13px; cursor: not-allowed;
+    display: flex; align-items: center; gap: 6px;
+  }
+  #topbar .tenant-selector .oos { font-size: 11px; opacity: .7; font-style: italic; }
+  #topbar .spacer { flex: 1; }
+  #topbar .agent-pill {
+    background: rgba(255,255,255,.2); border-radius: 20px;
+    padding: 4px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px;
+  }
+  #topbar .agent-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--wa-green); }
+
+  /* ── MAIN LAYOUT ────────────────────────────────── */
+  #app { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── INBOX PANEL ────────────────────────────────── */
+  #inbox-panel {
+    width: 380px; flex-shrink: 0;
+    background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #inbox-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #inbox-header h2 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .filter-bar { display: flex; gap: 6px; }
+  .filter-btn {
+    flex: 1; padding: 6px 10px; border: 1px solid var(--border); border-radius: 20px;
+    background: transparent; cursor: pointer; font-size: 12px; font-weight: 500;
+    color: var(--muted); transition: all .15s;
+  }
+  .filter-btn.active {
+    background: var(--wa-dark); border-color: var(--wa-dark); color: #fff;
+  }
+  #inbox-list { flex: 1; overflow-y: auto; }
+
+  /* conversation row */
+  .conv-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background .1s; position: relative;
+  }
+  .conv-row:hover { background: #F7F8FA; }
+  .conv-row.active { background: #EAF7EF; }
+  .conv-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--wa-dark); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .conv-meta { flex: 1; min-width: 0; }
+  .conv-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+  .conv-name { font-weight: 600; font-size: 14px; }
+  .conv-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .conv-snippet { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; margin-bottom: 5px; }
+  .conv-footer { display: flex; align-items: center; justify-content: space-between; }
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;
+  }
+  .chip-ai   { background: var(--chip-ai);  color: var(--chip-ai-text); }
+  .chip-rev  { background: var(--chip-rev); color: var(--chip-rev-text); }
+  .chip-esc  { background: var(--chip-esc); color: var(--chip-esc-text); }
+  .conv-phone { font-size: 11px; color: var(--muted); }
+  .unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--wa-green); flex-shrink: 0; }
+
+  /* empty state */
+  #empty-state {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; padding: 40px 24px; text-align: center; color: var(--muted);
+  }
+  #empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  #empty-state h3 { font-size: 15px; color: var(--text); margin-bottom: 6px; }
+  #empty-state p { font-size: 13px; line-height: 1.5; }
+
+  /* ── CONVERSATION VIEW ──────────────────────────── */
+  #conv-panel {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    background: #E5DDD5; /* WA classic bg */
+  }
+  #conv-placeholder {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--muted); gap: 10px;
+  }
+  #conv-placeholder .ph-icon { font-size: 64px; opacity: .3; }
+  #conv-placeholder p { font-size: 14px; }
+
+  #conv-main { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+
+  /* conv header */
+  #conv-header {
+    background: var(--wa-dark); color: #fff;
+    padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+  }
+  #conv-header .c-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,.25); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px;
+  }
+  #conv-header .c-info { flex: 1; }
+  #conv-header .c-name { font-weight: 600; font-size: 15px; }
+  #conv-header .c-phone { font-size: 12px; opacity: .8; }
+  #conv-status-badge { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+
+  /* error banner */
+  #error-banner {
+    background: #FDECEC; border-bottom: 2px solid var(--danger);
+    padding: 10px 16px; display: none; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  #error-banner .err-icon { font-size: 18px; }
+  #error-banner .err-msg { flex: 1; font-size: 13px; color: var(--danger); font-weight: 500; }
+  .retry-btn {
+    background: var(--danger); color: #fff; border: none; border-radius: 6px;
+    padding: 5px 14px; font-size: 13px; cursor: pointer; font-weight: 600;
+    transition: opacity .15s;
+  }
+  .retry-btn:hover { opacity: .85; }
+
+  /* thread */
+  #thread {
+    flex: 1; overflow-y: auto; padding: 16px 16px 8px;
+    display: flex; flex-direction: column; gap: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b2dfdb' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .bubble-wrap { display: flex; }
+  .bubble-wrap.in  { justify-content: flex-start; }
+  .bubble-wrap.out { justify-content: flex-end; }
+  .bubble {
+    max-width: 65%; padding: 8px 12px; border-radius: 10px;
+    font-size: 14px; line-height: 1.45; position: relative;
+  }
+  .bubble-wrap.in  .bubble { background: var(--wa-bubble); border-top-left-radius: 2px; }
+  .bubble-wrap.out .bubble { background: var(--wa-light); border-top-right-radius: 2px; }
+  .bubble-time { font-size: 10px; color: var(--muted); text-align: right; margin-top: 3px; }
+  .bubble-sender { font-size: 11px; font-weight: 600; color: var(--wa-dark); margin-bottom: 3px; }
+
+  .date-separator {
+    text-align: center; margin: 10px 0;
+  }
+  .date-separator span {
+    background: rgba(255,255,255,.7); padding: 3px 12px;
+    border-radius: 10px; font-size: 12px; color: var(--muted);
+  }
+
+  /* success toast inside thread */
+  .sent-confirmation {
+    display: flex; justify-content: flex-end;
+  }
+  .sent-toast {
+    background: var(--wa-dark); color: #fff;
+    padding: 6px 14px; border-radius: 20px; font-size: 13px;
+    animation: fadeIn .3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── AI SUGGESTION CARD ─────────────────────────── */
+  #ai-card {
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 14px 16px; flex-shrink: 0;
+  }
+  #ai-card-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+  #ai-card-header .ai-label {
+    font-size: 12px; font-weight: 700; color: var(--wa-dark);
+    background: var(--chip-ai); padding: 2px 8px; border-radius: 4px;
+  }
+  #ai-card-header .confidence {
+    font-size: 12px; color: var(--muted);
+  }
+  #ai-card-header .confidence strong { color: var(--wa-dark); }
+  #ai-reasoning {
+    font-size: 12px; color: var(--muted); font-style: italic;
+    margin-bottom: 10px; background: #F7F8FA; padding: 6px 10px;
+    border-radius: 6px; border-left: 3px solid var(--wa-green);
+  }
+  #ai-reasoning strong { color: var(--text); font-style: normal; }
+  #ai-suggestion-text {
+    font-size: 14px; line-height: 1.5; padding: 10px 12px;
+    background: #F0F2F5; border-radius: 8px; margin-bottom: 12px;
+  }
+  #ai-edit-area {
+    display: none; width: 100%; padding: 10px 12px;
+    border: 2px solid var(--wa-green); border-radius: 8px;
+    font-size: 14px; line-height: 1.5; resize: vertical;
+    min-height: 80px; margin-bottom: 12px; font-family: inherit;
+    outline: none;
+  }
+  #ai-actions { display: flex; gap: 8px; }
+  .btn-approve {
+    flex: 1; background: var(--wa-dark); color: #fff;
+    border: none; border-radius: 8px; padding: 9px 16px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: opacity .15s;
+  }
+  .btn-approve:hover { opacity: .88; }
+  .btn-edit {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 16px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    color: var(--text); display: flex; align-items: center; gap: 6px;
+    transition: background .15s;
+  }
+  .btn-edit:hover { background: #F0F2F5; }
+  .btn-send-edit {
+    display: none; flex: 1; background: var(--wa-green); color: #fff;
+    border: none; border-radius: 8px; padding: 9px 16px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    align-items: center; justify-content: center; gap: 6px;
+    transition: opacity .15s;
+  }
+  .btn-send-edit:hover { opacity: .88; }
+  .btn-escalate {
+    background: #FFF3E0; border: 1px solid #F0A500;
+    border-radius: 8px; padding: 9px 14px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    color: var(--warn); display: flex; align-items: center; gap: 6px;
+    transition: background .15s;
+  }
+  .btn-escalate:hover { background: #FDECD0; }
+
+  /* ── ESCALATION MODAL ───────────────────────────── */
+  #modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  #escalation-modal {
+    background: var(--surface); border-radius: 12px;
+    width: 420px; max-width: 95vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    overflow: hidden;
+  }
+  #escalation-modal .modal-header {
+    background: var(--warn); color: #fff;
+    padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+  }
+  #escalation-modal .modal-header h3 { font-size: 15px; font-weight: 600; }
+  .modal-close { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; line-height: 1; }
+  .modal-body { padding: 18px; }
+  .modal-body label { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+  .reason-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .reason-opt {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; cursor: pointer; transition: all .15s; font-size: 14px;
+  }
+  .reason-opt:hover { border-color: var(--warn); background: #FFFBF5; }
+  .reason-opt.selected { border-color: var(--warn); background: #FFF3E0; font-weight: 600; }
+  .reason-opt input[type=radio] { accent-color: var(--warn); }
+  .modal-textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; font-family: inherit;
+    resize: vertical; min-height: 70px; outline: none; margin-bottom: 14px;
+  }
+  .modal-textarea:focus { border-color: var(--wa-dark); }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-cancel-modal {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 20px; font-size: 14px; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-cancel-modal:hover { background: #F0F2F5; }
+  .btn-confirm-escalate {
+    background: var(--warn); color: #fff; border: none;
+    border-radius: 8px; padding: 9px 20px; font-size: 14px;
+    font-weight: 600; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-confirm-escalate:hover { opacity: .88; }
+
+  /* ── SCROLLBAR ──────────────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: #CCC; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════ TOPBAR ════════════ -->
+<div id="topbar">
+  <div class="logo">wa<span>-support</span> · Console</div>
+  <div class="sep"></div>
+  <div class="tenant-selector">
+    CPT / Celufácil &nbsp;<span class="oos">(out of scope)</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="agent-pill">
+    <div class="agent-dot"></div>
+    Agente: Pablo M.
+  </div>
+</div>
+
+<!-- ════════════ APP ════════════ -->
+<div id="app">
+
+  <!-- ════ INBOX PANEL ════ -->
+  <div id="inbox-panel">
+    <div id="inbox-header">
+      <h2>Conversaciones activas <span style="color:var(--muted);font-weight:400;font-size:13px;" id="inbox-count">(6)</span></h2>
+      <div class="filter-bar">
+        <button class="filter-btn active" id="btn-all"   onclick="setFilter('all')">Todas</button>
+        <button class="filter-btn"        id="btn-rev"   onclick="setFilter('review')">Requiere revisión</button>
+      </div>
+    </div>
+    <div id="inbox-list"></div>
+    <div id="empty-state">
+      <div class="empty-icon">💬</div>
+      <h3>Sin conversaciones para revisar</h3>
+      <p>No hay conversaciones pendientes de revisión en este momento. La IA está gestionando todo automáticamente.</p>
+    </div>
+  </div>
+
+  <!-- ════ CONVERSATION PANEL ════ -->
+  <div id="conv-panel">
+
+    <!-- placeholder when nothing selected -->
+    <div id="conv-placeholder">
+      <div class="ph-icon">💬</div>
+      <p>Seleccioná una conversación para comenzar</p>
+    </div>
+
+    <!-- actual conversation view (hidden until selected) -->
+    <div id="conv-main">
+
+      <!-- header -->
+      <div id="conv-header">
+        <div class="c-avatar" id="ch-avatar">?</div>
+        <div class="c-info">
+          <div class="c-name"  id="ch-name">-</div>
+          <div class="c-phone" id="ch-phone">-</div>
+        </div>
+        <div id="conv-status-badge" class="status-chip chip-ai">AI activa</div>
+      </div>
+
+      <!-- error banner (hidden by default, shown for conv id=6) -->
+      <div id="error-banner">
+        <div class="err-icon">⚠️</div>
+        <div class="err-msg">Sesión de WhatsApp desconectada — los mensajes no se están enviando.</div>
+        <button class="retry-btn" onclick="retryConnection()">Reintentar</button>
+      </div>
+
+      <!-- thread -->
+      <div id="thread"></div>
+
+      <!-- AI suggestion card -->
+      <div id="ai-card">
+        <div id="ai-card-header">
+          <span class="ai-label">🤖 IA sugiere</span>
+          <span class="confidence">Confianza: <strong id="ai-confidence">-</strong></span>
+        </div>
+        <div id="ai-reasoning"></div>
+        <div id="ai-suggestion-text"></div>
+        <textarea id="ai-edit-area" placeholder="Editá la respuesta..."></textarea>
+        <div id="ai-actions">
+          <button class="btn-approve"   onclick="approveSuggestion()">✓ Aprobar y enviar</button>
+          <button class="btn-edit"      id="btn-edit-toggle" onclick="toggleEdit()">✎ Editar</button>
+          <button class="btn-send-edit" id="btn-send-edited" onclick="sendEdited()">➤ Enviar edición</button>
+          <button class="btn-escalate"  onclick="openEscalation()">⚠ Escalar</button>
+        </div>
+      </div>
+
+    </div><!-- /conv-main -->
+  </div><!-- /conv-panel -->
+</div><!-- /app -->
+
+<!-- ════════════ ESCALATION MODAL ════════════ -->
+<div id="modal-overlay" onclick="closeModalIfOverlay(event)">
+  <div id="escalation-modal">
+    <div class="modal-header">
+      <h3>⚠ Escalar conversación</h3>
+      <button class="modal-close" onclick="closeEscalation()">✕</button>
+    </div>
+    <div class="modal-body">
+      <label>Motivo de escalación *</label>
+      <div class="reason-options" id="reason-options">
+        <label class="reason-opt" onclick="selectReason(this)">
+          <input type="radio" name="reason" value="angry"> Cliente muy enojado / agresivo
+        </label>
+        <label class="reason-opt" onclick="selectReason(this)">
+          <input type="radio" name="reason" value="policy"> Fuera de política comercial
+        </label>
+        <label class="reason-opt" onclick="selectReason(this)">
+          <input type="radio" name="reason" value="complex"> Caso complejo / requiere especialista
+        </label>
+      </div>
+      <label>Nota adicional (opcional)</label>
+      <textarea class="modal-textarea" id="escalation-note" placeholder="Ej: Cliente insiste en reembolso fuera de plazo, tiene factura..."></textarea>
+      <div class="modal-footer">
+        <button class="btn-cancel-modal" onclick="closeEscalation()">Cancelar</button>
+        <button class="btn-confirm-escalate" onclick="confirmEscalation()">Confirmar escalación</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ DATA & LOGIC ════════════ -->
+<script>
+// ── SAMPLE DATA ────────────────────────────────────────────────
+const CONVERSATIONS = [
+  {
+    id: 1,
+    name: "Valentina Rodríguez",
+    phone: "+598 94 512 388",
+    avatar: "VR",
+    status: "review",   // "ai" | "review" | "escalated"
+    lastMsg: "¿Me podés decir en qué estado está mi pedido?",
+    time: "hace 3 min",
+    unread: true,
+    errorBanner: false,
+    thread: [
+      { dir:"in",  text:"Buenas, necesito saber dónde está mi pedido #4471", time:"10:42" },
+      { dir:"out", text:"¡Hola Valentina! Soy el asistente de Celufácil. Estoy revisando tu pedido.", time:"10:43", sender:"IA" },
+      { dir:"in",  text:"Ya pasaron 5 días desde que pagué y nada", time:"10:47" },
+      { dir:"in",  text:"¿Me podés decir en qué estado está mi pedido?", time:"10:48" },
+    ],
+    aiSuggestion: "Hola Valentina, revisé tu pedido #4471. Está en camino con el courier OCA y la entrega estimada es mañana 13/06 antes de las 18 hs. ¿Querés que te envíe el número de seguimiento?",
+    aiConfidence: "92%",
+    aiReasoning: "Razonamiento: cliente consulta estado de pedido #4471 · pedido encontrado en sistema · estado: en tránsito OCA · ETA mañana 13/06"
+  },
+  {
+    id: 2,
+    name: "Matías Ferreyra",
+    phone: "+54 11 3845 7729",
+    avatar: "MF",
+    status: "review",
+    lastMsg: "Quiero hacer la devolución, el equipo no enciende",
+    time: "hace 8 min",
+    unread: true,
+    errorBanner: false,
+    thread: [
+      { dir:"in",  text:"Hola, compré un Samsung A35 hace 10 días y no enciende", time:"10:15" },
+      { dir:"out", text:"Hola Matías, entiendo la situación. ¿Podés describir qué sucede cuando intentás encenderlo?", time:"10:16", sender:"IA" },
+      { dir:"in",  text:"Nada, pantalla negra. Ya lo cargué 3 horas", time:"10:22" },
+      { dir:"in",  text:"Quiero hacer la devolución, el equipo no enciende", time:"10:38" },
+    ],
+    aiSuggestion: "Hola Matías, lamentamos el inconveniente. Tu compra tiene cobertura de garantía. Para iniciar el proceso de devolución/cambio necesito que pases por cualquier sucursal con el equipo y la factura. ¿Querés que te dé la dirección del local más cercano?",
+    aiConfidence: "78%",
+    aiReasoning: "Razonamiento: cliente reclama garantía · equipo dentro de plazo (10 días < 30 días política) · aplica cambio directo · requiere presencia en sucursal con factura"
+  },
+  {
+    id: 3,
+    name: "Carla Muñoz",
+    phone: "+56 9 7823 4401",
+    avatar: "CM",
+    status: "ai",
+    lastMsg: "Muchas gracias, hasta luego 👋",
+    time: "hace 15 min",
+    unread: false,
+    errorBanner: false,
+    thread: [
+      { dir:"in",  text:"Buenas tardes, ¿cuál es el horario de atención del local de Providencia?", time:"09:55" },
+      { dir:"out", text:"¡Buenas! El local de Providencia (Av. Providencia 1234) atiende lunes a viernes de 9 a 19 hs y sábados de 10 a 14 hs.", time:"09:56", sender:"IA" },
+      { dir:"in",  text:"¿Y el domingo?", time:"09:57" },
+      { dir:"out", text:"Los domingos permanece cerrado. Si necesitás atención urgente podés escribirnos por acá que estamos disponibles 24/7.", time:"09:57", sender:"IA" },
+      { dir:"in",  text:"Muchas gracias, hasta luego 👋", time:"09:58" },
+    ],
+    aiSuggestion: "¡Con gusto, Carla! Que tengas un excelente día. Recordá que estamos disponibles si necesitás algo más.",
+    aiConfidence: "98%",
+    aiReasoning: "Razonamiento: conversación de cierre · cliente satisfecho · respuesta de despedida estándar · alta confianza"
+  },
+  {
+    id: 4,
+    name: "Rodrigo Bentancur",
+    phone: "+598 99 314 872",
+    avatar: "RB",
+    status: "escalated",
+    lastMsg: "Son unos estafadores, voy a hacer la denuncia",
+    time: "hace 1 h",
+    unread: false,
+    errorBanner: false,
+    thread: [
+      { dir:"in",  text:"Compré un plan de cuotas y me cobraron de más tres veces", time:"08:10" },
+      { dir:"out", text:"Hola Rodrigo, voy a revisar tu historial de pagos.", time:"08:11", sender:"IA" },
+      { dir:"in",  text:"Ya me cansé, quiero que me devuelvan TODO", time:"08:45" },
+      { dir:"in",  text:"Son unos estafadores, voy a hacer la denuncia", time:"09:05" },
+      { dir:"out", text:"⚠ Esta conversación fue escalada a un agente especializado. Te contactará en los próximos minutos.", time:"09:06", sender:"Sistema" },
+    ],
+    aiSuggestion: null,
+    aiConfidence: null,
+    aiReasoning: null
+  },
+  {
+    id: 5,
+    name: "Sofía Herrera",
+    phone: "+54 11 5567 2290",
+    avatar: "SH",
+    status: "review",
+    lastMsg: "Instalé el SIM pero me dice sin servicio",
+    time: "hace 22 min",
+    unread: true,
+    errorBanner: false,
+    thread: [
+      { dir:"in",  text:"Hola! Compré un SIM chip de Movistar y no me funciona", time:"10:02" },
+      { dir:"out", text:"Hola Sofía, ¿el SIM ya fue activado en nuestra web o en local?", time:"10:03", sender:"IA" },
+      { dir:"in",  text:"Me dijeron que con solo insertarlo se activa solo", time:"10:15" },
+      { dir:"in",  text:"Instalé el SIM pero me dice sin servicio", time:"10:27" },
+    ],
+    aiSuggestion: "Hola Sofía, el SIM Movistar necesita activación manual. Por favor ingresá a movistar.com.ar/activar con el número de serie del chip (está en el sobre). El proceso tarda 10 minutos. Si ya lo hiciste, avisame y te doy los próximos pasos.",
+    aiConfidence: "85%",
+    aiReasoning: "Razonamiento: SIM sin activación detectada · operadora = Movistar AR · flujo de activación: portal web con número de serie · ETA activación 10 min"
+  },
+  {
+    id: 6,
+    name: "Federico Olmedo",
+    phone: "+598 92 748 113",
+    avatar: "FO",
+    status: "review",
+    lastMsg: "Necesito saber si puedo pagar en cuotas sin interés",
+    time: "hace 31 min",
+    unread: true,
+    errorBanner: true,
+    thread: [
+      { dir:"in",  text:"Hola, estoy pensando en comprar el iPhone 15 128GB", time:"09:45" },
+      { dir:"out", text:"¡Hola Federico! El iPhone 15 128GB lo tenemos en stock. Precio contado: $1.199.000 UYU.", time:"09:46", sender:"IA" },
+      { dir:"in",  text:"Necesito saber si puedo pagar en cuotas sin interés", time:"09:59" },
+    ],
+    aiSuggestion: "Hola Federico, ofrecemos cuotas sin interés con tarjetas Visa/MC del BROU y Santander: 3, 6 o 12 cuotas. Con otras tarjetas se aplica interés bancario. ¿Querés que te calcule el valor de la cuota?",
+    aiConfidence: "88%",
+    aiReasoning: "Razonamiento: consulta plan de pagos · banco y cuotas sin interés disponibles · BROU/Santander aplican · requiere confirmación banco del cliente"
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────
+let currentFilter = 'all';
+let activeConvId  = null;
+let isEditing     = false;
+
+// ── INIT ───────────────────────────────────────────────────────
+renderInbox();
+
+// ── INBOX RENDERING ────────────────────────────────────────────
+function renderInbox() {
+  const list = document.getElementById('inbox-list');
+  const empty = document.getElementById('empty-state');
+  const countEl = document.getElementById('inbox-count');
+
+  const filtered = currentFilter === 'all'
+    ? CONVERSATIONS
+    : CONVERSATIONS.filter(c => c.status === 'review');
+
+  countEl.textContent = '(' + filtered.length + ')';
+
+  if (filtered.length === 0) {
+    list.style.display = 'none';
+    empty.style.display = 'flex';
+    return;
+  }
+  list.style.display = 'block';
+  empty.style.display = 'none';
+
+  list.innerHTML = filtered.map(conv => {
+    const statusLabel = { ai: 'IA activa', review: 'Revisión', escalated: 'Escalada' }[conv.status];
+    const chipClass   = { ai: 'chip-ai',    review: 'chip-rev',  escalated: 'chip-esc' }[conv.status];
+    return `
+      <div class="conv-row ${conv.id === activeConvId ? 'active' : ''}" id="row-${conv.id}" onclick="openConv(${conv.id})">
+        <div class="conv-avatar">${conv.avatar}</div>
+        <div class="conv-meta">
+          <div class="conv-top">
+            <span class="conv-name">${conv.name}</span>
+            <span class="conv-time">${conv.time}</span>
+          </div>
+          <div class="conv-snippet">${escHtml(conv.lastMsg)}</div>
+          <div class="conv-footer">
+            <span class="status-chip ${chipClass}">${statusLabel}</span>
+            <span class="conv-phone">${conv.phone}</span>
+          </div>
+        </div>
+        ${conv.unread ? '<div class="unread-dot"></div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+// ── FILTER ─────────────────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  document.getElementById('btn-all').classList.toggle('active', f === 'all');
+  document.getElementById('btn-rev').classList.toggle('active', f === 'review');
+  renderInbox();
+}
+
+// ── OPEN CONVERSATION ──────────────────────────────────────────
+function openConv(id) {
+  activeConvId = id;
+  isEditing = false;
+  const conv = CONVERSATIONS.find(c => c.id === id);
+  conv.unread = false;   // mark read
+
+  // mark active row
+  document.querySelectorAll('.conv-row').forEach(r => r.classList.remove('active'));
+  const row = document.getElementById('row-' + id);
+  if (row) row.classList.add('active');
+
+  // show conv main
+  document.getElementById('conv-placeholder').style.display = 'none';
+  document.getElementById('conv-main').style.display = 'flex';
+
+  // header
+  document.getElementById('ch-avatar').textContent = conv.avatar;
+  document.getElementById('ch-name').textContent   = conv.name;
+  document.getElementById('ch-phone').textContent  = conv.phone;
+
+  // status badge
+  const badge = document.getElementById('conv-status-badge');
+  badge.textContent = { ai:'IA activa', review:'Revisión', escalated:'Escalada' }[conv.status];
+  badge.className = 'status-chip ' + { ai:'chip-ai', review:'chip-rev', escalated:'chip-esc' }[conv.status];
+
+  // error banner
+  const banner = document.getElementById('error-banner');
+  banner.style.display = conv.errorBanner ? 'flex' : 'none';
+
+  // thread
+  renderThread(conv);
+
+  // AI card — hide for escalated or no suggestion
+  const aiCard = document.getElementById('ai-card');
+  if (conv.aiSuggestion && conv.status !== 'escalated') {
+    aiCard.style.display = 'block';
+    document.getElementById('ai-confidence').textContent    = conv.aiConfidence;
+    document.getElementById('ai-reasoning').innerHTML       = '<strong>Razonamiento:</strong> ' + escHtml(conv.aiReasoning.replace('Razonamiento: ',''));
+    document.getElementById('ai-suggestion-text').textContent = conv.aiSuggestion;
+    document.getElementById('ai-edit-area').value           = conv.aiSuggestion;
+    // reset edit mode
+    setEditMode(false);
+  } else {
+    aiCard.style.display = 'none';
+  }
+
+  renderInbox();
+  // restore active highlight after renderInbox rebuilds rows
+  const freshRow = document.getElementById('row-' + id);
+  if (freshRow) freshRow.classList.add('active');
+}
+
+function renderThread(conv) {
+  const thread = document.getElementById('thread');
+  thread.innerHTML = '<div class="date-separator"><span>Hoy · ' + new Date().toLocaleDateString('es-UY', {day:'2-digit',month:'short',year:'numeric'}) + '</span></div>';
+  conv.thread.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'bubble-wrap ' + msg.dir;
+    const senderHtml = msg.sender ? `<div class="bubble-sender">${msg.sender}</div>` : '';
+    div.innerHTML = `<div class="bubble">${senderHtml}${escHtml(msg.text)}<div class="bubble-time">${msg.time}</div></div>`;
+    thread.appendChild(div);
+  });
+  thread.scrollTop = thread.scrollHeight;
+}
+
+// ── APPROVE ────────────────────────────────────────────────────
+function approveSuggestion() {
+  const conv = CONVERSATIONS.find(c => c.id === activeConvId);
+  if (!conv) return;
+
+  const text = isEditing
+    ? document.getElementById('ai-edit-area').value.trim()
+    : conv.aiSuggestion;
+
+  if (!text) return;
+
+  // add to thread
+  const now = new Date().toLocaleTimeString('es-UY', {hour:'2-digit', minute:'2-digit'});
+  conv.thread.push({ dir:'out', text, time: now, sender:'Agente' });
+
+  // add success toast
+  const thread = document.getElementById('thread');
+  const wrap = document.createElement('div');
+  wrap.className = 'sent-confirmation';
+  wrap.innerHTML = '<div class="sent-toast">✓ Mensaje enviado correctamente</div>';
+  thread.appendChild(wrap);
+
+  // update conv status
+  conv.status   = 'ai';
+  conv.lastMsg  = text.slice(0, 60) + (text.length > 60 ? '...' : '');
+  conv.time     = 'ahora';
+  conv.unread   = false;
+
+  // re-render thread and hide AI card
+  renderThread(conv);
+  thread.appendChild(wrap);
+  thread.scrollTop = thread.scrollHeight;
+
+  document.getElementById('ai-card').style.display = 'none';
+
+  // update header badge
+  const badge = document.getElementById('conv-status-badge');
+  badge.textContent = 'IA activa';
+  badge.className = 'status-chip chip-ai';
+
+  // update inbox row
+  renderInbox();
+  // keep active highlight
+  const row = document.getElementById('row-' + activeConvId);
+  if (row) row.classList.add('active');
+}
+
+// ── EDIT ───────────────────────────────────────────────────────
+function setEditMode(on) {
+  isEditing = on;
+  document.getElementById('ai-suggestion-text').style.display = on ? 'none' : 'block';
+  document.getElementById('ai-edit-area').style.display       = on ? 'block' : 'none';
+  document.getElementById('btn-approve').style.display        = on ? 'none' : 'flex';
+  document.getElementById('btn-edit-toggle').style.display    = on ? 'none' : 'flex';
+  document.getElementById('btn-send-edit').style.display      = on ? 'flex' : 'none';
+}
+
+function toggleEdit() {
+  const conv = CONVERSATIONS.find(c => c.id === activeConvId);
+  if (!conv) return;
+  document.getElementById('ai-edit-area').value = conv.aiSuggestion;
+  setEditMode(true);
+  document.getElementById('ai-edit-area').focus();
+}
+
+function sendEdited() {
+  approveSuggestion();
+}
+
+// ── ESCALATION ─────────────────────────────────────────────────
+function openEscalation() {
+  document.getElementById('modal-overlay').style.display = 'flex';
+  // reset modal state
+  document.querySelectorAll('.reason-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('input[name=reason]').forEach(r => r.checked = false);
+  document.getElementById('escalation-note').value = '';
+}
+
+function closeEscalation() {
+  document.getElementById('modal-overlay').style.display = 'none';
+}
+
+function closeModalIfOverlay(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeEscalation();
+}
+
+function selectReason(el) {
+  document.querySelectorAll('.reason-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function confirmEscalation() {
+  const conv = CONVERSATIONS.find(c => c.id === activeConvId);
+  if (!conv) return;
+  const reasonEl = document.querySelector('input[name=reason]:checked');
+  if (!reasonEl) {
+    alert('Por favor seleccioná un motivo de escalación.');
+    return;
+  }
+  const now  = new Date().toLocaleTimeString('es-UY', {hour:'2-digit', minute:'2-digit'});
+  const note = document.getElementById('escalation-note').value.trim();
+
+  conv.status  = 'escalated';
+  conv.lastMsg = '⚠ Conversación escalada';
+  conv.time    = 'ahora';
+
+  // add system message to thread
+  conv.thread.push({
+    dir: 'out',
+    text: '⚠ Esta conversación fue escalada a un agente especializado.' + (note ? ` Nota: ${note}` : '') + ' Te contactará en los próximos minutos.',
+    time: now,
+    sender: 'Sistema'
+  });
+
+  closeEscalation();
+  openConv(activeConvId);
+}
+
+// ── ERROR / RETRY ──────────────────────────────────────────────
+function retryConnection() {
+  const conv = CONVERSATIONS.find(c => c.id === activeConvId);
+  if (conv) conv.errorBanner = false;
+  document.getElementById('error-banner').style.display = 'none';
+  // brief visual feedback
+  const banner = document.getElementById('error-banner');
+  banner.style.background = '#EAF7EF';
+  setTimeout(() => { banner.style.background = '#FDECEC'; }, 0);
+}
+
+// ── HELPERS ────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
