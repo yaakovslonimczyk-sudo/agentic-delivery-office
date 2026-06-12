@@ -10,7 +10,7 @@ I've spent twenty-plus years as a solution architect, which means I've spent twe
 
 When I started orchestrating AI coding agents seriously, I made the mistake everyone makes first: I treated the model as a very fast developer and myself as a very patient reviewer. It worked — the way reviewing every line of a junior's output "works." The bottleneck was me.
 
-So I did what an architect does: I stopped prompting and started **staffing**. The result is a methodology I now install in every project — a portable kit of agent definitions, a delivery protocol, and mechanical quality gates. This article is the executive summary. Five principles, five drawings.
+So I did what an architect does: I stopped prompting and started **staffing**. The result is a methodology I now install in every project — a portable kit of agent definitions, a delivery protocol, and mechanical quality gates. This article is the executive summary: five principles, five drawings — and at the end, the cockpit where it all becomes something you can watch.
 
 ---
 
@@ -85,6 +85,24 @@ The test-writer can run a junior model: its tests *run* — failures are caught 
 Two operational rules complete it. **Tiers are relative to the frontier, never hardcoded** — the frontier moves every few months; senior agents inherit the session model automatically, and the junior tier is one line in the project roster. And **assignments evolve like personnel**: an agent whose junior-tier output causes rework twice gets promoted; a senior whose findings are never challenged across three deliveries gets a trial demotion — every move logged with a date and a reason, like the personnel file it is. In practice the junior bench carries about half the token volume, so the routing cuts 30–40% of spend without touching the part you never cut.
 
 ---
+
+## The cockpit: you can't delegate what you can't see
+
+Every conversation about this methodology ends at the same question: *"Fine — but how do you watch it work?"* Fair. Minimal intervention without visibility isn't delegation; it's abdication. So the office has a control room.
+
+![The live board](images/fig06-cockpit-live-board.png)
+
+*Fig. 06 — The Office, live: who has the ball right now, every pass logged, every token accounted.*
+
+The **live board** is the org chart from Figure 1, animated by reality: hooks fire every time the orchestrator dispatches an agent and every time one reports back (the return carries the sub-agent's actual token usage), and the board shows the ball moving — which agent is working right now, for how long, at what cumulative cost, on which task. The senior and junior benches are visible as structure, not just policy: you can *see* that the expensive judging tier only lights up when judgment is needed.
+
+![Gate 1 as a screen](images/fig07-cockpit-gate1.png)
+
+*Fig. 07 — Gate 1 as a screen: the verified mockup, the component diagram, the key decisions with their rejected alternatives — and three buttons.*
+
+Around the board sits the rest of the cockpit, and its design states the philosophy more crisply than any diagram. The home screen is not a dashboard of everything — it's an **inbox of decisions**, filtered by default to "awaiting my decision," because human judgment is the scarcest resource in the system and the UI should spend it accordingly. A gate is a screen with the artifact, the architecture, the decisions taken (each with its rejected alternative struck through), and three buttons: approve, adjust, kill. The team view is a personnel file — every agent's lifetime tokens, its findings' survival rate against refuters, its strikes, and evidence-driven promote/demote actions. The analytics view closes the loop on the economics: senior/junior token split, gate outcomes, fix-rounds histogram, refuter kill rate.
+
+One detail I can't resist sharing: the cockpit mockup itself was built by the office's own mockup-builder agent — a junior-tier model, one written spec, verified clickable end-to-end before it reached me. The methodology produced the interface that shows the methodology working. That's the moment it stopped feeling like tooling and started feeling like an operating model.
 
 ## What the human is left doing
 

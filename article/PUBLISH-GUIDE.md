@@ -20,7 +20,7 @@ paste are in fenced boxes — copy them verbatim.
 https://yaakovslonimczyk-sudo.github.io/agentic-delivery-office/
 ```
 
-Medium pulls the text AND the five figures automatically. It lands as a
+Medium pulls the text AND the seven figures automatically. It lands as a
 draft. (If the import tool ever misbehaves → use the fallback at the bottom.)
 
 ## STEP 2 — Title and subtitle (2 pastes)
@@ -70,6 +70,16 @@ Fig. 04 — Route by failure visibility: grounded agents run a tier below; judgi
 Fig 5 (under "The boundary is the product"):
 ```
 Fig. 05 — The context boundary: a 1k-token brief goes in; 0.5k tokens of conclusions come out; 150k tokens of exploration die inside.
+```
+
+Fig 6 (under "The cockpit: you can't delegate what you can't see"):
+```
+Fig. 06 — The Office, live: who has the ball right now, every pass logged, every token accounted.
+```
+
+Fig 7 (same section, second image):
+```
+Fig. 07 — Gate 1 as a screen: the verified mockup, the component diagram, the key decisions with their rejected alternatives — and three buttons.
 ```
 
 If any image is missing: download it from

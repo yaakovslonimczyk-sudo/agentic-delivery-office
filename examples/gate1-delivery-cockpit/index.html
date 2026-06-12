@@ -794,6 +794,152 @@
 
   /* escalation icon */
   .esc-icon { font-size: 16px; }
+
+  /* ── TEAM / ROLES VIEW ── */
+  .team-table { width:100%; border-collapse:collapse; }
+  .team-table thead tr { border-bottom:1px solid rgba(143,216,234,0.2); font-size:11px; color:var(--sec); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.07em; }
+  .team-table thead th { padding:8px 12px; text-align:left; }
+  .team-table tbody tr { border-bottom:1px solid rgba(220,233,247,0.07); transition:background .12s; }
+  .team-table tbody tr:hover { background:rgba(27,58,99,0.5); }
+  .team-table td { padding:11px 12px; font-size:12px; }
+  .bench-chip { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-family:var(--mono); font-weight:700; letter-spacing:0.04em; }
+  .bench-senior { background:rgba(143,216,234,0.12); color:var(--cyan); border:1px solid rgba(143,216,234,0.3); }
+  .bench-junior { background:rgba(255,200,97,0.12); color:var(--amber); border:1px solid rgba(255,200,97,0.3); }
+  .agent-name-link { color:var(--cyan); cursor:pointer; font-weight:600; text-decoration:underline; text-underline-offset:2px; }
+  .agent-name-link:hover { color:var(--line); }
+  .promote-btn { padding:3px 10px; border-radius:3px; font-size:10px; font-family:var(--mono); cursor:pointer; background:transparent; color:var(--amber); border:1px solid rgba(255,200,97,0.4); transition:all .15s; }
+  .promote-btn:hover { background:rgba(255,200,97,0.1); }
+  .demote-btn { padding:3px 10px; border-radius:3px; font-size:10px; font-family:var(--mono); cursor:pointer; background:transparent; color:var(--sec); border:1px solid rgba(169,193,221,0.3); transition:all .15s; }
+  .demote-btn:hover { background:rgba(169,193,221,0.07); color:var(--line); }
+  .lock-icon { color:var(--sec); font-size:12px; cursor:default; position:relative; }
+  .lock-icon[title]:hover::after { content:attr(title); position:absolute; left:0; top:20px; background:var(--panel); border:1px solid rgba(143,216,234,0.2); border-radius:4px; padding:5px 9px; font-size:10px; color:var(--sec); white-space:nowrap; font-family:var(--mono); z-index:50; pointer-events:none; }
+  .strike-note { font-size:10px; color:var(--coral); font-family:var(--mono); }
+  .findings-pct { font-family:var(--mono); font-size:11px; color:var(--sec); }
+
+  .promo-log-panel { background:var(--panel); border:1px solid rgba(143,216,234,0.15); border-radius:6px; padding:16px; margin-top:28px; }
+  .promo-log-title { font-size:11px; font-family:var(--mono); color:var(--cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(143,216,234,0.12); }
+  .promo-log-list { list-style:none; font-family:var(--mono); font-size:11px; }
+  .promo-log-list li { padding:4px 0; color:var(--sec); border-bottom:1px solid rgba(220,233,247,0.05); }
+  .promo-log-list li:last-child { border-bottom:none; }
+  .promo-log-list .log-date { color:var(--amber); margin-right:8px; }
+  .promo-log-list .log-up { color:var(--success); }
+  .promo-log-list .log-down { color:var(--coral); }
+
+  /* Side panel (agent definition) */
+  .side-overlay { display:none; position:fixed; inset:0; background:rgba(10,20,40,0.6); z-index:850; }
+  .side-overlay.open { display:block; }
+  .side-panel { position:fixed; top:0; right:0; width:400px; max-width:95vw; height:100vh; background:var(--panel); border-left:1px solid rgba(143,216,234,0.2); z-index:860; overflow-y:auto; padding:24px; transform:translateX(100%); transition:transform .25s; }
+  .side-panel.open { transform:translateX(0); }
+  .side-panel-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+  .side-panel-name { font-size:16px; font-weight:700; color:var(--cyan); font-family:var(--mono); }
+  .side-close { background:transparent; border:1px solid rgba(143,216,234,0.3); color:var(--sec); padding:4px 10px; border-radius:4px; cursor:pointer; font-size:12px; transition:all .15s; }
+  .side-close:hover { color:var(--line); border-color:var(--line); }
+  .side-row { margin-bottom:14px; }
+  .side-label { font-size:10px; font-family:var(--mono); color:var(--amber); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px; }
+  .side-value { font-size:12px; color:var(--sec); line-height:1.6; }
+  .side-value code { font-family:var(--mono); font-size:11px; background:rgba(143,216,234,0.07); padding:1px 5px; border-radius:2px; color:var(--cyan); }
+  .tool-tag { display:inline-block; margin:2px 3px 2px 0; padding:2px 7px; background:rgba(27,58,99,0.8); border:1px solid rgba(143,216,234,0.2); border-radius:3px; font-size:10px; font-family:var(--mono); color:var(--sec); }
+  .verdict-excerpt { background:rgba(20,47,84,0.7); border-left:2px solid var(--coral); padding:8px 12px; font-size:11px; font-family:var(--mono); color:var(--sec); line-height:1.6; border-radius:0 4px 4px 0; }
+
+  /* ── ANALYTICS VIEW ── */
+  .stat-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+  @media(max-width:900px){ .stat-cards{ grid-template-columns:1fr 1fr; } }
+  .stat-card { background:var(--panel); border:1px solid rgba(143,216,234,0.15); border-radius:6px; padding:18px 16px; }
+  .stat-card-label { font-size:10px; font-family:var(--mono); color:var(--sec); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+  .stat-card-value { font-size:26px; font-weight:700; color:var(--amber); font-family:var(--mono); line-height:1; }
+  .stat-card-sub { font-size:11px; color:var(--sec); margin-top:6px; }
+  .split-bar { display:flex; height:8px; border-radius:4px; overflow:hidden; margin-top:8px; }
+  .split-bar-a { background:var(--cyan); }
+  .split-bar-b { background:var(--amber); }
+  .split-bar-labels { display:flex; justify-content:space-between; font-size:10px; font-family:var(--mono); margin-top:4px; color:var(--sec); }
+
+  .analytics-row { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+  @media(max-width:900px){ .analytics-row{ grid-template-columns:1fr; } }
+  .an-panel { background:var(--panel); border:1px solid rgba(143,216,234,0.15); border-radius:6px; padding:18px 20px; }
+  .an-panel-title { font-size:11px; font-family:var(--mono); color:var(--cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid rgba(143,216,234,0.12); }
+  .hbar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .hbar-label { font-family:var(--mono); font-size:11px; color:var(--sec); width:130px; flex-shrink:0; text-align:right; }
+  .hbar-track { flex:1; background:rgba(27,58,99,0.6); border-radius:2px; height:14px; position:relative; }
+  .hbar-fill { height:100%; background:var(--amber); border-radius:2px; transition:width .4s; }
+  .hbar-val { font-family:var(--mono); font-size:10px; color:var(--amber); width:50px; flex-shrink:0; }
+
+  .gate-outcome-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .gate-outcome-label { font-family:var(--mono); font-size:11px; color:var(--sec); width:60px; flex-shrink:0; }
+  .stacked-bar { display:flex; height:18px; border-radius:3px; overflow:hidden; flex:1; }
+  .sb-approve { background:var(--success); }
+  .sb-adjust  { background:var(--amber); }
+  .sb-kill    { background:var(--coral); }
+  .gate-outcome-legend { display:flex; gap:14px; margin-top:8px; font-size:10px; font-family:var(--mono); color:var(--sec); }
+  .gate-outcome-legend span { display:flex; align-items:center; gap:4px; }
+  .leg-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+
+  .hist-row { display:flex; align-items:flex-end; gap:8px; height:60px; margin-top:8px; }
+  .hist-bar-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
+  .hist-bar { width:100%; background:var(--cyan); border-radius:2px 2px 0 0; transition:height .4s; opacity:0.8; }
+  .hist-val { font-size:9px; font-family:var(--mono); color:var(--amber); }
+  .hist-lbl { font-size:9px; font-family:var(--mono); color:var(--sec); }
+
+  .insight-callout { border:1px solid var(--cyan); border-radius:6px; padding:14px 18px; margin-top:20px; background:rgba(143,216,234,0.04); display:flex; align-items:flex-start; gap:12px; }
+  .insight-icon { color:var(--cyan); font-size:18px; flex-shrink:0; }
+  .insight-text { font-size:13px; color:var(--line); line-height:1.6; }
+  .insight-text em { color:var(--cyan); font-style:normal; }
+
+  /* ── SETTINGS VIEW ── */
+  .settings-section { background:var(--panel); border:1px solid rgba(143,216,234,0.15); border-radius:6px; padding:20px 22px; margin-bottom:20px; }
+  .settings-section.danger { border-color:rgba(255,139,126,0.4); }
+  .settings-section-title { font-size:11px; font-family:var(--mono); color:var(--cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid rgba(143,216,234,0.12); }
+  .settings-section.danger .settings-section-title { color:var(--coral); border-bottom-color:rgba(255,139,126,0.15); }
+  .settings-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(220,233,247,0.06); gap:16px; }
+  .settings-row:last-child { border-bottom:none; }
+  .settings-row-label { font-size:13px; color:var(--line); flex:1; }
+  .settings-row-sub { font-size:11px; color:var(--sec); margin-top:2px; font-family:var(--mono); }
+  .settings-row-control { flex-shrink:0; }
+  .settings-note { font-family:var(--mono); font-size:10px; color:var(--sec); margin-top:10px; line-height:1.6; padding:8px 10px; background:rgba(20,47,84,0.5); border-radius:3px; border-left:2px solid rgba(143,216,234,0.2); }
+  .settings-note.mono { font-family:var(--mono); }
+  .readonly-line { font-family:var(--mono); font-size:12px; color:var(--sec); padding:8px 10px; background:rgba(20,47,84,0.6); border:1px solid rgba(143,216,234,0.12); border-radius:4px; }
+  .settings-input { background:rgba(20,47,84,0.8); border:1px solid rgba(143,216,234,0.25); border-radius:4px; color:var(--line); font-family:var(--mono); font-size:12px; padding:7px 10px; outline:none; width:220px; }
+  .settings-input:focus { border-color:rgba(143,216,234,0.5); }
+  .settings-save-btn { padding:5px 14px; border-radius:4px; font-size:11px; font-family:var(--mono); cursor:pointer; background:var(--cyan); color:var(--bg); border:none; font-weight:700; transition:filter .15s; margin-left:8px; }
+  .settings-save-btn:hover { filter:brightness(1.08); }
+
+  /* toggle */
+  .toggle-wrap { display:flex; align-items:center; gap:8px; }
+  .toggle { position:relative; width:38px; height:20px; cursor:pointer; }
+  .toggle input { opacity:0; width:0; height:0; position:absolute; }
+  .toggle-track { position:absolute; inset:0; background:rgba(169,193,221,0.2); border-radius:10px; border:1px solid rgba(143,216,234,0.2); transition:.2s; }
+  .toggle input:checked + .toggle-track { background:var(--cyan); border-color:var(--cyan); }
+  .toggle-thumb { position:absolute; top:2px; left:2px; width:14px; height:14px; background:var(--sec); border-radius:50%; transition:.2s; }
+  .toggle input:checked ~ .toggle-thumb { left:22px; background:var(--bg); }
+  .toggle-locked .toggle-track { opacity:0.4; cursor:not-allowed; }
+  .toggle-locked .toggle-thumb { cursor:not-allowed; }
+  .locked-note { font-size:10px; color:var(--sec); font-family:var(--mono); font-style:italic; }
+  .toggle-label { font-size:11px; color:var(--sec); }
+
+  /* stepper */
+  .stepper { display:flex; align-items:center; gap:6px; font-family:var(--mono); }
+  .stepper-btn { width:22px; height:22px; border-radius:3px; border:1px solid rgba(143,216,234,0.3); background:transparent; color:var(--cyan); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; line-height:1; }
+  .stepper-btn:hover { background:rgba(143,216,234,0.08); }
+  .stepper-val { font-size:14px; font-weight:700; color:var(--amber); min-width:20px; text-align:center; }
+
+  /* checkbox row */
+  .checkbox-row { display:flex; align-items:center; gap:8px; padding:7px 0; font-size:12px; color:var(--sec); cursor:pointer; }
+  .checkbox-row input[type=checkbox] { accent-color:var(--cyan); width:14px; height:14px; cursor:pointer; }
+  .checkbox-row:hover { color:var(--line); }
+
+  /* agent log modal */
+  .log-modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,20,40,0.75); z-index:870; align-items:center; justify-content:center; }
+  .log-modal-overlay.open { display:flex; }
+  .log-modal { background:var(--panel); border:1px solid rgba(143,216,234,0.25); border-radius:8px; padding:0; max-width:660px; width:95%; overflow:hidden; }
+  .log-modal-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; background:rgba(20,47,84,0.8); border-bottom:1px solid rgba(143,216,234,0.12); }
+  .log-modal-title { font-family:var(--mono); font-size:12px; color:var(--cyan); text-transform:uppercase; letter-spacing:0.08em; }
+  .log-modal-close { background:transparent; border:1px solid rgba(143,216,234,0.3); color:var(--sec); padding:3px 9px; border-radius:3px; cursor:pointer; font-size:11px; transition:all .15s; }
+  .log-modal-close:hover { color:var(--line); }
+  .log-modal-body { padding:14px 18px; font-family:var(--mono); font-size:11px; color:var(--sec); line-height:1.8; max-height:360px; overflow-y:auto; }
+  .log-modal-body .lm-ts { color:var(--amber); }
+  .log-modal-body .lm-out { color:var(--cyan); }
+  .log-modal-body .lm-in { color:var(--success); }
+  .log-modal-body .lm-tok { color:var(--amber); }
+  .log-modal-body .lm-warn { color:var(--coral); }
 </style>
 </head>
 <body>
@@ -805,9 +951,9 @@
     <button class="nav-tab active" onclick="showView('list')">Engagements</button>
     <button class="nav-tab" onclick="showView('list'); activateFilter('all')">All Work</button>
     <button class="nav-tab" onclick="showView('board'); startBoardSim()">Live Board <span style="color:var(--amber)">●</span></button>
-    <button class="nav-tab">Settings <span class="oos-tag">out of scope</span></button>
-    <button class="nav-tab">Analytics <span class="oos-tag">out of scope</span></button>
-    <button class="nav-tab">Team / Roles <span class="oos-tag">out of scope</span></button>
+    <button class="nav-tab" onclick="showView('settings')">Settings</button>
+    <button class="nav-tab" onclick="showView('analytics')">Analytics</button>
+    <button class="nav-tab" onclick="showView('team')">Team / Roles</button>
   </div>
 </nav>
 
@@ -823,7 +969,7 @@
     <div class="filter-row">
       <button class="filter-btn active" id="filter-decision" onclick="activateFilter('decision')">⚡ Awaiting my decision</button>
       <button class="filter-btn" id="filter-all" onclick="activateFilter('all')">All</button>
-      <span class="oos-tag">Notifications config</span>
+      <span style="font-size:11px;color:var(--cyan);cursor:pointer;text-decoration:underline;text-underline-offset:2px;" onclick="showView('settings');syncNavTabs('settings')">Notifications config</span>
     </div>
   </div>
 
@@ -1212,9 +1358,11 @@
   <div style="margin-top:16px;font-size:12px;color:var(--sec);font-family:var(--mono);">
     Next gate: GATE 2 — HLD &amp; deck review awaiting completion · estimated ~2h remaining at current pace
   </div>
-  <div style="margin-top:12px;">
-    <span class="oos-tag" style="font-size:11px;">Historical analytics — out of scope</span>
-    <span style="margin-left:8px;font-size:11px;color:var(--sec);">Full agent logs: </span>
+  <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <span style="font-size:11px;color:var(--cyan);cursor:pointer;text-decoration:underline;text-underline-offset:2px;" onclick="showView('analytics');syncNavTabs('analytics')">Historical analytics</span>
+    <span style="font-size:11px;color:var(--sec);">·</span>
+    <span style="font-size:11px;color:var(--cyan);cursor:pointer;text-decoration:underline;text-underline-offset:2px;" onclick="openAgentLogsModal()">Full agent logs</span>
+    <span style="font-size:11px;color:var(--sec);">·</span>
     <span class="oos-tag" style="font-size:11px;">Notifications config — out of scope</span>
   </div>
 </div>
@@ -1273,6 +1421,318 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════
+     VIEW 7 — TEAM / ROLES
+═════════════════════════════════════════════════════ -->
+<div id="view-team" class="view">
+  <div class="list-header" style="margin-bottom:20px;">
+    <div>
+      <div class="list-title">Team / Roles</div>
+      <div class="list-sub">AGENT ROSTER · 12 agents · SENIOR bench + JUNIOR bench</div>
+    </div>
+  </div>
+
+  <table class="team-table" id="team-table">
+    <thead>
+      <tr>
+        <th>Agent</th>
+        <th>Bench</th>
+        <th>Model resolution</th>
+        <th>Lifetime runs</th>
+        <th>Lifetime tokens</th>
+        <th>Findings survived refuter</th>
+        <th>Strikes</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="team-tbody">
+      <!-- rows injected by JS -->
+    </tbody>
+  </table>
+
+  <!-- Promotions log -->
+  <div class="promo-log-panel">
+    <div class="promo-log-title">Promotions &amp; Demotions Log</div>
+    <ul class="promo-log-list" id="promo-log">
+      <li><span class="log-date">2026-05-18</span><span class="log-up">PROMOTED</span> · explorer → SENIOR · rationale: 0 false positives in 14 engagements · authorized by Solution Architect</li>
+      <li><span class="log-date">2026-06-12</span><span class="log-down">STRIKE ISSUED</span> · mockup-builder · reason: edited launch.json against instructions · recorded by orchestrator</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Agent side panel -->
+<div class="side-overlay" id="side-overlay" onclick="closeSidePanel()"></div>
+<div class="side-panel" id="side-panel">
+  <div class="side-panel-header">
+    <div class="side-panel-name" id="sp-name">agent-name</div>
+    <button class="side-close" onclick="closeSidePanel()">✕ Close</button>
+  </div>
+  <div class="side-row">
+    <div class="side-label">Description</div>
+    <div class="side-value" id="sp-desc"></div>
+  </div>
+  <div class="side-row">
+    <div class="side-label">Tools</div>
+    <div id="sp-tools"></div>
+  </div>
+  <div class="side-row">
+    <div class="side-label">Deliverable contract</div>
+    <div class="side-value" id="sp-deliverable"></div>
+  </div>
+  <div id="sp-verdict-wrap" class="side-row" style="display:none;">
+    <div class="side-label">Verdict contract (reviewer)</div>
+    <div class="verdict-excerpt" id="sp-verdict"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 8 — ANALYTICS
+═════════════════════════════════════════════════════ -->
+<div id="view-analytics" class="view">
+  <div class="list-header" style="margin-bottom:20px;">
+    <div>
+      <div class="list-title">Analytics</div>
+      <div class="list-sub">DELIVERY ECONOMICS · last 30 days · 14 engagements</div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="stat-card-label">Tokens this week</div>
+      <div class="stat-card-value">1.24M</div>
+      <div class="stat-card-sub">across 4 active engagements</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg per delivery</div>
+      <div class="stat-card-value">312k</div>
+      <div class="stat-card-sub">median 287k · max 580k</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Senior / Junior split</div>
+      <div class="stat-card-value" style="font-size:18px;margin-bottom:4px;">54% <span style="color:var(--sec);font-size:14px;">/ 46%</span></div>
+      <div class="split-bar">
+        <div class="split-bar-a" style="width:54%"></div>
+        <div class="split-bar-b" style="width:46%"></div>
+      </div>
+      <div class="split-bar-labels"><span style="color:var(--cyan);">Senior</span><span style="color:var(--amber);">Junior</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Refuter kill rate</div>
+      <div class="stat-card-value">31%</div>
+      <div class="stat-card-sub">of blocking findings refuted · precision saved 9 rework cycles</div>
+    </div>
+  </div>
+
+  <!-- Token by agent + Gate outcomes -->
+  <div class="analytics-row">
+    <!-- Token bars -->
+    <div class="an-panel">
+      <div class="an-panel-title">Tokens by agent (lifetime)</div>
+      <div id="an-token-bars"></div>
+    </div>
+
+    <!-- Gate outcomes -->
+    <div class="an-panel">
+      <div class="an-panel-title">Gate outcomes — last 30 days</div>
+      <div class="gate-outcome-row">
+        <div class="gate-outcome-label" style="font-size:10px;">GATE 1</div>
+        <div class="stacked-bar">
+          <div class="sb-approve" style="flex:5" title="Approved first-pass: 5"></div>
+          <div class="sb-adjust"  style="flex:3" title="Adjusted: 3"></div>
+          <div class="sb-kill"    style="flex:1" title="Killed: 1"></div>
+        </div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--sec);width:60px;flex-shrink:0;">5 · 3 · 1</div>
+      </div>
+      <div class="gate-outcome-row">
+        <div class="gate-outcome-label" style="font-size:10px;">GATE 2</div>
+        <div class="stacked-bar">
+          <div class="sb-approve" style="flex:6" title="Approved: 6"></div>
+          <div class="sb-adjust"  style="flex:1" title="Adjusted: 1"></div>
+        </div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--sec);width:60px;flex-shrink:0;">6 · 1</div>
+      </div>
+      <div class="gate-outcome-legend">
+        <span><span class="leg-dot" style="background:var(--success)"></span>Approved</span>
+        <span><span class="leg-dot" style="background:var(--amber)"></span>Adjusted</span>
+        <span><span class="leg-dot" style="background:var(--coral)"></span>Killed</span>
+      </div>
+
+      <div class="an-panel-title" style="margin-top:20px;">Fix rounds per delivery</div>
+      <div class="hist-row" id="an-hist"></div>
+      <div style="display:flex;gap:8px;margin-top:6px;font-size:9px;font-family:var(--mono);color:var(--sec);">
+        <span style="flex:1;text-align:center;">0 rounds</span>
+        <span style="flex:1;text-align:center;">1 round</span>
+        <span style="flex:1;text-align:center;">2 rounds</span>
+        <span style="flex:1;text-align:center;">Escalated</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-callout">
+    <div class="insight-icon">◈</div>
+    <div class="insight-text">
+      <em>explorer</em> briefs caused <em>0 rework</em> in <em>14 engagements</em> — trial demotion candidate: the junior tier is operating at senior precision. Consider promoting or rebalancing token budget.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     VIEW 9 — SETTINGS
+═════════════════════════════════════════════════════ -->
+<div id="view-settings" class="view">
+  <div class="list-header" style="margin-bottom:20px;">
+    <div>
+      <div class="list-title">Settings</div>
+      <div class="list-sub">PROTOCOL CONFIGURATION · changes take effect on next engagement spawn</div>
+    </div>
+  </div>
+
+  <!-- Model routing -->
+  <div class="settings-section">
+    <div class="settings-section-title">Model Routing</div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">SENIOR tier</div>
+        <div class="settings-row-sub">inherits the session model (automatic)</div>
+      </div>
+      <div class="readonly-line">inherit → session frontier</div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">JUNIOR tier model</div>
+        <div class="settings-row-sub">applied to all junior-bench agents at spawn</div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <input class="settings-input" id="junior-model-input" type="text" value="one tier below frontier"/>
+        <button class="settings-save-btn" onclick="saveJuniorModel()">Save</button>
+      </div>
+    </div>
+    <div class="settings-note">Tiers are relative to the frontier. Never hardcode model names.</div>
+  </div>
+
+  <!-- Protocol -->
+  <div class="settings-section">
+    <div class="settings-section-title">Protocol</div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Max fix rounds</div>
+        <div class="settings-row-sub">before escalation to human decision</div>
+      </div>
+      <div class="stepper" id="stepper-fixrounds">
+        <button class="stepper-btn" onclick="stepperChange('fixrounds',-1)">−</button>
+        <span class="stepper-val" id="stepper-fixrounds-val">2</span>
+        <button class="stepper-btn" onclick="stepperChange('fixrounds',1)">+</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">MVP demo check (C3)</div>
+        <div class="settings-row-sub">require live demo pass before Gate 3 sign-off</div>
+      </div>
+      <label class="toggle" title="Toggle MVP demo check">
+        <input type="checkbox" id="toggle-mvp" checked onchange="toastToggle(this,'MVP demo check')"/>
+        <span class="toggle-track"></span>
+        <span class="toggle-thumb"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Lens swarm requires Gate 2 approval</div>
+        <div class="settings-row-sub locked-note">protocol invariant — cannot be disabled</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <label class="toggle toggle-locked" title="Protocol invariant — cannot be changed">
+          <input type="checkbox" id="toggle-lens" checked disabled/>
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </label>
+        <span class="locked-note">locked</span>
+      </div>
+    </div>
+    <div class="settings-row" style="align-items:flex-start;">
+      <div>
+        <div class="settings-row-label">Business-reviewer lenses</div>
+        <div class="settings-row-sub">active lens agents in the review swarm</div>
+      </div>
+      <div>
+        <label class="checkbox-row"><input type="checkbox" id="lens-cfo" checked onchange="toastCheckbox(this,'CFO lens')"/> CFO</label>
+        <label class="checkbox-row"><input type="checkbox" id="lens-bizdev" checked onchange="toastCheckbox(this,'BizDev lens')"/> BizDev</label>
+        <label class="checkbox-row"><input type="checkbox" id="lens-bi" checked onchange="toastCheckbox(this,'BI lens')"/> BI</label>
+        <label class="checkbox-row"><input type="checkbox" id="lens-ceo" checked onchange="toastCheckbox(this,'CEO lens')"/> CEO</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications -->
+  <div class="settings-section">
+    <div class="settings-section-title">Notifications</div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Notify when a gate awaits my decision</div>
+        <div class="settings-row-sub">macOS notification · fires when Gate 1 or Gate 2 package is ready</div>
+      </div>
+      <label class="toggle" title="Toggle gate notifications">
+        <input type="checkbox" id="toggle-gate-notify" checked onchange="toastToggle(this,'Gate notifications')"/>
+        <span class="toggle-track"></span>
+        <span class="toggle-thumb"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Email digest</div>
+        <div class="settings-row-sub">daily summary of gate decisions and token spend</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <label class="toggle">
+          <input type="checkbox" id="toggle-email" onchange="toastToggle(this,'Email digest')"/>
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </label>
+        <span class="oos-tag">out of scope</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danger zone -->
+  <div class="settings-section danger">
+    <div class="settings-section-title">Danger Zone</div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label" style="color:var(--coral);">Reset promotions log</div>
+        <div class="settings-row-sub">clears all recorded promotion and demotion entries — cannot be undone</div>
+      </div>
+      <button class="btn btn-danger" onclick="confirmResetLog()">Reset log</button>
+    </div>
+  </div>
+</div>
+
+<!-- Agent log modal -->
+<div class="log-modal-overlay" id="log-modal-overlay">
+  <div class="log-modal">
+    <div class="log-modal-bar">
+      <span class="log-modal-title">Full Agent Logs — current engagement</span>
+      <button class="log-modal-close" onclick="closeAgentLogsModal()">✕ Close</button>
+    </div>
+    <div class="log-modal-body" id="log-modal-body">
+      <div><span class="lm-ts">2026-06-11 08:44:02Z</span> orchestrator → <span class="lm-out">explorer</span> · brief: map inventory sync data flows</div>
+      <div><span class="lm-ts">2026-06-11 08:51:17Z</span> <span class="lm-in">explorer</span> → orchestrator · returned · <span class="lm-tok">9,240 tok</span></div>
+      <div><span class="lm-ts">2026-06-11 09:03:44Z</span> orchestrator → <span class="lm-out">mockup-builder</span> · brief: primary flows + error states</div>
+      <div><span class="lm-ts">2026-06-11 11:22:58Z</span> <span class="lm-in">mockup-builder</span> → orchestrator · returned · <span class="lm-tok">42,830 tok</span></div>
+      <div><span class="lm-ts">2026-06-11 11:25:00Z</span> Gate 1 package assembled · awaiting human decision</div>
+      <div><span class="lm-ts">2026-06-11 14:03:11Z</span> Gate 1 approved · orchestrator → <span class="lm-out">hld-architect</span></div>
+      <div><span class="lm-ts">2026-06-11 16:44:30Z</span> orchestrator → <span class="lm-out">security-reviewer</span> · HLD security pass</div>
+      <div><span class="lm-ts">2026-06-11 17:01:05Z</span> <span class="lm-in">security-reviewer</span> → orchestrator · 2 findings · <span class="lm-tok">18,900 tok</span></div>
+      <div><span class="lm-ts">2026-06-11 17:02:00Z</span> orchestrator → <span class="lm-out">refuter</span> · 2 findings to challenge</div>
+      <div><span class="lm-ts">2026-06-11 17:14:22Z</span> <span class="lm-in">refuter</span> → orchestrator · 1 refuted, 1 confirmed · <span class="lm-tok">7,410 tok</span></div>
+      <div><span class="lm-ts">2026-06-11 18:04:00Z</span> <span class="lm-warn">fix-round-1</span> · code-reviewer dispatched · finding: race condition</div>
+      <div><span class="lm-ts">2026-06-11 21:15:00Z</span> <span class="lm-warn">fix-round-2</span> · still blocked · Redis cache invalidation gap persists</div>
+      <div><span class="lm-ts">2026-06-11 22:41:00Z</span> <span class="lm-warn">ESCALATED</span> · 2 rounds exhausted · human decision required</div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast container -->
 <div class="toast-container" id="toasts"></div>
 
@@ -1290,6 +1750,17 @@
   let currentView = 'list';
   let previousView = 'list';
   let filterMode = 'decision'; // 'decision' | 'all'
+
+  // Deep links: #board #team #analytics #settings #gate1 #gate2 #escalation
+  window.addEventListener('DOMContentLoaded', () => {
+    const h = (location.hash || '').slice(1);
+    if (!h) return;
+    setTimeout(() => {
+      if (h === 'board') { showView('board'); startBoardSim(); }
+      else if (h === 'gate1') openGate1();
+      else if (['team','analytics','settings','gate2','escalation'].includes(h)) showView(h);
+    }, 60);
+  });
   let engagementStates = {
     voice: 'gate1',    // gate1 | phase-b-working | phase-c-working | killed
     tax: 'working',
@@ -1674,13 +2145,222 @@
     setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 2900);
   }
 
-  // ── Nav tab highlight sync ──
+  // ── Nav tab highlight sync (also called programmatically) ──
+  function syncNavTabs(viewName) {
+    const map = { list:'Engagements', board:'Live Board', settings:'Settings', analytics:'Analytics', team:'Team / Roles' };
+    document.querySelectorAll('.nav-tab').forEach(b => {
+      b.classList.remove('active');
+      const txt = b.textContent.trim();
+      if (map[viewName] && txt.startsWith(map[viewName])) b.classList.add('active');
+    });
+  }
+
   document.querySelectorAll('.nav-tab[onclick]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
+
+  // ── TEAM / ROLES ──
+  const TEAM_DEFS = [
+    { id:'planner', bench:'senior', desc:'Translates the brief into a sequenced work plan; owns the engagement roadmap and phase gates.', tools:['Read','Write','Bash'], deliverable:'Work plan with gate checkpoints and agent assignments.', verdict:null, runs:8, tok:61400, findingsPct:null, strikes:[] },
+    { id:'code-reviewer', bench:'senior', desc:'Cold-reads every diff for correctness bugs, dead code, and simplification opportunities.', tools:['Read','Bash','Grep'], deliverable:'Structured finding list (severity, location, recommendation).', verdict:'CONFIRMED findings must cite file+line. Any finding refuted twice is retired.', runs:7, tok:57300, findingsPct:72, strikes:[] },
+    { id:'security-reviewer', bench:'senior', desc:'Traces untrusted input through the codebase; hunts injection, auth bypass, secrets exposure.', tools:['Read','Bash','Grep'], deliverable:'Security finding list with CVSS-lite severity and evidence path.', verdict:'CONFIRMED findings must include attack vector and reproduction path. Disputed findings go to refuter.', runs:6, tok:48900, findingsPct:68, strikes:[] },
+    { id:'refuter', bench:'senior', desc:'Adversarially challenges all blocking findings; declares CONFIRMED or REFUTED with reasoning.', tools:['Read','Bash'], deliverable:'Per-finding verdict (CONFIRMED / REFUTED) with counter-argument or corroboration.', verdict:'Refuter output is final on first-pass disputes. A refuter that over-refutes is grounded immediately.', runs:9, tok:21200, findingsPct:null, strikes:[] },
+    { id:'hld-architect', bench:'senior', desc:'Produces the High-Level Design document from Gate 1 approved concept; owns §1–§8 template.', tools:['Read','Write'], deliverable:'HLD document conforming to the 8-section template; all Gate 1 decisions carried through.', verdict:null, runs:5, tok:38700, findingsPct:null, strikes:[] },
+    { id:'deck-architect', bench:'senior', desc:'Generates the stakeholder presentation deck from the approved HLD; reconciles numbers.', tools:['Read','Write'], deliverable:'Slide deck with exec summary, architecture, delivery plan; numbers reconcile vs HLD.', verdict:null, runs:5, tok:29100, findingsPct:null, strikes:[] },
+    { id:'explorer', bench:'junior', desc:'Maps unfamiliar codebases and data flows before specialist agents engage; produces context briefs.', tools:['Read','Bash','Grep'], deliverable:'Context brief: entry points, data flows, key abstractions, gotchas.', verdict:null, runs:14, tok:48200, findingsPct:null, strikes:[] },
+    { id:'mockup-builder', bench:'junior', desc:'Builds single-file SPA mockups from feature briefs; verifies primary flows before Gate 1.', tools:['Read','Write','Edit'], deliverable:'Self-contained HTML mockup with all primary flows navigable.', verdict:null, runs:6, tok:92800, findingsPct:null, strikes:['edited launch.json against instructions · 2026-06-12'] },
+    { id:'test-writer', bench:'junior', desc:'Generates unit and integration tests from approved specs; targets >80% coverage on critical paths.', tools:['Read','Write','Bash'], deliverable:'Test suite with coverage report; failing tests block Gate 3.', verdict:null, runs:3, tok:18600, findingsPct:null, strikes:[] },
+    { id:'db-reviewer', bench:'junior', desc:'Reviews schema migrations, query plans, and index strategies; flags N+1s and missing constraints.', tools:['Read','Bash'], deliverable:'DB finding list with EXPLAIN evidence and remediation SQL.', verdict:'CONFIRMED findings must include EXPLAIN output. Schema changes require migration rollback proof.', runs:2, tok:11400, findingsPct:100, strikes:[] },
+    { id:'design-reviewer', bench:'junior', desc:'Screenshot-pass reviewer: checks layout, contrast, and responsive breakpoints against spec.', tools:['Read'], deliverable:'Visual finding list with screenshot references and spec deltas.', verdict:'CONFIRMED findings must cite the spec line or token violated.', runs:2, tok:8900, findingsPct:100, strikes:[] },
+    { id:'business-reviewer', bench:'junior', desc:'Applies CFO / BizDev / BI / CEO lenses; surfaces commercial and compliance risks.', tools:['Read'], deliverable:'Business lens findings with financial or strategic impact estimate.', verdict:'CONFIRMED findings must quantify impact (cost, risk, revenue) or cite regulatory obligation.', runs:4, tok:33200, findingsPct:75, strikes:[] },
+  ];
+
+  // Mutable bench state (for promote/demote)
+  const teamBench = {};
+  TEAM_DEFS.forEach(a => { teamBench[a.id] = a.bench; });
+
+  const EXEMPT_DEMOTION = new Set(['planner','code-reviewer','security-reviewer','refuter']);
+
+  function renderTeamTable() {
+    const tbody = document.getElementById('team-tbody');
+    tbody.innerHTML = '';
+    TEAM_DEFS.forEach(ag => {
+      const bench = teamBench[ag.id];
+      const isSenior = bench === 'senior';
+      const isExempt = EXEMPT_DEMOTION.has(ag.id);
+
+      let actionCell = '';
+      if (isExempt) {
+        actionCell = `<span class="lock-icon" title="demotion exempt — silent failure domain">🔒</span>`;
+      } else if (!isSenior) {
+        actionCell = `<button class="promote-btn" onclick="promoteAgent('${ag.id}')">Promote to SENIOR</button>`;
+      } else {
+        actionCell = `<button class="demote-btn" onclick="demoteAgent('${ag.id}')">Trial demote</button>`;
+      }
+
+      const strikesHtml = ag.strikes.length
+        ? ag.strikes.map(s => `<div class="strike-note">⚠ ${s}</div>`).join('')
+        : `<span style="color:var(--sec);font-size:11px;font-family:var(--mono);">none</span>`;
+
+      const findingsHtml = ag.findingsPct !== null
+        ? `<span class="findings-pct">${ag.findingsPct}%</span>`
+        : `<span style="color:var(--sec);font-family:var(--mono);font-size:11px;">—</span>`;
+
+      const modelLabel = isSenior
+        ? 'inherit → session frontier'
+        : 'roster → junior tier';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="agent-name-link" onclick="openSidePanel('${ag.id}')">${ag.id}</span></td>
+        <td id="bench-cell-${ag.id}"><span class="bench-chip bench-${bench}">${bench.toUpperCase()}</span></td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--sec);" id="model-cell-${ag.id}">${modelLabel}</td>
+        <td style="font-family:var(--mono);font-size:12px;">${ag.runs}</td>
+        <td style="font-family:var(--mono);font-size:12px;color:var(--amber);">${ag.tok.toLocaleString()}</td>
+        <td>${findingsHtml}</td>
+        <td>${strikesHtml}</td>
+        <td><span style="color:var(--success);font-size:11px;font-family:var(--mono);">active</span></td>
+        <td id="action-cell-${ag.id}">${actionCell}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function promoteAgent(id) {
+    if (!confirm(`Promote ${id} to SENIOR bench?\n\nThis will route the agent to the session frontier model. Log entry will be created.`)) return;
+    teamBench[id] = 'senior';
+    addPromoLog('PROMOTED', id, `${id} → SENIOR · authorized by Solution Architect`);
+    renderTeamTable();
+    showToast(`${id} promoted to SENIOR bench`, 'success');
+  }
+
+  function demoteAgent(id) {
+    if (!confirm(`Trial-demote ${id} to JUNIOR bench?\n\nThe agent will route to the junior tier model. Log entry will be created.`)) return;
+    teamBench[id] = 'junior';
+    addPromoLog('DEMOTED', id, `${id} → JUNIOR (trial) · authorized by Solution Architect`);
+    renderTeamTable();
+    showToast(`${id} trial-demoted to JUNIOR bench`, 'info');
+  }
+
+  function addPromoLog(type, id, text) {
+    const ul = document.getElementById('promo-log');
+    const li = document.createElement('li');
+    const today = new Date().toISOString().slice(0,10);
+    const cls = type === 'PROMOTED' ? 'log-up' : 'log-down';
+    li.innerHTML = `<span class="log-date">${today}</span><span class="${cls}">${type}</span> · ${text}`;
+    ul.appendChild(li);
+  }
+
+  function openSidePanel(id) {
+    const ag = TEAM_DEFS.find(a => a.id === id);
+    if (!ag) return;
+    document.getElementById('sp-name').textContent = ag.id;
+    document.getElementById('sp-desc').textContent = ag.desc;
+    const toolsEl = document.getElementById('sp-tools');
+    toolsEl.innerHTML = ag.tools.map(t => `<span class="tool-tag">${t}</span>`).join('');
+    document.getElementById('sp-deliverable').textContent = ag.deliverable;
+    const verdictWrap = document.getElementById('sp-verdict-wrap');
+    if (ag.verdict) {
+      document.getElementById('sp-verdict').textContent = ag.verdict;
+      verdictWrap.style.display = '';
+    } else {
+      verdictWrap.style.display = 'none';
+    }
+    document.getElementById('side-overlay').classList.add('open');
+    document.getElementById('side-panel').classList.add('open');
+  }
+
+  function closeSidePanel() {
+    document.getElementById('side-overlay').classList.remove('open');
+    document.getElementById('side-panel').classList.remove('open');
+  }
+
+  // ── ANALYTICS bars ──
+  function renderAnalytics() {
+    // Token bars
+    const container = document.getElementById('an-token-bars');
+    if (!container) return;
+    container.innerHTML = '';
+    const maxTok = Math.max(...TEAM_DEFS.map(a => a.tok));
+    TEAM_DEFS.forEach(ag => {
+      if (ag.tok === 0) return;
+      const pct = Math.round((ag.tok / maxTok) * 100);
+      const div = document.createElement('div');
+      div.className = 'hbar-row';
+      div.innerHTML = `
+        <div class="hbar-label">${ag.id}</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%"></div></div>
+        <div class="hbar-val">${(ag.tok/1000).toFixed(1)}k</div>
+      `;
+      container.appendChild(div);
+    });
+
+    // Histogram
+    const hist = document.getElementById('an-hist');
+    if (!hist) return;
+    hist.innerHTML = '';
+    const hdata = [{ label:'0 rounds', val:4 }, { label:'1 round', val:5 }, { label:'2 rounds', val:2 }, { label:'Escalated', val:1 }];
+    const maxH = Math.max(...hdata.map(d => d.val));
+    hdata.forEach(d => {
+      const heightPct = Math.round((d.val / maxH) * 50);
+      const wrap = document.createElement('div');
+      wrap.className = 'hist-bar-wrap';
+      wrap.innerHTML = `
+        <div class="hist-val">${d.val}</div>
+        <div class="hist-bar" style="height:${heightPct}px;${d.label==='Escalated'?'background:var(--coral);':''}"></div>
+      `;
+      hist.appendChild(wrap);
+    });
+  }
+
+  // ── SETTINGS helpers ──
+  const stepperState = { fixrounds: 2 };
+  function stepperChange(key, delta) {
+    const min = 1, max = 3;
+    stepperState[key] = Math.min(max, Math.max(min, stepperState[key] + delta));
+    document.getElementById(`stepper-${key}-val`).textContent = stepperState[key];
+    showToast(`Max fix rounds set to ${stepperState[key]}`, 'info');
+  }
+
+  function saveJuniorModel() {
+    const val = document.getElementById('junior-model-input').value.trim();
+    if (!val) { showToast('Model name cannot be empty.', 'warn'); return; }
+    showToast('Roster updated — junior bench re-routed', 'success');
+  }
+
+  function toastToggle(el, label) {
+    showToast(`${label} ${el.checked ? 'enabled' : 'disabled'}`, el.checked ? 'success' : 'info');
+  }
+
+  function toastCheckbox(el, label) {
+    showToast(`${label} ${el.checked ? 'added to swarm' : 'removed from swarm'}`, el.checked ? 'success' : 'info');
+  }
+
+  function confirmResetLog() {
+    if (!confirm('Reset the promotions & demotions log?\n\nAll recorded entries will be cleared. This cannot be undone.')) return;
+    document.getElementById('promo-log').innerHTML = '';
+    showToast('Promotions log reset', 'warn');
+  }
+
+  // ── Agent logs modal ──
+  function openAgentLogsModal() {
+    document.getElementById('log-modal-overlay').classList.add('open');
+  }
+  function closeAgentLogsModal() {
+    document.getElementById('log-modal-overlay').classList.remove('open');
+  }
+
+  // ── Augment showView to sync nav tabs + lazy render ──
+  const _origShowView = showView;
+  showView = function(name) {
+    _origShowView(name);
+    syncNavTabs(name);
+    if (name === 'team') renderTeamTable();
+    if (name === 'analytics') renderAnalytics();
+  };
 
   // ── Init ──
   renderTable();
