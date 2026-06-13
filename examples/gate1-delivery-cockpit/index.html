@@ -120,8 +120,13 @@
   .bm-var { position:absolute; top:40%; left:50%; transform:translateX(-50%); background:#0a0f18; border:2px solid var(--amber); color:var(--amber); font-family:var(--mono); font-weight:bold; font-size:15px; padding:8px 18px; border-radius:5px; z-index:8; opacity:0; transition:opacity .2s; letter-spacing:1px; }
   .bm-var.show { opacity:1; }
   .bm-var .vtag { color:#fff; font-size:11px; display:block; text-align:center; letter-spacing:2px; }
-  .bm-relato { max-width:720px; margin:12px auto 0; background:#0a0f18; border-left:4px solid var(--amber); border-radius:4px; padding:9px 14px; font-family:var(--mono); font-size:13px; color:var(--amber); font-style:italic; min-height:18px; transition:opacity .25s; }
-  .bm-relato b { color:#fff; font-style:normal; }
+  .bm-relato { max-width:720px; margin:12px auto 0; background:#0a0f18; border-left:4px solid var(--amber); border-radius:4px; padding:8px 14px; display:flex; align-items:center; gap:11px; }
+  .bm-jaco { flex:0 0 auto; transition:transform .2s; }
+  .bm-jaco.cheer { animation:bmcheer .8s ease; }
+  @keyframes bmcheer { 0%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-7px) rotate(-8deg) scale(1.12)} 50%{transform:translateY(0) rotate(6deg)} 75%{transform:translateY(-4px) rotate(-3deg)} }
+  .bm-relato .who { display:block; font-family:var(--mono); font-size:9px; letter-spacing:1px; color:var(--cyan); }
+  .bm-relato .txt { font-family:var(--mono); font-size:13px; color:var(--amber); font-style:italic; transition:opacity .25s; }
+  .bm-relato .txt b { color:#fff; font-style:normal; }
   .bm-possbar { max-width:720px; margin:10px auto 0; }
   .bm-possbar .lbls { display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--sec); margin-bottom:3px; }
   .bm-possbar .track { display:flex; height:11px; border-radius:6px; overflow:hidden; border:1px solid #34597F; }
@@ -1513,7 +1518,26 @@
       <div class="lbls"><span>HOME · senior bench</span><span id="bm-poss-pct">— · —</span><span>junior bench · AWAY</span></div>
       <div class="track"><div class="home" id="bm-poss-h" style="width:50%;"></div><div class="away" id="bm-poss-a" style="width:50%;"></div></div>
     </div>
-    <div class="bm-relato" id="bm-relato">Arranca el partido… la pelota la mueve el <b>orquestador</b> desde el círculo central.</div>
+    <div class="bm-relato">
+      <div class="bm-jaco" id="bm-jaco" title="Jacobito — relator oficial">
+        <svg viewBox="0 0 48 48" width="40" height="40" aria-label="Jacobito">
+          <path d="M9 25 A15 15 0 0 1 39 25" fill="none" stroke="#8FD8EA" stroke-width="3"/>
+          <rect x="4" y="23" width="7" height="11" rx="3" fill="#8FD8EA"/>
+          <rect x="37" y="23" width="7" height="11" rx="3" fill="#8FD8EA"/>
+          <circle cx="24" cy="26" r="16" fill="#FFC861" stroke="#142F54" stroke-width="2"/>
+          <path d="M11 18 Q24 6 37 18 Q31 14 24 14 Q17 14 11 18 Z" fill="#142F54"/>
+          <circle cx="18.5" cy="25" r="2.6" fill="#142F54"/>
+          <circle cx="29.5" cy="25" r="2.6" fill="#142F54"/>
+          <path d="M18 33 Q24 38 30 33" fill="none" stroke="#142F54" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 31 Q12 42 21 39" fill="none" stroke="#8FD8EA" stroke-width="2"/>
+          <circle cx="21" cy="39" r="3" fill="#FF8B7E"/>
+        </svg>
+      </div>
+      <div>
+        <span class="who">JACOBITO · RELATO EN VIVO</span>
+        <span class="txt" id="bm-relato-txt">Arranca el partido… la pelota la mueve el <b>orquestador</b> desde el círculo central.</span>
+      </div>
+    </div>
     <div style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--sec);margin-top:10px;">
       HOME — senior bench (frontier) · AWAY — junior bench (one tier below) · #1 refuter = GK/VAR · #10© orchestrator = regista
     </div>
@@ -2341,8 +2365,9 @@
     check: ['El refuter va al monitor… revisando posible regresión','VAR chequeando: ¿blocker real?'],
   };
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function relato(kind, name){ const e=document.getElementById('bm-relato'); if(!e) return;
-    e.style.opacity='0'; setTimeout(()=>{ e.innerHTML = pick(RELATO[kind]).replace('{a}', name||''); e.style.opacity='1'; }, 170); }
+  function relato(kind, name){ const e=document.getElementById('bm-relato-txt'); if(!e) return;
+    e.style.opacity='0'; setTimeout(()=>{ e.innerHTML = pick(RELATO[kind]).replace('{a}', name||''); e.style.opacity='1'; }, 170);
+    if(kind==='goal'||kind==='own'){ const j=document.getElementById('bm-jaco'); if(j){ j.classList.remove('cheer'); void j.offsetWidth; j.classList.add('cheer'); } } }
 
   let trailTimer=null, possH=54, possA=46;
   function startTrail(){ if(trailTimer) return; trailTimer=setInterval(()=>{

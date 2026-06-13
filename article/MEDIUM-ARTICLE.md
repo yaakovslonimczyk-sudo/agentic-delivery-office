@@ -110,9 +110,9 @@ I'm Uruguayan — the ball was in the design before the football was. The live b
 
 ![The match view](images/fig09-match-broadcast.png)
 
-*Fig. 08 — Match view: the same telemetry rendered as a 4-3-3. Home kit = senior bench (frontier), away kit = junior bench, #1 refuter in goal as the VAR, #10© orchestrator as the regista who touches every ball.*
+*Fig. 08 — Match view: the same telemetry rendered as a 4-3-3. Home kit = senior bench (frontier), away kit = junior bench, #1 refuter in goal as the VAR, #10© orchestrator as the regista who touches every ball — and Jacobito calling the match, bottom left.*
 
-Same data, two skins — a toggle, not a replacement. The blueprint stays the default for the boardroom and the patent; the pitch is for everywhere else. And the mapping isn't decoration — it's the methodology in a language a few billion people already read fluently: a **delegation is a pass**, a **milestone is a goal**, a **regression is an own goal**, a **strike is a yellow card**, a **promotion is a transfer**, and tokens are **kilometres run**. When a reviewer flags a blocker, the **refuter goes to the VAR monitor** — and the call comes back *confirmed* (own goal, back to fix) or *overturned* (play on). Tap any player for their card: overall rating, matches, pass-completion, goals, cards.
+Same data, two skins — a toggle, not a replacement. The blueprint stays the default for the boardroom and the patent; the pitch is for everywhere else. And the mapping isn't decoration — it's the methodology in a language a few billion people already read fluently: a **delegation is a pass**, a **milestone is a goal**, a **regression is an own goal**, a **strike is a yellow card**, a **promotion is a transfer**, and tokens are **kilometres run**. When a reviewer flags a blocker, the **refuter goes to the VAR monitor** — and the call comes back *confirmed* (own goal, back to fix) or *overturned* (play on). Tap any player for their card: overall rating, matches, pass-completion, goals, cards. Calling the whole thing, live, is **Jacobito** — the office mascot (and, not by accident, the diminutive of my own name).
 
 ![The office, mid-match](images/match-demo.gif)
 
