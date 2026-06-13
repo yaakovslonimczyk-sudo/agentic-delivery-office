@@ -82,6 +82,16 @@ Fig 7 (same section, second image):
 Fig. 07 — Gate 1 as a screen: the verified mockup, the component diagram, the key decisions with their rejected alternatives — and three buttons.
 ```
 
+Fig 8 (under "A board you actually want to watch"):
+```
+Fig. 08 — Match view: the same telemetry rendered as a 4-3-3. Home kit = senior bench (frontier), away kit = junior bench, #1 refuter in goal as the VAR, #10© orchestrator as the regista who touches every ball.
+```
+
+GIF (same section, the animated one — Medium supports animated GIFs):
+```
+A pass out wide, a goal at Gate 1, and a VAR check that confirms a regression — the review loop, live.
+```
+
 If any image is missing: download it from
 `https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office/tree/main/article/images`
 and drag the PNG into place.

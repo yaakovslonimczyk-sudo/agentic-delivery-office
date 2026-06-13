@@ -105,6 +105,29 @@
   .bm-fut .futstats .v { color:var(--amber); font-weight:bold; float:right; }
   .bm-fut .futclose { margin-top:18px; width:100%; padding:9px; background:var(--cyan); color:var(--panel); border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
 
+  /* ── Match juice: kits, trail, confetti, VAR, commentary ── */
+  .bm-player.senior .bm-jersey { background:repeating-linear-gradient(95deg,#142f54 0 6px,#234d82 6px 12px); }
+  .bm-player.junior .bm-jersey { background:repeating-linear-gradient(95deg,#8FD8EA 0 6px,#bfe9f4 6px 12px); }
+  .bm-player.captain .bm-jersey { background:#FFC861; }
+  .bm-player.captain .bm-jersey::after { content:''; position:absolute; width:46px; height:46px; border-radius:50%; border:2px dashed rgba(20,47,84,.6); }
+  .bm-player.celebrate .bm-jersey { animation:bmjump .85s ease; }
+  @keyframes bmjump { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-14px) scale(1.12)} 55%{transform:translateY(0)} 72%{transform:translateY(-6px)} }
+  .bm-trail { position:absolute; width:11px; height:11px; border-radius:50%; background:rgba(255,255,255,.55); transform:translate(-50%,-50%); pointer-events:none; z-index:5; transition:opacity .5s ease; }
+  .bm-confetti { position:absolute; width:7px; height:11px; z-index:7; pointer-events:none; border-radius:1px; }
+  .bm-net { position:absolute; left:24%; right:24%; top:0; height:13%; background:repeating-linear-gradient(90deg,transparent 0 7px,rgba(255,255,255,.13) 7px 8px),repeating-linear-gradient(0deg,transparent 0 7px,rgba(255,255,255,.13) 7px 8px); opacity:0; transition:opacity .15s; pointer-events:none; }
+  .bm-net.ripple { opacity:1; animation:bmnet .7s ease; }
+  @keyframes bmnet { 0%{transform:scaleY(.7)} 40%{transform:scaleY(1.05)} 100%{transform:scaleY(1)} }
+  .bm-var { position:absolute; top:40%; left:50%; transform:translateX(-50%); background:#0a0f18; border:2px solid var(--amber); color:var(--amber); font-family:var(--mono); font-weight:bold; font-size:15px; padding:8px 18px; border-radius:5px; z-index:8; opacity:0; transition:opacity .2s; letter-spacing:1px; }
+  .bm-var.show { opacity:1; }
+  .bm-var .vtag { color:#fff; font-size:11px; display:block; text-align:center; letter-spacing:2px; }
+  .bm-relato { max-width:720px; margin:12px auto 0; background:#0a0f18; border-left:4px solid var(--amber); border-radius:4px; padding:9px 14px; font-family:var(--mono); font-size:13px; color:var(--amber); font-style:italic; min-height:18px; transition:opacity .25s; }
+  .bm-relato b { color:#fff; font-style:normal; }
+  .bm-possbar { max-width:720px; margin:10px auto 0; }
+  .bm-possbar .lbls { display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--sec); margin-bottom:3px; }
+  .bm-possbar .track { display:flex; height:11px; border-radius:6px; overflow:hidden; border:1px solid #34597F; }
+  .bm-possbar .home { background:var(--line); } .bm-possbar .away { background:var(--cyan); }
+  .bm-led { max-width:720px; margin:14px auto 0; background:#0a0f18; border:1px solid #34597F; border-radius:6px 6px 0 0; padding:6px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--amber); letter-spacing:3px; }
+
   body {
     font-family: var(--ui);
     background: var(--bg);
@@ -1470,6 +1493,7 @@
 
   <!-- ── MATCH MODE (the pitch) ── -->
   <div id="board-match" style="display:none;">
+    <div class="bm-led">⚽ MATCHDAY · THE AGENTIC DELIVERY OFFICE · FORMATION 4-3-3</div>
     <div class="bm-score">
       <div><div class="sc for" id="bm-for">3</div><div class="lbl">DELIVERIES<br/>goals scored</div></div>
       <div class="clock" id="bm-clock">00:00</div>
@@ -1477,12 +1501,19 @@
     </div>
     <div class="bm-poss">⚽ POSSESSION: <b id="bm-poss">orchestrator</b> · tap any player for their card</div>
     <div class="bm-pitch" id="bm-pitch">
+      <div class="bm-net" id="bm-net"></div>
       <div class="bm-line" style="left:0;right:0;top:50%;height:0;border-top:1.5px solid rgba(220,233,247,0.4);"></div>
       <div class="bm-line" style="left:35%;right:35%;top:38%;height:24%;border:1.5px solid rgba(220,233,247,0.4);border-radius:50%;"></div>
       <div class="bm-line" style="left:24%;right:24%;top:0;height:13%;border:1.5px solid rgba(220,233,247,0.4);border-top:none;"></div>
       <div class="bm-line" style="left:24%;right:24%;bottom:0;height:13%;border:1.5px solid rgba(220,233,247,0.4);border-bottom:none;"></div>
+      <div class="bm-var" id="bm-var"><span class="vtag">VAR · THE REFUTER</span><span id="bm-var-txt">CHECKING…</span></div>
       <div class="bm-ball" id="bm-ball" style="left:50%;top:50%;"></div>
     </div>
+    <div class="bm-possbar">
+      <div class="lbls"><span>HOME · senior bench</span><span id="bm-poss-pct">— · —</span><span>junior bench · AWAY</span></div>
+      <div class="track"><div class="home" id="bm-poss-h" style="width:50%;"></div><div class="away" id="bm-poss-a" style="width:50%;"></div></div>
+    </div>
+    <div class="bm-relato" id="bm-relato">Arranca el partido… la pelota la mueve el <b>orquestador</b> desde el círculo central.</div>
     <div style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--sec);margin-top:10px;">
       HOME — senior bench (frontier) · AWAY — junior bench (one tier below) · #1 refuter = GK/VAR · #10© orchestrator = regista
     </div>
@@ -1835,6 +1866,7 @@
     setTimeout(() => {
       if (h === 'board') { showView('board'); startBoardSim(); }
       else if (h === 'match') { showView('board'); setBoardMode('match'); startBoardSim(); }
+      else if (h === 'demo') { seedRandom(20260613); playDemo(); }
       else if (h === 'gate1') openGate1();
       else if (['team','analytics','settings','gate2','escalation'].includes(h)) showView(h);
     }, 60);
@@ -2184,7 +2216,7 @@
     if (!idle.length) return;
     const a = idle[Math.floor(Math.random()*idle.length)];
     a.working = true; a.startedAt = Date.now(); a.last = LB_TASKS[a.n];
-    if (boardMode === 'match') { pitchBall(a.x, a.y); setPoss(a.n); }
+    if (boardMode === 'match') { pitchBall(a.x, a.y); setPoss(a.n); relato('pass', a.n); bumpPoss(a.bench); }
     else { lbBall(document.getElementById('lb-orch'), a.el); }
     lbLog(`${lbHHMM()} <span class="lb-out">→ ${a.n}</span> · ${a.last}`);
     lbRender();
@@ -2196,8 +2228,8 @@
       if (currentView === 'board') {
         if (boardMode === 'match') {
           pitchBall(ORCH_XY.x, ORCH_XY.y); setPoss('orchestrator');
-          if (PRODUCERS.includes(a.n) && Math.random() < 0.34) scoreGoal(a);
-          else if (!PRODUCERS.includes(a.n) && Math.random() < 0.16) scoreOwn(a);
+          if (PRODUCERS.includes(a.n)) { if (Math.random() < 0.40) scoreGoal(a); else relato('back', a.n); }
+          else { if (Math.random() < 0.32) runVar(a, Math.random() < 0.5); else relato('back', a.n); }
         } else {
           lbBall(a.el, document.getElementById('lb-orch'));
         }
@@ -2233,7 +2265,7 @@
     document.getElementById('board-match').style.display = m==='match' ? '' : 'none';
     document.getElementById('bm-tab-bp').classList.toggle('on', m==='blueprint');
     document.getElementById('bm-tab-m').classList.toggle('on', m==='match');
-    if (m==='match'){ pitchBuild(); pitchSync(); startMatchClock(); }
+    if (m==='match'){ pitchBuild(); pitchSync(); startMatchClock(); startTrail(); }
   }
 
   function pitchBuild(){
@@ -2272,6 +2304,8 @@
   function scoreGoal(a){
     gFor++; a.goals = (a.goals||0)+1; document.getElementById('bm-for').textContent = gFor;
     bmFlash('goal', '¡GOL!', a.n + ' marca · asistencia: orchestrator');
+    const color = a.bench === 'junior' ? '#8FD8EA' : '#DCE9F7';
+    confettiBurst(color); netRipple(); celebrate(a.n); relato('goal', a.n);
   }
   function scoreOwn(a){
     gAgainst++; document.getElementById('bm-against').textContent = gAgainst;
@@ -2295,6 +2329,68 @@
       </div>
       <button class="futclose" onclick="document.getElementById('bm-cardwrap').classList.remove('show')">Close card</button>`;
     w.classList.add('show');
+  }
+
+  // ── Match juice: commentary, trail, confetti, VAR, possession, demo ──
+  const RELATO = {
+    pass:  ['La tiene <b>{a}</b> y encara…','Habilita profundo para <b>{a}</b>','Se la dan a <b>{a}</b>, que pisa la pelota','<b>{a}</b> la pide y la recibe','Pelota filtrada para <b>{a}</b>','La baja de pecho <b>{a}</b>'],
+    back:  ['<b>{a}</b> la devuelve al orquestador','Cede <b>{a}</b>, vuelve al círculo central','Toca y se abre <b>{a}</b>'],
+    goal:  ['¡GOOOOL de <b>{a}</b>! ¡La clavó en el ángulo!','¡Golazo de <b>{a}</b>! Milestone alcanzado','¡Gol gol gol! <b>{a}</b> no perdona','¡La rompió <b>{a}</b>! Adentro'],
+    own:   ['¡Uy… gol en contra! <b>{a}</b> cazó un blocker, vuelta a fix','Mala: regresión confirmada, se anula el avance','Amargo: <b>{a}</b> detecta el bug, hay que retroceder'],
+    overt: ['El VAR lo anula: el reclamo de <b>{a}</b> no se sostiene… ¡sigue el juego!','Overturned — sin evidencia, el refuter manda seguir'],
+    check: ['El refuter va al monitor… revisando posible regresión','VAR chequeando: ¿blocker real?'],
+  };
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function relato(kind, name){ const e=document.getElementById('bm-relato'); if(!e) return;
+    e.style.opacity='0'; setTimeout(()=>{ e.innerHTML = pick(RELATO[kind]).replace('{a}', name||''); e.style.opacity='1'; }, 170); }
+
+  let trailTimer=null, possH=54, possA=46;
+  function startTrail(){ if(trailTimer) return; trailTimer=setInterval(()=>{
+      if(boardMode!=='match'||currentView!=='board') return;
+      const ball=document.getElementById('bm-ball'), pitch=document.getElementById('bm-pitch'); if(!ball||!pitch) return;
+      const br=ball.getBoundingClientRect(), pr=pitch.getBoundingClientRect();
+      const t=document.createElement('div'); t.className='bm-trail';
+      t.style.left=(br.left-pr.left+br.width/2)+'px'; t.style.top=(br.top-pr.top+br.height/2)+'px';
+      pitch.appendChild(t); requestAnimationFrame(()=>{ t.style.opacity='0'; });
+      setTimeout(()=>t.remove(), 520);
+    }, 70); }
+  function bumpPoss(bench){ if(bench==='senior'){ possH=Math.min(74,possH+1); possA=100-possH; } else { possA=Math.min(74,possA+1); possH=100-possA; }
+    const h=document.getElementById('bm-poss-h'),a=document.getElementById('bm-poss-a'),p=document.getElementById('bm-poss-pct');
+    if(h){ h.style.width=possH+'%'; a.style.width=possA+'%'; p.textContent=possH+'% · '+possA+'%'; } }
+  function confettiBurst(color){ const pitch=document.getElementById('bm-pitch'); if(!pitch) return;
+    const cols=[color,'#FFC861','#fff','#8FD8EA'];
+    for(let i=0;i<30;i++){ const c=document.createElement('div'); c.className='bm-confetti';
+      c.style.background=cols[i%cols.length]; c.style.left=(40+Math.random()*20)+'%'; c.style.top='8%';
+      const dx=(Math.random()*2-1)*200, dy=220+Math.random()*280, rot=Math.random()*720;
+      c.style.transition='transform 1.3s cubic-bezier(.2,.6,.4,1), opacity 1.3s'; pitch.appendChild(c);
+      requestAnimationFrame(()=>{ c.style.transform=`translate(${dx}px,${dy}px) rotate(${rot}deg)`; c.style.opacity='0'; });
+      setTimeout(()=>c.remove(), 1350);
+    } }
+  function netRipple(){ const n=document.getElementById('bm-net'); if(!n) return; n.classList.add('ripple'); setTimeout(()=>n.classList.remove('ripple'), 700); }
+  function celebrate(name){ const n=document.getElementById('bm-pl-'+name); if(n){ n.classList.add('celebrate'); setTimeout(()=>n.classList.remove('celebrate'), 900); } }
+  function runVar(a, isOwn){
+    const v=document.getElementById('bm-var'), tx=document.getElementById('bm-var-txt');
+    relato('check', a.n);
+    if(v){ tx.textContent='CHECKING…'; v.style.color='var(--amber)'; v.style.borderColor='var(--amber)'; v.classList.add('show'); }
+    setTimeout(()=>{
+      if(isOwn){ if(v){ tx.textContent='CONFIRMED · REGRESSION'; v.style.color='var(--coral)'; v.style.borderColor='var(--coral)'; } scoreOwn(a); relato('own', a.n); netRipple(); }
+      else { if(v){ tx.textContent='OVERTURNED · PLAY ON'; v.style.color='var(--cyan)'; v.style.borderColor='var(--cyan)'; } relato('overt', a.n); }
+      setTimeout(()=>{ if(v) v.classList.remove('show'); }, 1300);
+    }, 1200);
+  }
+
+  // seeded RNG so #demo renders identically on every load (for GIF capture)
+  function seedRandom(seed){ let s=seed>>>0; Math.random=function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+  function playDemo(){
+    showView('board'); setBoardMode('match'); startTrail();
+    const W='working', on=n=>{const e=document.getElementById('bm-pl-'+n); if(e)e.classList.add(W);}, off=n=>{const e=document.getElementById('bm-pl-'+n); if(e)e.classList.remove(W);};
+    const at=(t,fn)=>setTimeout(fn,t);
+    at(500, ()=>{ pitchBall(82,24); setPoss('explorer'); on('explorer'); relato('pass','explorer'); bumpPoss('junior'); });
+    at(2000,()=>{ pitchBall(50,50); setPoss('orchestrator'); off('explorer'); relato('back','explorer'); });
+    at(3100,()=>{ pitchBall(50,13); setPoss('mockup-builder'); on('mockup-builder'); relato('pass','mockup-builder'); bumpPoss('junior'); });
+    at(4700,()=>{ off('mockup-builder'); scoreGoal(LB_AGENTS.find(x=>x.n==='mockup-builder')); });
+    at(7200,()=>{ pitchBall(32,78); setPoss('code-reviewer'); on('code-reviewer'); relato('pass','code-reviewer'); bumpPoss('senior'); });
+    at(8800,()=>{ off('code-reviewer'); pitchBall(50,50); setPoss('orchestrator'); runVar(LB_AGENTS.find(x=>x.n==='code-reviewer'), true); });
   }
 
   function showToast(msg, type) {

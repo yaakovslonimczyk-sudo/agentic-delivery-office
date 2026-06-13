@@ -104,6 +104,22 @@ Around the board sits the rest of the cockpit, and its design states the philoso
 
 One detail I can't resist sharing: the cockpit mockup itself was built by the office's own mockup-builder agent — a junior-tier model, one written spec, verified clickable end-to-end before it reached me. The methodology produced the interface that shows the methodology working. That's the moment it stopped feeling like tooling and started feeling like an operating model.
 
+### A board you actually want to watch
+
+I'm Uruguayan — the ball was in the design before the football was. The live board already asked *"who has the ball right now."* So I gave it a stadium.
+
+![The match view](images/fig09-match-broadcast.png)
+
+*Fig. 08 — Match view: the same telemetry rendered as a 4-3-3. Home kit = senior bench (frontier), away kit = junior bench, #1 refuter in goal as the VAR, #10© orchestrator as the regista who touches every ball.*
+
+Same data, two skins — a toggle, not a replacement. The blueprint stays the default for the boardroom and the patent; the pitch is for everywhere else. And the mapping isn't decoration — it's the methodology in a language a few billion people already read fluently: a **delegation is a pass**, a **milestone is a goal**, a **regression is an own goal**, a **strike is a yellow card**, a **promotion is a transfer**, and tokens are **kilometres run**. When a reviewer flags a blocker, the **refuter goes to the VAR monitor** — and the call comes back *confirmed* (own goal, back to fix) or *overturned* (play on). Tap any player for their card: overall rating, matches, pass-completion, goals, cards.
+
+![The office, mid-match](images/match-demo.gif)
+
+*A pass out wide, a goal at Gate 1, and a VAR check that confirms a regression — the review loop, live.*
+
+It reads like a toy until you watch it for thirty seconds and realize you've absorbed token economics, model tiers, and an adversarial verification loop without being taught any of them. That's the whole bet of the cockpit: make the serious legible.
+
 ## What the human is left doing
 
 Six touchpoints. Ambiguity at intake, two design gates, an optional demo check, an escalation that should be rare, and the deploy button. Everything else — exploration, prototyping, design documents, the executive deck, tests, implementation, a multi-lens adversarial review — runs unattended, with quality enforced by contracts and hooks rather than by my vigilance.
