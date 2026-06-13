@@ -8,14 +8,35 @@ review-and-fix loop, and deterministic quality gates.
 The methodology is explained in the article *"The Agentic Delivery Office"*
 (see [article/MEDIUM-ARTICLE.md](article/MEDIUM-ARTICLE.md), with figures).
 
+**This is a system-level setup, not a per-project copy.** You install it once
+into your home directory; the agents, protocol, Live Board, hooks, and slash
+commands then apply to every project. Per-project business context is added
+on demand with a slash command.
+
 ```bash
 git clone https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office.git
 cd agentic-delivery-office
-./install.sh /path/to/your/project
+./install.sh                      # Claude Code, user scope (recommended)
 ```
 
-Built for **Claude Code** as the primary runtime, with ports for **OpenAI
-Codex** (`AGENTS.md`) and **Grok** (plain-prompt pack).
+Then, inside any project:
+
+```
+/office-init     # adds this project's roster + business context
+/office-board    # opens the Live Board (blueprint org-chart / ⚽ match view)
+```
+
+### Portable across providers (one methodology, three runtimes)
+
+| Runtime | Command | Global drop targets |
+|---|---|---|
+| **Claude Code** | `./install.sh` | `~/.claude/agents/*.md`, `~/.claude/commands/`, `~/.claude/settings.json`, `~/.claude/office-board/` |
+| **OpenAI Codex** | `./install.sh --target codex` | `~/.codex/agents/*.toml`, protocol appended to `~/.codex/AGENTS.md` |
+| **Grok Build** | `./install.sh --target grok` | global skill `~/.grok/skills/agentic-office/` (Grok also auto-reads `.claude/` + `AGENTS.md`) |
+| _legacy per-project_ | `./install.sh --scope project [PATH]` | copies into `PATH/.claude/` |
+
+Add `--dry-run` to preview without changing anything. The installer is
+idempotent and never clobbers — it merges hooks and appends marked blocks.
 
 ## What's inside
 
@@ -45,19 +66,17 @@ agent-methodology-kit/
     └── grok/GROK-PROMPTS.md   ← copy-paste prompt pack for Grok or any other LLM
 ```
 
-## Install into a project
+## Per-project setup (after the one-time system install)
 
-```bash
-./install.sh /path/to/your/project
-```
+The system install puts the agents and protocol in your home. The only thing
+that is genuinely per-project is the **business context** (which grounds the
+CFO/BizDev/BI/CEO review lenses) and the **roster** (the JUNIOR-tier line). Add
+them by running `/office-init` inside a project — it interviews you for the
+minimum context and writes the project's `CLAUDE.md`.
 
-The installer:
-1. Copies `.claude/agents/`, `.claude/hooks/`, and `ORCHESTRATION.md` into the project.
-2. Copies `.claude/settings.json` only if none exists (never overwrites yours).
-3. Creates `CLAUDE.md` from the template only if none exists.
-4. Makes hooks executable.
-
-Then open the project, edit `CLAUDE.md` (fill the placeholders — especially the
+Prefer the legacy self-contained copy instead? `./install.sh --scope project`
+drops everything into the project's `.claude/`. In that mode, edit `CLAUDE.md`
+(fill the placeholders — especially the
 business context, which is what grounds the business-reviewer lenses), and run
 a first feature through the loop described in `ORCHESTRATION.md`.
 

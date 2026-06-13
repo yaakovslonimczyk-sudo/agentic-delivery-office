@@ -8,7 +8,9 @@ tool=$(printf '%s' "$input" | jq -r '.tool_name // empty')
 case "$tool" in Task|Agent) ;; *) exit 0 ;; esac
 
 ev=$(printf '%s' "$input" | jq -r '.hook_event_name // empty')
-dir="${CLAUDE_PROJECT_DIR:-.}/.claude/board"
+# Events go to the global office board by default (system-level install);
+# OFFICE_BOARD_DIR overrides, e.g. for a per-project board.
+dir="${OFFICE_BOARD_DIR:-$HOME/.claude/office-board}"
 mkdir -p "$dir"
 
 ts=$(date +%s)
