@@ -120,6 +120,21 @@ Same data, two skins — a toggle, not a replacement. The blueprint stays the de
 
 It reads like a toy until you watch it for thirty seconds and realize you've absorbed token economics, model tiers, and an adversarial verification loop without being taught any of them. That's the whole bet of the cockpit: make the serious legible.
 
+## What it's for: the economics
+
+Sooner or later someone asks for the ROI, and the honest answer starts by refusing the fake one. This methodology doesn't optimize the cheap input — tokens. It optimizes the expensive, scarce one: senior human judgment. It's a factor-substitution play — spend cheap compute to spare expensive attention, and let the gates and the adversarial review protect quality so the substitution never costs you output.
+
+That reframes every number. Yes, it burns *more* tokens than a single pass — three to five times more — because it explores, reviews, refutes, and re-reviews. The return isn't a smaller compute bill; it's the senior hours it hands back and the rework it never incurs. Compute is an input you manage, not one you minimize. (Even there, routing junior work a tier below the frontier trims ~30–40% off the multi-agent spend at near-zero quality risk.)
+
+So the KPIs it's *designed* to move:
+
+- **Human touchpoints per delivery** — from "review every line" to two-to-six decisions, taken at gates.
+- **Cost of a wrong direction** — caught at a mockup, not a finished build: roughly an order of magnitude cheaper for every phase of risk you retire early.
+- **Rework and defect-escape rate** — work arrives already criticized and fixed; the refuter kills false findings before they cause churn.
+- **Compute per delivery** — the one hard, mechanical number: −30–40% versus naive same-tier multi-agent.
+
+I won't quote a headline productivity percentage, because the honest one comes from a short pilot against your own baseline — and the office instruments all of it itself. The analytics view already tracks the senior/junior token split, gate outcomes, the refuter's kill rate, and the fix-rounds histogram. It doesn't ask you to believe the ROI. It measures it.
+
 ## What the human is left doing
 
 Six touchpoints. Ambiguity at intake, two design gates, an optional demo check, an escalation that should be rare, and the deploy button. Everything else — exploration, prototyping, design documents, the executive deck, tests, implementation, a multi-lens adversarial review — runs unattended, with quality enforced by contracts and hooks rather than by my vigilance.
@@ -135,11 +150,11 @@ Everything in this article ships as an open, portable kit — the nine agent def
 ```bash
 git clone https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office.git
 cd agentic-delivery-office
-./install.sh /path/to/your/project
+./install.sh                 # system-wide, once — Claude Code (also --target codex | grok)
 ```
 
-Then fill the business context in the generated `CLAUDE.md` — it's what grounds the business lenses — and run one real feature through the gates before trusting the office unattended. If you want to argue with the org chart, the issues tab is open.
-
----
-
-*Yaakov Slonimczyk is a solution architect and economist working across fintech and retail operations in Latin America and Israel.*
+It installs at user scope — agents, protocol, Live Board, and the `/office-init`
+and `/office-board` commands apply to every project. Run `/office-init` inside a
+repo to add its business context, then put one real feature through the gates
+before trusting the office unattended. If you want to argue with the org chart,
+the issues tab is open.

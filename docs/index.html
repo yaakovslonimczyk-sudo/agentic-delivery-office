@@ -82,6 +82,17 @@
 <p><img src="https://raw.githubusercontent.com/yaakovslonimczyk-sudo/agentic-delivery-office/main/article/images/match-demo.gif" alt="The office, mid-match"></p>
 <p><em>A pass out wide, a goal at Gate 1, and a VAR check that confirms a regression — the review loop, live.</em></p>
 <p>It reads like a toy until you watch it for thirty seconds and realize you&#39;ve absorbed token economics, model tiers, and an adversarial verification loop without being taught any of them. That&#39;s the whole bet of the cockpit: make the serious legible.</p>
+<h2>What it&#39;s for: the economics</h2>
+<p>Sooner or later someone asks for the ROI, and the honest answer starts by refusing the fake one. This methodology doesn&#39;t optimize the cheap input — tokens. It optimizes the expensive, scarce one: senior human judgment. It&#39;s a factor-substitution play — spend cheap compute to spare expensive attention, and let the gates and the adversarial review protect quality so the substitution never costs you output.</p>
+<p>That reframes every number. Yes, it burns <em>more</em> tokens than a single pass — three to five times more — because it explores, reviews, refutes, and re-reviews. The return isn&#39;t a smaller compute bill; it&#39;s the senior hours it hands back and the rework it never incurs. Compute is an input you manage, not one you minimize. (Even there, routing junior work a tier below the frontier trims ~30–40% off the multi-agent spend at near-zero quality risk.)</p>
+<p>So the KPIs it&#39;s <em>designed</em> to move:</p>
+<ul>
+<li><strong>Human touchpoints per delivery</strong> — from &quot;review every line&quot; to two-to-six decisions, taken at gates.</li>
+<li><strong>Cost of a wrong direction</strong> — caught at a mockup, not a finished build: roughly an order of magnitude cheaper for every phase of risk you retire early.</li>
+<li><strong>Rework and defect-escape rate</strong> — work arrives already criticized and fixed; the refuter kills false findings before they cause churn.</li>
+<li><strong>Compute per delivery</strong> — the one hard, mechanical number: −30–40% versus naive same-tier multi-agent.</li>
+</ul>
+<p>I won&#39;t quote a headline productivity percentage, because the honest one comes from a short pilot against your own baseline — and the office instruments all of it itself. The analytics view already tracks the senior/junior token split, gate outcomes, the refuter&#39;s kill rate, and the fix-rounds histogram. It doesn&#39;t ask you to believe the ROI. It measures it.</p>
 <h2>What the human is left doing</h2>
 <p>Six touchpoints. Ambiguity at intake, two design gates, an optional demo check, an escalation that should be rare, and the deploy button. Everything else — exploration, prototyping, design documents, the executive deck, tests, implementation, a multi-lens adversarial review — runs unattended, with quality enforced by contracts and hooks rather than by my vigilance.</p>
 <p>That inversion is the point. I didn&#39;t remove myself from the process; I moved myself to where judgment is scarce and leverage is highest — the same thing a good architect does in a human organization. The agents didn&#39;t replace the team. They let me finally afford one.</p>
@@ -90,11 +101,13 @@
 <p><strong><a href="https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office">github.com/yaakovslonimczyk-sudo/agentic-delivery-office</a></strong></p>
 <pre><code class="language-bash">git clone https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office.git
 cd agentic-delivery-office
-./install.sh /path/to/your/project
+./install.sh                 # system-wide, once — Claude Code (also --target codex | grok)
 </code></pre>
-<p>Then fill the business context in the generated <code>CLAUDE.md</code> — it&#39;s what grounds the business lenses — and run one real feature through the gates before trusting the office unattended. If you want to argue with the org chart, the issues tab is open.</p>
-<hr>
-<p><em>Yaakov Slonimczyk is a solution architect and economist working across fintech and retail operations in Latin America and Israel.</em></p>
+<p>It installs at user scope — agents, protocol, Live Board, and the <code>/office-init</code>
+and <code>/office-board</code> commands apply to every project. Run <code>/office-init</code> inside a
+repo to add its business context, then put one real feature through the gates
+before trusting the office unattended. If you want to argue with the org chart,
+the issues tab is open.</p>
 
 </body>
 </html>
