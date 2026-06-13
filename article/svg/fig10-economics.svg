@@ -1,0 +1,109 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFC861"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" fill="#142F54"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+
+  <text x="800" y="52" text-anchor="middle" fill="#DCE9F7" font-size="26" font-weight="bold">THE ECONOMICS — SUBSTITUTE CHEAP COMPUTE FOR SCARCE JUDGMENT</text>
+  <text x="800" y="82" text-anchor="middle" fill="#A9C1DD" font-size="16" font-style="italic">it optimizes the expensive, scarce input (senior human judgment) — not the cheap, abundant one (tokens)</text>
+
+  <!-- THESIS BAND: factor substitution -->
+  <rect x="110" y="112" width="560" height="150" rx="8" fill="#1B3A63" stroke="#8FD8EA" stroke-width="2.5"/>
+  <rect x="110" y="112" width="560" height="40" fill="#8FD8EA"/>
+  <text x="390" y="139" text-anchor="middle" fill="#1B3A63" font-size="15" font-weight="bold">CHEAP · ABUNDANT</text>
+  <text x="390" y="200" text-anchor="middle" fill="#DCE9F7" font-size="26" font-weight="bold">COMPUTE / TOKENS</text>
+  <text x="390" y="236" text-anchor="middle" fill="#A9C1DD" font-size="14">↑ spend 3–5× more — an input you MANAGE, not minimize</text>
+
+  <rect x="930" y="112" width="560" height="150" rx="8" fill="#1B3A63" stroke="#FF8B7E" stroke-width="2.5"/>
+  <rect x="930" y="112" width="560" height="40" fill="#FF8B7E"/>
+  <text x="1210" y="139" text-anchor="middle" fill="#1B3A63" font-size="15" font-weight="bold">EXPENSIVE · SCARCE</text>
+  <text x="1210" y="200" text-anchor="middle" fill="#DCE9F7" font-size="26" font-weight="bold">SENIOR HUMAN JUDGMENT</text>
+  <text x="1210" y="236" text-anchor="middle" fill="#A9C1DD" font-size="14">↓ spent only at the gates</text>
+
+  <line x1="680" y1="187" x2="920" y2="187" stroke="#FFC861" stroke-width="3" marker-end="url(#arrA)"/>
+  <text x="800" y="174" text-anchor="middle" fill="#FFC861" font-size="14" font-weight="bold">SUBSTITUTE</text>
+  <text x="800" y="232" text-anchor="middle" fill="#A9C1DD" font-size="12" font-style="italic">buys back</text>
+  <text x="800" y="300" text-anchor="middle" fill="#8FD8EA" font-size="14" font-weight="bold">quality is held constant by the staged gates + the refuter — so the substitution never costs output</text>
+
+  <!-- KPI CARDS -->
+  <text x="110" y="346" fill="#DCE9F7" font-size="15" font-weight="bold">KPIs THE METHODOLOGY IS DESIGNED TO MOVE</text>
+  <!-- card geometry: x = 110,470,830,1190 ; w=300 ; y=360 ; h=210 -->
+  <g>
+    <rect x="110" y="360" width="300" height="210" rx="7" fill="#1B3A63" stroke="#8FD8EA" stroke-width="2"/>
+    <text x="130" y="392" fill="#DCE9F7" font-size="15" font-weight="bold">Compute / delivery</text>
+    <text x="130" y="414" fill="#A9C1DD" font-size="12">junior-tier routing by</text>
+    <text x="130" y="431" fill="#A9C1DD" font-size="12">failure visibility</text>
+    <text x="260" y="486" text-anchor="middle" fill="#8FD8EA" font-size="30" font-weight="bold">−30–40%</text>
+    <text x="260" y="510" text-anchor="middle" fill="#A9C1DD" font-size="11">vs naive same-tier multi-agent</text>
+    <rect x="130" y="528" width="160" height="24" rx="12" fill="#0a0f18"/>
+    <text x="210" y="544" text-anchor="middle" fill="#8FD8EA" font-size="11" font-family="Menlo, monospace">CONFIDENCE: HIGH</text>
+  </g>
+  <g>
+    <rect x="470" y="360" width="300" height="210" rx="7" fill="#1B3A63" stroke="#FFC861" stroke-width="2"/>
+    <text x="490" y="392" fill="#DCE9F7" font-size="15" font-weight="bold">Human touchpoints</text>
+    <text x="490" y="414" fill="#A9C1DD" font-size="12">gates + autonomous</text>
+    <text x="490" y="431" fill="#A9C1DD" font-size="12">orchestrator</text>
+    <text x="620" y="486" text-anchor="middle" fill="#FFC861" font-size="30" font-weight="bold">2–6</text>
+    <text x="620" y="510" text-anchor="middle" fill="#A9C1DD" font-size="11">decisions, not "review every line"</text>
+    <rect x="490" y="528" width="200" height="24" rx="12" fill="#0a0f18"/>
+    <text x="590" y="544" text-anchor="middle" fill="#FFC861" font-size="11" font-family="Menlo, monospace">HIGH · design spec</text>
+  </g>
+  <g>
+    <rect x="830" y="360" width="300" height="210" rx="7" fill="#1B3A63" stroke="#FFC861" stroke-width="2"/>
+    <text x="850" y="392" fill="#DCE9F7" font-size="15" font-weight="bold">Cost of wrong direction</text>
+    <text x="850" y="414" fill="#A9C1DD" font-size="12">concept gate</text>
+    <text x="850" y="431" fill="#A9C1DD" font-size="12">before any build</text>
+    <text x="980" y="486" text-anchor="middle" fill="#FFC861" font-size="30" font-weight="bold">↓ ~10×</text>
+    <text x="980" y="510" text-anchor="middle" fill="#A9C1DD" font-size="11">caught at a mockup, not a build</text>
+    <rect x="850" y="528" width="120" height="24" rx="12" fill="#0a0f18"/>
+    <text x="910" y="544" text-anchor="middle" fill="#FFC861" font-size="11" font-family="Menlo, monospace">MEDIUM</text>
+  </g>
+  <g>
+    <rect x="1190" y="360" width="300" height="210" rx="7" fill="#1B3A63" stroke="#FF8B7E" stroke-width="2"/>
+    <text x="1210" y="392" fill="#DCE9F7" font-size="15" font-weight="bold">Rework / defect escape</text>
+    <text x="1210" y="414" fill="#A9C1DD" font-size="12">review swarm +</text>
+    <text x="1210" y="431" fill="#A9C1DD" font-size="12">refuter (VAR)</text>
+    <text x="1340" y="486" text-anchor="middle" fill="#FF8B7E" font-size="30" font-weight="bold">↓ fewer</text>
+    <text x="1340" y="510" text-anchor="middle" fill="#A9C1DD" font-size="11">arrives criticized &amp; fixed</text>
+    <rect x="1210" y="528" width="250" height="24" rx="12" fill="#0a0f18"/>
+    <text x="1335" y="544" text-anchor="middle" fill="#FF8B7E" font-size="11" font-family="Menlo, monospace">DIRECTIONAL · measure on baseline</text>
+  </g>
+
+  <!-- FORMULA -->
+  <rect x="110" y="606" width="830" height="200" rx="8" fill="#0a0f18" stroke="#34597F" stroke-width="1.5"/>
+  <text x="132" y="638" fill="#8FD8EA" font-size="15" font-weight="bold" font-family="Menlo, monospace">THE ROI, HONESTLY</text>
+  <g font-family="Menlo, monospace" font-size="15" fill="#DCE9F7">
+    <text x="132" y="672">ROI ≈ ( senior-hours freed × $/hr</text>
+    <text x="132" y="696">        + defects avoided   × $/defect</text>
+    <text x="132" y="720">        + wrong-builds avoided × $/build</text>
+    <text x="132" y="744">        − Δ compute )  ÷  Δ compute</text>
+  </g>
+  <text x="132" y="782" fill="#A9C1DD" font-size="13" font-style="italic">Δ compute is small against one senior hour → human leverage dominates. No headline %: it comes from a pilot vs your baseline.</text>
+
+  <!-- SELF-MEASURING -->
+  <rect x="970" y="606" width="520" height="200" rx="8" fill="#1B3A63" stroke="#FFC861" stroke-width="2"/>
+  <text x="1230" y="638" text-anchor="middle" fill="#FFC861" font-size="15" font-weight="bold">THE OFFICE MEASURES ITS OWN ROI</text>
+  <g font-family="Menlo, monospace" font-size="13" fill="#DCE9F7">
+    <text x="996" y="672">· senior / junior token split</text>
+    <text x="996" y="698">· gate outcomes — approved / adjusted / killed</text>
+    <text x="996" y="724">· refuter kill rate (review precision)</text>
+    <text x="996" y="750">· fix-rounds histogram</text>
+  </g>
+  <text x="1230" y="788" text-anchor="middle" fill="#8FD8EA" font-size="13" font-style="italic">it doesn't ask you to believe the ROI — it instruments it</text>
+
+  <!-- title block stamp -->
+  <g font-family="Menlo, Courier New, monospace">
+    <rect x="1150" y="830" width="420" height="56" fill="#142F54" stroke="#DCE9F7" stroke-width="1.5"/>
+    <line x1="1150" y1="849" x2="1570" y2="849" stroke="#DCE9F7" stroke-width="1"/>
+    <line x1="1150" y1="868" x2="1570" y2="868" stroke="#DCE9F7" stroke-width="1"/>
+    <text x="1160" y="844" font-size="11" font-weight="bold" fill="#DCE9F7">YAAKOV SLONIMCZYK — SOLUTION ARCHITECT</text>
+    <text x="1160" y="863" font-size="10" fill="#A9C1DD">SERIES: THE AGENTIC DELIVERY OFFICE</text>
+    <text x="1160" y="882" font-size="10" fill="#FF8B7E">FIG. 09 · THE ECONOMICS · REV A · 2026</text>
+  </g>
+</svg>

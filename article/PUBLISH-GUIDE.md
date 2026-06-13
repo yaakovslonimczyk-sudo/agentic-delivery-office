@@ -92,6 +92,11 @@ GIF (same section, the animated one — Medium supports animated GIFs):
 A pass out wide, a goal at Gate 1, and a VAR check that confirms a regression — the review loop, live.
 ```
 
+Fig 9 (under "What it's for: the economics"):
+```
+Fig. 09 — The economics: spend cheap compute to spare scarce senior judgment; the gates and the refuter hold quality constant; the office instruments its own ROI.
+```
+
 If any image is missing: download it from
 `https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office/tree/main/article/images`
 and drag the PNG into place.

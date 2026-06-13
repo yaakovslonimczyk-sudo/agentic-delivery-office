@@ -122,6 +122,10 @@ It reads like a toy until you watch it for thirty seconds and realize you've abs
 
 ## What it's for: the economics
 
+![The economics](images/fig10-economics.png)
+
+*Fig. 09 — The economics: spend cheap compute to spare scarce senior judgment; the gates and the refuter hold quality constant; the office instruments its own ROI.*
+
 Sooner or later someone asks for the ROI, and the honest answer starts by refusing the fake one. This methodology doesn't optimize the cheap input — tokens. It optimizes the expensive, scarce one: senior human judgment. It's a factor-substitution play — spend cheap compute to spare expensive attention, and let the gates and the adversarial review protect quality so the substitution never costs you output.
 
 That reframes every number. Yes, it burns *more* tokens than a single pass — three to five times more — because it explores, reviews, refutes, and re-reviews. The return isn't a smaller compute bill; it's the senior hours it hands back and the rework it never incurs. Compute is an input you manage, not one you minimize. (Even there, routing junior work a tier below the frontier trims ~30–40% off the multi-agent spend at near-zero quality risk.)
