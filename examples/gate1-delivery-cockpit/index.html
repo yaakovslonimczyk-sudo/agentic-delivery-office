@@ -59,6 +59,52 @@
   .lb-log-panel li .lb-tokc { color:var(--amber); }
   .lb-ball { position:fixed; width:13px; height:13px; border-radius:50%; background:var(--amber); box-shadow:0 0 12px var(--amber); z-index:90; pointer-events:none; transition:transform 1.05s cubic-bezier(.4,0,.6,1); }
 
+  /* ── Match mode (the pitch) ── */
+  .bm-toggle { display:flex; justify-content:center; margin:14px auto 0; width:fit-content; border:1px solid var(--cyan); border-radius:20px; overflow:hidden; }
+  .bm-toggle button { background:transparent; color:var(--sec); border:none; padding:7px 20px; font-family:var(--ui); font-size:13px; cursor:pointer; }
+  .bm-toggle button.on { background:var(--cyan); color:var(--panel); font-weight:bold; }
+  .bm-score { display:flex; gap:28px; align-items:center; justify-content:center; margin:18px auto 8px; font-family:var(--mono); }
+  .bm-score .sc { font-size:36px; font-weight:bold; text-align:center; }
+  .bm-score .for { color:var(--cyan); } .bm-score .against { color:var(--coral); }
+  .bm-score .lbl { font-size:9px; color:var(--sec); text-align:center; letter-spacing:1px; }
+  .bm-score .clock { font-size:18px; color:var(--amber); border:1px solid #34597F; padding:4px 12px; border-radius:4px; }
+  .bm-poss { text-align:center; font-family:var(--mono); font-size:12px; color:var(--sec); margin-bottom:10px; }
+  .bm-poss b { color:var(--line); }
+  .bm-pitch { position:relative; max-width:720px; margin:0 auto; aspect-ratio:3/4;
+    background:linear-gradient(160deg,#0e3b32,#0c2c46); border:2px solid rgba(220,233,247,0.55); border-radius:8px; overflow:hidden; }
+  .bm-pitch::before { content:''; position:absolute; inset:0; pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px); background-size:36px 36px; }
+  .bm-line { position:absolute; box-sizing:border-box; }
+  .bm-player { position:absolute; transform:translate(-50%,-50%); width:62px; text-align:center; cursor:pointer; z-index:3; }
+  .bm-jersey { width:42px; height:42px; margin:0 auto; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:bold; font-size:14px; border:2px solid var(--line); transition:box-shadow .3s; }
+  .bm-player.senior .bm-jersey { background:var(--panel); color:var(--line); }
+  .bm-player.junior .bm-jersey { background:var(--cyan); color:var(--panel); }
+  .bm-player.captain .bm-jersey { background:var(--amber); color:var(--panel); border-color:#fff; width:46px; height:46px; }
+  .bm-player.working .bm-jersey { box-shadow:0 0 0 3px var(--amber), 0 0 18px var(--amber); }
+  .bm-name { font-size:9px; color:var(--line); margin-top:3px; white-space:nowrap; }
+  .bm-pos { font-size:8px; color:var(--sec); font-family:var(--mono); }
+  .bm-ball { position:absolute; width:15px; height:15px; border-radius:50%; background:#fff; box-shadow:0 0 10px #fff, 0 0 5px var(--amber); z-index:6; transform:translate(-50%,-50%);
+    transition:left 1s cubic-bezier(.4,0,.6,1), top 1s cubic-bezier(.4,0,.6,1); }
+  .bm-flash { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:200; pointer-events:none; opacity:0; flex-direction:column; }
+  .bm-flash.show { animation:bmflash 2.4s ease; }
+  @keyframes bmflash { 0%{opacity:0;transform:scale(.5)} 12%{opacity:1;transform:scale(1)} 82%{opacity:1} 100%{opacity:0} }
+  .bm-flash .msg { font-size:78px; font-weight:900; letter-spacing:3px; text-shadow:0 6px 30px rgba(0,0,0,.7); }
+  .bm-flash.goal .msg { color:var(--cyan); }
+  .bm-flash.own .msg { color:var(--coral); }
+  .bm-flash .sub { font-family:var(--mono); font-size:16px; color:var(--line); margin-top:8px; }
+  .bm-cardwrap { position:fixed; inset:0; background:rgba(10,24,44,.8); display:none; align-items:center; justify-content:center; z-index:210; }
+  .bm-cardwrap.show { display:flex; }
+  .bm-fut { width:300px; border-radius:16px; padding:22px; position:relative; background:linear-gradient(150deg,#1f4170,#0f2a4a); border:2px solid var(--cyan); box-shadow:0 18px 50px rgba(0,0,0,.55); }
+  .bm-fut.senior { border-color:var(--line); background:linear-gradient(150deg,#23508a,#142f54); }
+  .bm-fut .ovr { font-family:var(--mono); font-size:42px; font-weight:bold; color:var(--amber); line-height:1; }
+  .bm-fut .futpos { font-family:var(--mono); font-size:13px; color:var(--sec); margin-top:2px; }
+  .bm-fut .futnum { position:absolute; top:20px; right:22px; font-family:var(--mono); font-size:32px; color:rgba(220,233,247,.45); }
+  .bm-fut .futname { font-size:20px; font-weight:bold; margin:12px 0 2px; }
+  .bm-fut .futkit { font-family:var(--mono); font-size:10px; color:var(--cyan); }
+  .bm-fut .futstats { display:grid; grid-template-columns:1fr 1fr; gap:7px 18px; margin-top:16px; font-family:var(--mono); font-size:11.5px; color:var(--sec); border-top:1px solid rgba(220,233,247,.2); padding-top:14px; }
+  .bm-fut .futstats .v { color:var(--amber); font-weight:bold; float:right; }
+  .bm-fut .futclose { margin-top:18px; width:100%; padding:9px; background:var(--cyan); color:var(--panel); border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+
   body {
     font-family: var(--ui);
     background: var(--bg);
@@ -1397,21 +1443,48 @@
       <span>ENGAGEMENTS TODAY <b id="lb-runs">14</b></span>
       <span>HOLDING THE BALL <b id="lb-active">0</b></span>
     </div>
-  </div>
-
-  <div class="lb-orch" id="lb-orch">
-    <div class="lb-orch-bar">THE ORCHESTRATOR · SOLUTION ARCHITECT</div>
-    <div class="lb-orch-body"><b>frontier (session model)</b> · persistent memory · briefs out, conclusions in</div>
-  </div>
-
-  <div class="lb-benches">
-    <div class="lb-bench senior">
-      <div class="lb-bench-bar">SENIOR BENCH — frontier (inherit) · never downgraded</div>
-      <div class="lb-cards" id="lb-senior"></div>
+    <div class="bm-toggle">
+      <button id="bm-tab-bp" class="on" onclick="setBoardMode('blueprint')">Blueprint</button>
+      <button id="bm-tab-m" onclick="setBoardMode('match')">⚽ Match</button>
     </div>
-    <div class="lb-bench junior">
-      <div class="lb-bench-bar">JUNIOR BENCH — one tier below · ground-truth checked</div>
-      <div class="lb-cards" id="lb-junior"></div>
+  </div>
+
+  <!-- ── BLUEPRINT MODE (default) ── -->
+  <div id="board-blueprint">
+    <div class="lb-orch" id="lb-orch">
+      <div class="lb-orch-bar">THE ORCHESTRATOR · SOLUTION ARCHITECT</div>
+      <div class="lb-orch-body"><b>frontier (session model)</b> · persistent memory · briefs out, conclusions in</div>
+    </div>
+
+    <div class="lb-benches">
+      <div class="lb-bench senior">
+        <div class="lb-bench-bar">SENIOR BENCH — frontier (inherit) · never downgraded</div>
+        <div class="lb-cards" id="lb-senior"></div>
+      </div>
+      <div class="lb-bench junior">
+        <div class="lb-bench-bar">JUNIOR BENCH — one tier below · ground-truth checked</div>
+        <div class="lb-cards" id="lb-junior"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MATCH MODE (the pitch) ── -->
+  <div id="board-match" style="display:none;">
+    <div class="bm-score">
+      <div><div class="sc for" id="bm-for">3</div><div class="lbl">DELIVERIES<br/>goals scored</div></div>
+      <div class="clock" id="bm-clock">00:00</div>
+      <div><div class="sc against" id="bm-against">1</div><div class="lbl">REGRESSIONS<br/>own goals</div></div>
+    </div>
+    <div class="bm-poss">⚽ POSSESSION: <b id="bm-poss">orchestrator</b> · tap any player for their card</div>
+    <div class="bm-pitch" id="bm-pitch">
+      <div class="bm-line" style="left:0;right:0;top:50%;height:0;border-top:1.5px solid rgba(220,233,247,0.4);"></div>
+      <div class="bm-line" style="left:35%;right:35%;top:38%;height:24%;border:1.5px solid rgba(220,233,247,0.4);border-radius:50%;"></div>
+      <div class="bm-line" style="left:24%;right:24%;top:0;height:13%;border:1.5px solid rgba(220,233,247,0.4);border-top:none;"></div>
+      <div class="bm-line" style="left:24%;right:24%;bottom:0;height:13%;border:1.5px solid rgba(220,233,247,0.4);border-bottom:none;"></div>
+      <div class="bm-ball" id="bm-ball" style="left:50%;top:50%;"></div>
+    </div>
+    <div style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--sec);margin-top:10px;">
+      HOME — senior bench (frontier) · AWAY — junior bench (one tier below) · #1 refuter = GK/VAR · #10© orchestrator = regista
     </div>
   </div>
 
@@ -1736,6 +1809,10 @@
 <!-- Toast container -->
 <div class="toast-container" id="toasts"></div>
 
+<!-- Match-mode overlays -->
+<div class="bm-flash" id="bm-flash"><div class="msg"></div><div class="sub"></div></div>
+<div class="bm-cardwrap" id="bm-cardwrap" onclick="if(event.target===this)this.classList.remove('show')"><div class="bm-fut"></div></div>
+
 <!-- Title block stamp -->
 <div class="title-block">
   YAAKOV SLONIMCZYK — SOLUTION ARCHITECT<br/>
@@ -1757,6 +1834,7 @@
     if (!h) return;
     setTimeout(() => {
       if (h === 'board') { showView('board'); startBoardSim(); }
+      else if (h === 'match') { showView('board'); setBoardMode('match'); startBoardSim(); }
       else if (h === 'gate1') openGate1();
       else if (['team','analytics','settings','gate2','escalation'].includes(h)) showView(h);
     }, 60);
@@ -2033,18 +2111,18 @@
   // ── Toast ──
   // ── Live Board: full org chart + ball-passing simulation ──
   const LB_AGENTS = [
-    { n:'planner',           bench:'senior', model:'inherit · frontier', tok:61400, runs:1 },
-    { n:'code-reviewer',     bench:'senior', model:'inherit · frontier', tok:57300, runs:1 },
-    { n:'security-reviewer', bench:'senior', model:'inherit · frontier', tok:48900, runs:1 },
-    { n:'refuter',           bench:'senior', model:'inherit · frontier', tok:21200, runs:2 },
-    { n:'hld-architect',     bench:'senior', model:'inherit · frontier', tok:0,     runs:0 },
-    { n:'deck-architect',    bench:'senior', model:'inherit · frontier', tok:0,     runs:0 },
-    { n:'explorer',          bench:'junior', model:'junior tier · roster', tok:48200, runs:1 },
-    { n:'mockup-builder',    bench:'junior', model:'junior tier · roster', tok:92800, runs:1 },
-    { n:'test-writer',       bench:'junior', model:'junior tier · roster', tok:0,     runs:0 },
-    { n:'db-reviewer',       bench:'junior', model:'junior tier · roster', tok:0,     runs:0 },
-    { n:'design-reviewer',   bench:'junior', model:'junior tier · roster', tok:0,     runs:0 },
-    { n:'business-reviewer', bench:'junior', model:'junior tier · roster', tok:33200, runs:1 },
+    { n:'planner',           bench:'senior', model:'inherit · frontier', tok:61400, runs:1, num:6,  pos:'CDM',     x:50, y:64, passPct:88, assists:5, goals:0, cards:0 },
+    { n:'code-reviewer',     bench:'senior', model:'inherit · frontier', tok:57300, runs:1, num:4,  pos:'CB',      x:32, y:78, passPct:91, assists:1, goals:0, cards:0 },
+    { n:'security-reviewer', bench:'senior', model:'inherit · frontier', tok:48900, runs:1, num:5,  pos:'CB',      x:68, y:78, passPct:86, assists:0, goals:0, cards:0 },
+    { n:'refuter',           bench:'senior', model:'inherit · frontier', tok:21200, runs:2, num:1,  pos:'GK · VAR', x:50, y:91, passPct:79, assists:0, goals:0, cards:0 },
+    { n:'hld-architect',     bench:'senior', model:'inherit · frontier', tok:0,     runs:0, num:8,  pos:'CM',      x:36, y:42, passPct:84, assists:2, goals:1, cards:0 },
+    { n:'deck-architect',    bench:'senior', model:'inherit · frontier', tok:0,     runs:0, num:18, pos:'CM',      x:64, y:42, passPct:90, assists:1, goals:1, cards:0 },
+    { n:'explorer',          bench:'junior', model:'junior tier · roster', tok:48200, runs:1, num:7,  pos:'RW',  x:82, y:24, passPct:82, assists:4, goals:0, cards:0 },
+    { n:'mockup-builder',    bench:'junior', model:'junior tier · roster', tok:92800, runs:1, num:9,  pos:'ST',  x:50, y:13, passPct:77, assists:1, goals:3, cards:1 },
+    { n:'test-writer',       bench:'junior', model:'junior tier · roster', tok:0,     runs:0, num:11, pos:'LW',  x:20, y:24, passPct:95, assists:0, goals:2, cards:0 },
+    { n:'db-reviewer',       bench:'junior', model:'junior tier · roster', tok:0,     runs:0, num:2,  pos:'RB',  x:86, y:64, passPct:88, assists:0, goals:0, cards:0 },
+    { n:'design-reviewer',   bench:'junior', model:'junior tier · roster', tok:0,     runs:0, num:3,  pos:'LB',  x:14, y:64, passPct:80, assists:0, goals:0, cards:0 },
+    { n:'business-reviewer', bench:'junior', model:'junior tier · roster', tok:33200, runs:1, num:19, pos:'CF',  x:50, y:30, passPct:85, assists:1, goals:0, cards:0 },
   ];
   const LB_TASKS = {
     'planner':'HL architecture: inventory sync rework','code-reviewer':'Cold review: webhook diff r2',
@@ -2077,6 +2155,7 @@
     document.getElementById('lb-tokens').textContent = lbFmt(lbTotalTok);
     document.getElementById('lb-runs').textContent = lbTotalRuns;
     document.getElementById('lb-active').textContent = LB_AGENTS.filter(a=>a.working).length;
+    pitchSync();
   }
 
   function lbBall(fromEl, toEl){
@@ -2105,7 +2184,8 @@
     if (!idle.length) return;
     const a = idle[Math.floor(Math.random()*idle.length)];
     a.working = true; a.startedAt = Date.now(); a.last = LB_TASKS[a.n];
-    lbBall(document.getElementById('lb-orch'), a.el);
+    if (boardMode === 'match') { pitchBall(a.x, a.y); setPoss(a.n); }
+    else { lbBall(document.getElementById('lb-orch'), a.el); }
     lbLog(`${lbHHMM()} <span class="lb-out">→ ${a.n}</span> · ${a.last}`);
     lbRender();
     const workMs = 4000 + Math.random()*8000;
@@ -2114,7 +2194,13 @@
       const tok = Math.round(8000 + Math.random()*60000);
       a.tok += tok; lbTotalTok += tok;
       if (currentView === 'board') {
-        lbBall(a.el, document.getElementById('lb-orch'));
+        if (boardMode === 'match') {
+          pitchBall(ORCH_XY.x, ORCH_XY.y); setPoss('orchestrator');
+          if (PRODUCERS.includes(a.n) && Math.random() < 0.34) scoreGoal(a);
+          else if (!PRODUCERS.includes(a.n) && Math.random() < 0.16) scoreOwn(a);
+        } else {
+          lbBall(a.el, document.getElementById('lb-orch'));
+        }
         lbLog(`${lbHHMM()} <span class="lb-in">← ${a.n}</span> returned · <span class="lb-tokc">${lbFmt(tok)} tok</span>`);
       }
       lbRender();
@@ -2134,6 +2220,81 @@
     lbDispatch();
     setTimeout(lbDispatch, 1200);
     setInterval(()=>{ if (Math.random() < 0.75) lbDispatch(); }, 3200);
+  }
+
+  // ── Match mode: pitch, ball, goals, player cards ──
+  let boardMode = 'blueprint', matchBuilt = false, gFor = 3, gAgainst = 1, matchSec = 0, matchClockOn = false;
+  const ORCH_XY = { x:50, y:50 };
+  const PRODUCERS = ['mockup-builder','hld-architect','deck-architect','test-writer','explorer','planner'];
+
+  function setBoardMode(m){
+    boardMode = m;
+    document.getElementById('board-blueprint').style.display = m==='blueprint' ? '' : 'none';
+    document.getElementById('board-match').style.display = m==='match' ? '' : 'none';
+    document.getElementById('bm-tab-bp').classList.toggle('on', m==='blueprint');
+    document.getElementById('bm-tab-m').classList.toggle('on', m==='match');
+    if (m==='match'){ pitchBuild(); pitchSync(); startMatchClock(); }
+  }
+
+  function pitchBuild(){
+    if (matchBuilt) return; matchBuilt = true;
+    const pitch = document.getElementById('bm-pitch');
+    const o = document.createElement('div');
+    o.className = 'bm-player captain'; o.style.left = ORCH_XY.x+'%'; o.style.top = ORCH_XY.y+'%';
+    o.innerHTML = '<div class="bm-jersey">10©</div><div class="bm-name">orchestrator</div><div class="bm-pos">REGISTA</div>';
+    pitch.appendChild(o);
+    for (const a of LB_AGENTS){
+      const d = document.createElement('div');
+      d.className = 'bm-player ' + a.bench; d.id = 'bm-pl-' + a.n;
+      d.style.left = a.x+'%'; d.style.top = a.y+'%';
+      d.innerHTML = `<div class="bm-jersey">${a.num}</div><div class="bm-name">${a.n}</div><div class="bm-pos">${a.pos}</div>`;
+      d.onclick = () => openPlayerCard(a.n);
+      pitch.appendChild(d);
+    }
+  }
+  function pitchSync(){
+    if (!matchBuilt) return;
+    for (const a of LB_AGENTS){ const n = document.getElementById('bm-pl-'+a.n); if (n) n.classList.toggle('working', !!a.working); }
+  }
+  function pitchBall(x,y){ const b = document.getElementById('bm-ball'); if(b){ b.style.left = x+'%'; b.style.top = y+'%'; } }
+  function setPoss(n){ const e = document.getElementById('bm-poss'); if (e) e.textContent = n; }
+  function startMatchClock(){
+    if (matchClockOn) return; matchClockOn = true;
+    setInterval(()=>{ matchSec++; const m = String(Math.floor(matchSec/60)).padStart(2,'0'), s = String(matchSec%60).padStart(2,'0');
+      const e = document.getElementById('bm-clock'); if (e) e.textContent = m+':'+s; }, 1000);
+  }
+  function bmFlash(kind, msg, sub){
+    const f = document.getElementById('bm-flash');
+    f.className = 'bm-flash ' + kind;
+    f.querySelector('.msg').textContent = msg; f.querySelector('.sub').textContent = sub || '';
+    void f.offsetWidth; f.classList.add('show'); setTimeout(()=>f.classList.remove('show'), 2400);
+  }
+  function scoreGoal(a){
+    gFor++; a.goals = (a.goals||0)+1; document.getElementById('bm-for').textContent = gFor;
+    bmFlash('goal', '¡GOL!', a.n + ' marca · asistencia: orchestrator');
+  }
+  function scoreOwn(a){
+    gAgainst++; document.getElementById('bm-against').textContent = gAgainst;
+    bmFlash('own', 'GOL EN CONTRA', a.n + ' cazó un blocker → vuelta a fix');
+  }
+  function ovr(a){ return Math.min(99, Math.round(70 + (a.runs||0)*1.5 + (a.tok||0)/12000 + (a.passPct||80)*0.12 + (a.goals||0)*2)); }
+  function openPlayerCard(name){
+    const a = LB_AGENTS.find(x=>x.n===name); if (!a) return;
+    const w = document.getElementById('bm-cardwrap'), c = w.querySelector('.bm-fut');
+    c.className = 'bm-fut ' + a.bench;
+    c.innerHTML = `<div class="futnum">${a.num}</div><div class="ovr">${ovr(a)}</div><div class="futpos">${a.pos}</div>
+      <div class="futname">${a.n}</div>
+      <div class="futkit">${a.bench==='senior' ? 'HOME KIT · frontier (inherit)' : 'AWAY KIT · junior tier (roster)'}</div>
+      <div class="futstats">
+        <div>KM RUN <span class="v">${lbFmt(a.tok||0)}</span></div>
+        <div>MATCHES <span class="v">${a.runs||0}</span></div>
+        <div>PASS % <span class="v">${a.passPct||80}</span></div>
+        <div>ASSISTS <span class="v">${a.assists||0}</span></div>
+        <div>GOALS <span class="v">${a.goals||0}</span></div>
+        <div>CARDS <span class="v">${a.cards||0} ${a.cards ? '🟨' : ''}</span></div>
+      </div>
+      <button class="futclose" onclick="document.getElementById('bm-cardwrap').classList.remove('show')">Close card</button>`;
+    w.classList.add('show');
   }
 
   function showToast(msg, type) {
