@@ -1977,21 +1977,42 @@
     REAL_MODE = true; REAL_ENG = data.engagements;
     renderRealTable();
   }
+  function rdPending(e){ return e.status==='gate1_pending' || e.status==='gate2_pending' || e.status==='escalated'; }
+  function rdPhaseChip(e){
+    const ph = e.phase ? ('phase-'+e.phase.toLowerCase()) : 'phase-b';
+    const lbl = e.phase ? (e.phase+' · '+({A:'Concept',B:'Design',C:'Build'}[e.phase]||'')) : 'live';
+    return '<span class="phase-chip '+ph+'">'+lbl+'</span>';
+  }
+  function rdStatus(e){
+    const map = {
+      gate1_pending: ['amber','GATE 1 — AWAITING YOUR APPROVAL'],
+      gate2_pending: ['amber','GATE 2 — AWAITING YOUR APPROVAL'],
+      escalated:     ['coral','ESCALATED — human decision required'],
+      building:      ['cyan', e.active>0 ? e.active+' agent(s) working' : 'building'],
+      delivered:     ['cyan','delivered'],
+      idle:          ['sec','idle · '+e.runs+' runs'],
+      enrolled:      ['sec','enrolled · idle'],
+    };
+    const [c,t] = map[e.status] || ['sec', e.status||'—'];
+    const col = c==='amber'?'var(--amber)':c==='coral'?'var(--coral)':c==='cyan'?'var(--cyan)':'var(--sec)';
+    const dot = c==='amber'?'pulse-amber':c==='coral'?'pulse-coral':'pulse-cyan';
+    return '<div class="status-badge"><span class="pulse-dot '+dot+'"></span><span style="color:'+col+';font-weight:'+(rdPending(e)?'600':'400')+';">'+t+'</span></div>';
+  }
   function renderRealTable(){
     const tbody = document.getElementById('eng-tbody');
-    const rows = REAL_ENG.filter(e => filterMode === 'all' ? true : (e.active>0 || !e.runs));
+    const rows = REAL_ENG.filter(e => filterMode === 'all' ? true : rdPending(e));
     tbody.innerHTML = rows.map(e => `
       <tr onclick="showView('board'); (typeof syncNavTabs==='function'&&syncNavTabs('board')); (typeof startBoardSim==='function'&&startBoardSim())">
-        <td><div class="eng-name">${e.project}<small>${e.path||''}</small></div></td>
-        <td><span class="phase-chip phase-b">live</span></td>
-        <td><div class="status-badge"><span class="pulse-dot ${e.active>0?'pulse-amber':'pulse-cyan'}"></span>
-          <span style="color:${e.active>0?'var(--amber)':'var(--sec)'};">${e.active>0 ? e.active+' agent(s) working' : (e.runs ? 'idle · '+e.runs+' runs' : 'enrolled · idle')}</span></div></td>
+        <td><div class="eng-name">${e.project}<small>${e.note||e.path||''}</small></div></td>
+        <td>${rdPhaseChip(e)}</td>
+        <td>${rdStatus(e)}</td>
         <td><span class="tok">${rdTok(e.tokens)}</span></td>
         <td><span class="time-spent">${rdAgo(e.lastTs)}</span></td>
-        <td><span class="action-hint">→ Live board</span></td>
-      </tr>`).join('') || '<tr><td colspan="6" style="padding:20px;color:var(--sec);">No engagements match this filter.</td></tr>';
+        <td><span class="action-hint">${rdPending(e)?'→ Review &amp; decide':'→ Live board'}</span></td>
+      </tr>`).join('') || '<tr><td colspan="6" style="padding:20px;color:var(--sec);">Nothing needs you right now — the office is working.</td></tr>';
     const sub = document.querySelector('.list-sub');
-    if (sub) sub.textContent = 'LIVE · reading your scope · ' + REAL_ENG.length + ' enrolled · ' + REAL_ENG.filter(e=>e.active>0).length + ' active';
+    const pend = REAL_ENG.filter(rdPending).length;
+    if (sub) sub.textContent = 'LIVE · reading your scope · ' + REAL_ENG.length + ' enrolled · ' + pend + ' awaiting your decision';
     const es = document.getElementById('empty-state'); if (es) es.style.display = 'none';
     document.getElementById('eng-table').style.display = '';
   }

@@ -29,23 +29,56 @@ function readEvents() {
       .map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   } catch { return []; }
 }
-// Aggregate real agent activity per project + fold in enrolled-but-idle projects.
+// Explicit per-project state written by the orchestrator at gate transitions (Layer 2).
+function readStates() {
+  const dir = path.join(path.dirname(SCOPE_CANDIDATES[1] || ''), 'engagements'); // ~/.claude/office/engagements
+  const alt = path.join(__dirname, '..', 'office', 'engagements');
+  const out = {};
+  for (const d of [dir, alt]) {
+    try {
+      for (const fn of fs.readdirSync(d)) {
+        if (!fn.endsWith('.json')) continue;
+        try { const s = JSON.parse(fs.readFileSync(path.join(d, fn), 'utf8')); out[s.project] = s; } catch {}
+      }
+    } catch {}
+  }
+  return out;
+}
+// Infer phase from which agents have run (automatic, zero-effort fallback).
+const PHASE_C = new Set(['code-reviewer','security-reviewer','test-writer','db-reviewer','design-reviewer','refuter']);
+const PHASE_B = new Set(['hld-architect','deck-architect']);
+function inferPhase(agents) {
+  if ([...agents].some(a => PHASE_C.has(a))) return 'C';
+  if ([...agents].some(a => PHASE_B.has(a))) return 'B';
+  return 'A';
+}
+// Aggregate real agent activity per project + fold in enrolled-but-idle projects + merge explicit state.
 function engagements() {
   const scope = readScope();
+  const states = readStates();
   const byProj = {};
   const base = p => (p || '').split('/').filter(Boolean).pop() || p || 'unknown';
   for (const p of (scope.in_scope || [])) {
     const name = base(p);
-    byProj[name] = { project: name, path: p, tokens: 0, runs: 0, active: 0, lastTs: 0, enrolled: true };
+    byProj[name] = { project: name, path: p, tokens: 0, runs: 0, active: 0, lastTs: 0, enrolled: true, agents: new Set() };
   }
   for (const e of readEvents()) {
     const name = e.proj || base(e.projPath) || 'unknown';
-    const g = byProj[name] || (byProj[name] = { project: name, path: e.projPath || '', tokens: 0, runs: 0, active: 0, lastTs: 0, enrolled: false });
+    const g = byProj[name] || (byProj[name] = { project: name, path: e.projPath || '', tokens: 0, runs: 0, active: 0, lastTs: 0, enrolled: false, agents: new Set() });
+    if (e.agent) g.agents.add(e.agent);
     if (e.ev === 'spawn') g.active++;
     if (e.ev === 'return') { g.active = Math.max(0, g.active - 1); g.runs++; g.tokens += (e.tokens || 0); }
     g.lastTs = Math.max(g.lastTs, e.ts || 0);
   }
-  return { default_policy: scope.default_policy || 'opt-in', engagements: Object.values(byProj).sort((a, b) => b.lastTs - a.lastTs) };
+  const list = Object.values(byProj).map(g => {
+    const st = states[g.project];
+    const phase = st ? st.phase : (g.runs ? inferPhase(g.agents) : null);
+    const status = st ? st.status : (g.active > 0 ? 'building' : (g.runs ? 'idle' : 'enrolled'));
+    return { project: g.project, path: g.path, tokens: g.tokens, runs: g.runs, active: g.active,
+             lastTs: Math.max(g.lastTs, st ? st.updatedAt || 0 : 0), enrolled: g.enrolled,
+             phase, status, note: st ? st.note : '' };
+  });
+  return { default_policy: scope.default_policy || 'opt-in', engagements: list.sort((a, b) => b.lastTs - a.lastTs) };
 }
 function sendJSON(res, obj) {
   res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });

@@ -253,6 +253,24 @@ Every reviewer prompt must include, verbatim:
 > BLOCKING, return exactly: `APPROVED` plus at most 3 non-blocking notes.
 > Finding nothing is a fully acceptable outcome.
 
+## Recording engagement state (so the cockpit shows it live)
+
+At each phase/gate transition, record the engagement's state so the Office
+cockpit shows real status (not just inferred activity). Run, from the project:
+
+    ~/.claude/office/bin/office-state.sh <phase A|B|C> <status> [note]
+
+- Reaching GATE 1 → `office-state.sh A gate1_pending "mockup + HL diagram ready"`
+- Human approves Gate 1 → `office-state.sh B building "HLD in progress"`
+- Reaching GATE 2 → `office-state.sh B gate2_pending "HLD + deck ready"`
+- Approved, building → `office-state.sh C building`
+- 2 fix rounds exhausted → `office-state.sh C escalated "<finding>"`
+- Delivered → `office-state.sh C delivered "<residuals>"`
+- Abandon tracking → `office-state.sh - cleared`
+
+Phase alone is inferred automatically from which agents have run; this records
+the explicit gate/decision status that inference can't see.
+
 ## Anti-oscillation rules
 
 - A fix may only address verified blockers; no opportunistic refactors inside the loop.

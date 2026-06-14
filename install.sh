@@ -91,9 +91,10 @@ PY
 install_claude_user(){
   local C="$HOME_DIR/.claude"
   echo "Installing The Agentic Delivery Office → Claude Code (USER scope): $C"
-  DO mkdir -p "$C/agents" "$C/commands" "$C/hooks" "$C/office-board" "$C/office"
+  DO mkdir -p "$C/agents" "$C/commands" "$C/hooks" "$C/office-board" "$C/office" "$C/office/engagements" "$C/office/bin"
   DO cp "$KIT_DIR/.claude/agents/"*.md "$C/agents/"
   DO cp "$KIT_DIR/.claude/hooks/"*.sh "$C/hooks/"; chmodx "$C/hooks/"*.sh
+  DO cp "$KIT_DIR/.claude/bin/office-state.sh" "$C/office/bin/"; chmodx "$C/office/bin/office-state.sh"
   DO cp "$KIT_DIR/.claude/board/server.js" "$KIT_DIR/.claude/board/index.html" "$C/office-board/"
   DO cp "$KIT_DIR/ORCHESTRATION.md" "$C/office/ORCHESTRATION.md"
   DO cp "$KIT_DIR/commands/"*.md "$C/commands/"
