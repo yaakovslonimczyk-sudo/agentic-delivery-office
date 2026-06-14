@@ -15,6 +15,9 @@ case "$cmd" in
   *) exit 0 ;;
 esac
 
+# Respect project scope: do not gate projects that aren't in the Office's scope
+"$(dirname "$0")/office-active.sh" "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
+
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 
 LINT_CMD=""

@@ -37,6 +37,30 @@ append_block(){ # file marker srcfile
   echo "  ✓ block appended → $f"
 }
 
+ensure_scope(){ # scope.json
+  local f="$1"
+  if [ "$DRYRUN" = 1 ]; then echo "  [dry] ensure scope registry → $f (default opt-in)"; return; fi
+  mkdir -p "$(dirname "$f")"
+  if [ -f "$f" ]; then echo "  • scope registry exists (kept): $f"; return; fi
+  printf '{\n  "default_policy": "opt-in",\n  "in_scope": [],\n  "excluded": []\n}\n' > "$f"
+  echo "  ✓ scope registry created (default: opt-in) → $f"
+}
+
+enroll_scope(){ # scope.json projectpath  (only if registry exists)
+  local f="$1" p="$2"
+  [ -f "$f" ] || return 0
+  if [ "$DRYRUN" = 1 ]; then echo "  [dry] enroll $p → $f"; return; fi
+  SCOPE="$f" P="$p" python3 - <<'PY'
+import json,os
+f=os.environ['SCOPE']; p=os.path.realpath(os.environ['P'])
+s=json.load(open(f)); ins=s.setdefault('in_scope',[])
+s['excluded']=[x for x in s.get('excluded',[]) if os.path.realpath(os.path.expanduser(x))!=p]
+if p not in [os.path.realpath(os.path.expanduser(x)) for x in ins]: ins.append(p)
+json.dump(s,open(f,'w'),indent=2)
+print("  ✓ enrolled in scope:",p)
+PY
+}
+
 merge_settings(){ # settings.json hooksdir
   local f="$1" hd="$2"
   if [ "$DRYRUN" = 1 ]; then echo "  [dry] merge hooks (gate-commit, office-board) → $f"; return; fi
@@ -51,10 +75,13 @@ def ensure(ev, matcher, cmd):
     for g in arr:
         for h in g.get('hooks',[]):
             if h.get('command')==cmd: return
-    arr.append({"matcher":matcher,"hooks":[{"type":"command","command":cmd}]})
-ensure('PreToolUse','Bash',       hd+'/gate-commit.sh')
-ensure('PreToolUse','Task|Agent', hd+'/office-board.sh')
-ensure('PostToolUse','Task|Agent',hd+'/office-board.sh')
+    grp={"hooks":[{"type":"command","command":cmd}]}
+    if matcher is not None: grp["matcher"]=matcher
+    arr.append(grp)
+ensure('SessionStart', None,        hd+'/office-scope.sh')
+ensure('PreToolUse','Bash',         hd+'/gate-commit.sh')
+ensure('PreToolUse','Task|Agent',   hd+'/office-board.sh')
+ensure('PostToolUse','Task|Agent',  hd+'/office-board.sh')
 os.makedirs(os.path.dirname(f), exist_ok=True)
 json.dump(s, open(f,'w'), indent=2)
 print("  ✓ hooks merged →", f)
@@ -71,18 +98,20 @@ install_claude_user(){
   DO cp "$KIT_DIR/ORCHESTRATION.md" "$C/office/ORCHESTRATION.md"
   DO cp "$KIT_DIR/commands/"*.md "$C/commands/"
   merge_settings "$C/settings.json" "$C/hooks"
+  ensure_scope "$C/office/scope.json"
   printf '%s\n' \
     "## The Agentic Delivery Office" \
     "" \
     "Installed at user scope. For any non-trivial change, follow the staged-gates" \
     "protocol in \`~/.claude/office/ORCHESTRATION.md\` (concept→GATE 1→design→GATE 2→build)." \
-    "Specialist agents live in \`~/.claude/agents/\`. Run \`/office-init\` in a project to" \
-    "add its business context + roster, and \`/office-board\` to watch the Live Board." \
+    "Specialist agents live in \`~/.claude/agents/\`. The office is **scoped**: by" \
+    "default (opt-in) it stays dormant in a project until you run \`/office-init\` there." \
+    "Manage scope with \`/office-scope\`; watch the Live Board with \`/office-board\`." \
     > /tmp/_office_claudemd.txt
   append_block "$C/CLAUDE.md" "AGENTIC-OFFICE" /tmp/_office_claudemd.txt
   echo ""
-  echo "Done. Agents + protocol + board + /office-init + /office-board are global."
-  echo "Next: open any project and run  /office-init"
+  echo "Done. Global install complete — default scope policy: opt-in (dormant until /office-init)."
+  echo "Next: open a project and run  /office-init   (or  /office-init scan  to bulk-enroll ~/dev)"
 }
 
 install_claude_project(){
@@ -95,6 +124,7 @@ install_claude_project(){
   DO cp "$KIT_DIR/ORCHESTRATION.md" "$T/ORCHESTRATION.md"
   [ -f "$T/.claude/settings.json" ] && echo "  ! .claude/settings.json exists — merge hooks from kit manually" || DO cp "$KIT_DIR/.claude/settings.json" "$T/.claude/settings.json"
   [ -f "$T/CLAUDE.md" ] && echo "  ! CLAUDE.md exists — add roster+business sections from CLAUDE.md.template" || DO cp "$KIT_DIR/CLAUDE.md.template" "$T/CLAUDE.md"
+  enroll_scope "$HOME_DIR/.claude/office/scope.json" "$T"   # if a global registry exists, mark this project active
   echo "Done. Edit CLAUDE.md placeholders before first run."
 }
 

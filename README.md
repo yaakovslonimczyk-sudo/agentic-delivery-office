@@ -74,6 +74,20 @@ CFO/BizDev/BI/CEO review lenses) and the **roster** (the JUNIOR-tier line). Add
 them by running `/office-init` inside a project — it interviews you for the
 minimum context and writes the project's `CLAUDE.md`.
 
+### Scope — which projects the office runs in
+
+A system-wide install does **not** impose the methodology on every repo. The
+office is **scoped** via `~/.claude/office/scope.json`, with a default policy:
+
+- **`opt-in`** (default, recommended for multi-project users): a project stays
+  dormant — no gates, no commit gate, not on the board — until you run
+  `/office-init` there. New projects require explicit acceptance.
+- **`opt-out`**: every project is active unless you exclude it.
+
+Manage it with `/office-scope` (list, enroll, exclude, switch policy) or
+`/office-init scan` to bulk-enroll repos under `~/dev`. A `--scope project`
+install auto-enrolls that project.
+
 Prefer the legacy self-contained copy instead? `./install.sh --scope project`
 drops everything into the project's `.claude/`. In that mode, edit `CLAUDE.md`
 (fill the placeholders — especially the

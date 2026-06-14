@@ -7,6 +7,9 @@ input=$(cat)
 tool=$(printf '%s' "$input" | jq -r '.tool_name // empty')
 case "$tool" in Task|Agent) ;; *) exit 0 ;; esac
 
+# Only record activity for projects in the Office's scope
+"$(dirname "$0")/office-active.sh" "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
+
 ev=$(printf '%s' "$input" | jq -r '.hook_event_name // empty')
 # Events go to the global office board by default (system-level install);
 # OFFICE_BOARD_DIR overrides, e.g. for a per-project board.
