@@ -20,17 +20,19 @@ ts=$(date +%s)
 agent=$(printf '%s' "$input" | jq -r '.tool_input.subagent_type // "claude"')
 model=$(printf '%s' "$input" | jq -r '.tool_input.model // ""')
 desc=$(printf '%s' "$input" | jq -r '.tool_input.description // ""' | head -c 120)
+projpath="${CLAUDE_PROJECT_DIR:-$PWD}"
+proj=$(basename "$projpath")
 
 if [ "$ev" = "PreToolUse" ]; then
-  jq -cn --arg ts "$ts" --arg a "$agent" --arg m "$model" --arg d "$desc" \
-    '{ts:($ts|tonumber),ev:"spawn",agent:$a,model:$m,desc:$d}' >> "$dir/events.jsonl"
+  jq -cn --arg ts "$ts" --arg a "$agent" --arg m "$model" --arg d "$desc" --arg p "$proj" --arg pp "$projpath" \
+    '{ts:($ts|tonumber),ev:"spawn",agent:$a,model:$m,desc:$d,proj:$p,projPath:$pp}' >> "$dir/events.jsonl"
 elif [ "$ev" = "PostToolUse" ]; then
   # token usage: try structured fields first, then the textual usage block
   tokens=$(printf '%s' "$input" | jq -r '[.. | objects | (.subagent_tokens? // .total_tokens? // empty)] | first // empty' 2>/dev/null)
   if [ -z "$tokens" ]; then
     tokens=$(printf '%s' "$input" | grep -o 'subagent_tokens[": ]*[0-9]*' | grep -o '[0-9]*$' | head -1)
   fi
-  jq -cn --arg ts "$ts" --arg a "$agent" --arg m "$model" --arg d "$desc" --arg t "${tokens:-0}" \
-    '{ts:($ts|tonumber),ev:"return",agent:$a,model:$m,desc:$d,tokens:($t|tonumber)}' >> "$dir/events.jsonl"
+  jq -cn --arg ts "$ts" --arg a "$agent" --arg m "$model" --arg d "$desc" --arg t "${tokens:-0}" --arg p "$proj" --arg pp "$projpath" \
+    '{ts:($ts|tonumber),ev:"return",agent:$a,model:$m,desc:$d,tokens:($t|tonumber),proj:$p,projPath:$pp}' >> "$dir/events.jsonl"
 fi
 exit 0

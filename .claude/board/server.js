@@ -10,6 +10,47 @@ const path = require('path');
 const PORT = parseInt(process.argv[2] || process.env.OFFICE_BOARD_PORT || '5599', 10);
 // events.jsonl lives next to this server (.claude/board/), regardless of cwd
 const EVENTS = path.join(__dirname, 'events.jsonl');
+// scope registry: standard location for a user-scope install (~/.claude/office),
+// with fallbacks for project-scope / dev layouts. Generic — no hardcoded paths.
+const SCOPE_CANDIDATES = [
+  path.join(__dirname, '..', 'office', 'scope.json'),               // ~/.claude/office-board → ~/.claude/office
+  path.join(process.env.HOME || '', '.claude', 'office', 'scope.json'),
+];
+function readScope() {
+  for (const f of SCOPE_CANDIDATES) {
+    try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { /* next */ }
+  }
+  return { default_policy: 'opt-in', in_scope: [], excluded: [] };
+}
+function readEvents() {
+  try {
+    return fs.readFileSync(EVENTS, 'utf8').split('\n')
+      .map(l => l.trim()).filter(Boolean)
+      .map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  } catch { return []; }
+}
+// Aggregate real agent activity per project + fold in enrolled-but-idle projects.
+function engagements() {
+  const scope = readScope();
+  const byProj = {};
+  const base = p => (p || '').split('/').filter(Boolean).pop() || p || 'unknown';
+  for (const p of (scope.in_scope || [])) {
+    const name = base(p);
+    byProj[name] = { project: name, path: p, tokens: 0, runs: 0, active: 0, lastTs: 0, enrolled: true };
+  }
+  for (const e of readEvents()) {
+    const name = e.proj || base(e.projPath) || 'unknown';
+    const g = byProj[name] || (byProj[name] = { project: name, path: e.projPath || '', tokens: 0, runs: 0, active: 0, lastTs: 0, enrolled: false });
+    if (e.ev === 'spawn') g.active++;
+    if (e.ev === 'return') { g.active = Math.max(0, g.active - 1); g.runs++; g.tokens += (e.tokens || 0); }
+    g.lastTs = Math.max(g.lastTs, e.ts || 0);
+  }
+  return { default_policy: scope.default_policy || 'opt-in', engagements: Object.values(byProj).sort((a, b) => b.lastTs - a.lastTs) };
+}
+function sendJSON(res, obj) {
+  res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+  res.end(JSON.stringify(obj));
+}
 
 fs.mkdirSync(path.dirname(EVENTS), { recursive: true });
 if (!fs.existsSync(EVENTS)) fs.writeFileSync(EVENTS, '');
@@ -39,6 +80,8 @@ try { fs.watch(path.dirname(EVENTS), () => setTimeout(pump, 50)); } catch { /* p
 setInterval(pump, 1000);
 
 http.createServer((req, res) => {
+  if (req.url === '/api/scope') { sendJSON(res, readScope()); return; }
+  if (req.url === '/api/engagements') { sendJSON(res, engagements()); return; }
   if (req.url === '/events') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
