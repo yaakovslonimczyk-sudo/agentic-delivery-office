@@ -1475,6 +1475,14 @@
       <button id="bm-tab-bp" class="on" onclick="setBoardMode('blueprint')">Blueprint</button>
       <button id="bm-tab-m" onclick="setBoardMode('match')">⚽ Match</button>
     </div>
+    <div id="bm-proj-wrap" style="display:none; text-align:center; margin-top:10px;">
+      <span style="font-family:var(--mono); font-size:11px; color:var(--sec);">PROJECT</span>
+      <select id="bm-proj" onchange="setProjFilter(this.value)"
+        style="background:var(--panel); color:var(--line); border:1px solid var(--cyan); border-radius:6px; padding:5px 10px; font-family:var(--mono); font-size:12px; margin-left:6px;">
+        <option value="ALL">All projects (whole office)</option>
+      </select>
+      <span id="bm-live-tag" style="font-family:var(--mono); font-size:10px; color:var(--coral); margin-left:8px;">● DEMO — simulated</span>
+    </div>
   </div>
 
   <!-- ── BLUEPRINT MODE (default) ── -->
@@ -2326,9 +2334,65 @@
           a.working && a.startedAt ? Math.round((Date.now()-a.startedAt)/1000)+'s' : '';
       }
     }, 1000);
+    if (REAL_BOARD) return;   // real mode: the /events stream drives the board, not the simulation
     lbDispatch();
     setTimeout(lbDispatch, 1200);
     setInterval(()=>{ if (Math.random() < 0.75) lbDispatch(); }, 3200);
+  }
+
+  // ── Real board: drive the pitch/blueprint from the live /events stream ──
+  let REAL_BOARD = false, PROJ_FILTER = 'ALL', boardES = null;
+  function findAgent(name){ return LB_AGENTS.find(a => a.n === name); }
+  async function initRealBoard(){
+    if ((location.hash||'').slice(1) === 'demo') return;        // keep the GIF demo simulated
+    let eng; try { const r = await fetch('/api/engagements'); if (!r.ok) return; eng = await r.json(); } catch { return; }
+    REAL_BOARD = true;
+    const tag = document.getElementById('bm-live-tag'); if (tag){ tag.textContent = '● LIVE — your agents'; tag.style.color = 'var(--cyan)'; }
+    const wrap = document.getElementById('bm-proj-wrap'); if (wrap) wrap.style.display = '';
+    const sel = document.getElementById('bm-proj');
+    if (sel) for (const e of (eng.engagements||[])) {
+      const o = document.createElement('option'); o.value = e.project; o.textContent = e.project + (e.active>0 ? ' · '+e.active+' working' : ''); sel.appendChild(o);
+    }
+    // real scoreboard from engagement states (deliveries vs regressions)
+    const dl = (eng.engagements||[]).filter(e=>e.status==='delivered').length;
+    const rg = (eng.engagements||[]).filter(e=>e.status==='escalated').length;
+    const f=document.getElementById('bm-for'), g=document.getElementById('bm-against');
+    if (f) f.textContent = dl; if (g) g.textContent = rg;
+    connectBoardStream();
+  }
+  function resetBoardState(){
+    for (const a of LB_AGENTS){ a.working = false; a.tok = 0; a.runs = 0; a.last = ''; a.startedAt = null; }
+    lbTotalTok = 0; lbTotalRuns = 0; lbRender();
+    const ul = document.getElementById('lb-log'); if (ul) ul.innerHTML = '';
+  }
+  function setProjFilter(v){ PROJ_FILTER = v; resetBoardState(); connectBoardStream(); }
+  function connectBoardStream(){
+    if (boardES) { boardES.close(); boardES = null; }
+    resetBoardState();
+    boardES = new EventSource('/events');
+    boardES.onmessage = (m) => {
+      let e; try { e = JSON.parse(m.data); } catch { return; }
+      if (PROJ_FILTER !== 'ALL' && e.proj !== PROJ_FILTER) return;
+      processRealEvent(e);
+    };
+    boardES.onerror = () => { /* server gone; leave last state */ };
+  }
+  function processRealEvent(e){
+    const a = findAgent(e.agent);
+    const label = e.proj ? (e.agent + ' · ' + e.proj) : e.agent;
+    if (e.ev === 'spawn'){
+      if (a){ a.working = true; a.startedAt = Date.now(); a.last = (e.desc||'') + (e.proj?(' — '+e.proj):''); }
+      if (boardMode === 'match'){ if (a) { pitchBall(a.x, a.y); setPoss(label); } relato('pass', e.agent); }
+      else if (a){ lbBall(document.getElementById('lb-orch'), a.el); }
+      lbLog(`${lbHHMM()} <span class="lb-out">→ ${label}</span>${e.desc?(' · '+e.desc):''}`);
+    } else if (e.ev === 'return'){
+      const tok = e.tokens || 0; lbTotalTok += tok; lbTotalRuns++;
+      if (a){ a.working = false; a.runs++; a.tok += tok; }
+      if (boardMode === 'match'){ pitchBall(ORCH_XY.x, ORCH_XY.y); setPoss('orchestrator'); relato('back', e.agent); }
+      else if (a){ lbBall(a.el, document.getElementById('lb-orch')); }
+      lbLog(`${lbHHMM()} <span class="lb-in">← ${label}</span> returned · <span class="lb-tokc">${lbFmt(tok)} tok</span>`);
+    }
+    lbRender();
   }
 
   // ── Match mode: pitch, ball, goals, player cards ──
@@ -2700,6 +2764,7 @@
   // ── Init ──
   renderTable();
   loadRealEngagements();   // overlays the home with real scope data when served by the office server
+  initRealBoard();         // wires the Live Board / Match to the real /events stream + project selector
 </script>
 </body>
 </html>
