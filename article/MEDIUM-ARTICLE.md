@@ -96,6 +96,8 @@ Every conversation about this methodology ends at the same question: *"Fine — 
 
 The **live board** is the org chart from Figure 1, animated by reality: hooks fire every time the orchestrator dispatches an agent and every time one reports back (the return carries the sub-agent's actual token usage), and the board shows the ball moving — which agent is working right now, for how long, at what cumulative cost, on which task. The senior and junior benches are visible as structure, not just policy: you can *see* that the expensive judging tier only lights up when judgment is needed.
 
+None of this is a mockup with sample data. The cockpit reads your real engagements from the projects you've enrolled (the office installs system-wide but stays dormant until you opt a project in), and each one shows its live state — which phase it's in, and whether a gate is sitting and waiting for you. The home screen is literally your portfolio, with the open decisions surfaced first.
+
 ![Gate 1 as a screen](images/fig07-cockpit-gate1.png)
 
 *Fig. 07 — Gate 1 as a screen: the verified mockup, the component diagram, the key decisions with their rejected alternatives — and three buttons.*
@@ -157,8 +159,11 @@ cd agentic-delivery-office
 ./install.sh                 # system-wide, once — Claude Code (also --target codex | grok)
 ```
 
-It installs at user scope — agents, protocol, Live Board, and the `/office-init`
-and `/office-board` commands apply to every project. Run `/office-init` inside a
-repo to add its business context, then put one real feature through the gates
-before trusting the office unattended. If you want to argue with the org chart,
-the issues tab is open.
+It installs once at user scope — agents, protocol, Live Board, and the
+`/office-init` / `/office-board` commands become available everywhere — but it
+stays **opt-in per project**: dormant until you run `/office-init` in a repo, so
+it never imposes gates on the throwaway script or the side project. Enroll a
+repo, give it its business context, and put one real feature through the gates
+before trusting the office unattended. It's portable, too — the same roster and
+protocol install for OpenAI Codex and Grok. If you want to argue with the org
+chart, the issues tab is open.
