@@ -4,3 +4,10 @@ node_modules/
 .claude/board/events.jsonl
 .claude/launch.json
 patent/
+
+# Payoneer-branded deck artifact — kept local (brand asset, not for the public repo).
+# The generator (deck/.deckbuild/build.js) IS committed so the deck is reproducible.
+deck/*.pptx
+deck/~$*
+deck/.deckbuild/*.pdf
+deck/.deckbuild/*.jpg
