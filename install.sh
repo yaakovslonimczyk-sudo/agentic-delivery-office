@@ -135,7 +135,7 @@ install_codex(){
   DO mkdir -p "$X/agents"
   DO cp "$KIT_DIR/ports/codex/agents/"*.toml "$X/agents/"
   append_block "$X/AGENTS.md" "AGENTIC-OFFICE" "$KIT_DIR/ports/codex/AGENTS.md"
-  echo "Done. 9 agents → ~/.codex/agents/*.toml ; protocol appended to ~/.codex/AGENTS.md"
+  echo "Done. 11 agents → ~/.codex/agents/*.toml ; protocol appended to ~/.codex/AGENTS.md"
 }
 
 install_grok(){

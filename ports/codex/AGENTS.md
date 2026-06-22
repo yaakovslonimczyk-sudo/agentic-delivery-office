@@ -102,9 +102,10 @@ open command, flow walkthrough, out-of-scope list.
 
 **HLD Writer**: From the APPROVED mockup + component diagram + spec, write a
 full High-Level Design: context, component design, data model, API contracts,
-sequence flows for the primary paths, NFRs, risks. Architecture diagrams
-included. Mandatory section "Deviations from approved concept" — flag every
-departure from the approved components explicitly (empty section if none).
+sequence flows for the primary paths, NFRs, risks, acceptance criteria.
+Architecture diagrams included. Mandatory section "Deviations from approved
+concept" — flag every departure from the approved components explicitly (empty
+section if none).
 
 **Deck Builder**: From the FINISHED HLD only, produce a decision-oriented
 executive presentation: problem, proposed solution shape, key decisions with

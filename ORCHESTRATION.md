@@ -46,13 +46,14 @@ The orchestrator's conduct contract (it acts as the human's Solution Architect):
 | explorer | kit | Structured brief: relevant files, flows, conventions |
 | mockup-builder | kit | Clickable HTML mockup of the primary flows |
 | planner | kit | HL component diagram (Phase A); split build plan (Phase C) |
-| hld-architect | user-level (~/.claude/agents) | Full High-Level Design document with PlantUML diagrams |
-| deck-architect | user-level (~/.claude/agents) | Executive .pptx derived from the HLD |
+| hld-architect | kit | Full High-Level Design document with PlantUML diagrams |
+| deck-architect | kit | Executive .pptx derived from the HLD |
 | (orchestrator) | — | Implementation — the main session implements |
 | test-writer | kit | Tests derived from the SPEC, independent of implementation |
 | code-reviewer / security-reviewer / db-reviewer / design-reviewer / business-reviewer | kit | Review findings per the verdict contract, or APPROVED |
 
-(On machines without `hld-architect`/`deck-architect`, use the generic role
+(`hld-architect`/`deck-architect` ship in the kit for Claude Code; the Codex and
+Grok ports carry the same two roles as the generic HLD Writer / Deck Builder
 prompts in ports/ — the protocol is identical.)
 
 ## PHASE A — Concept (fast, cheapest artifacts)
