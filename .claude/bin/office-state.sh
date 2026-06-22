@@ -19,6 +19,22 @@ mkdir -p "$dir"
 phase="$1"; status="$2"; shift 2 2>/dev/null; note="$*"
 ts=$(date +%s)
 if [ "$status" = "cleared" ]; then rm -f "$dir/$slug.json"; echo "cleared state: $slug"; exit 0; fi
-jq -cn --arg p "$slug" --arg pp "$proj" --arg ph "$phase" --arg st "$status" --arg n "$note" --arg ts "$ts" \
-  '{project:$p,path:$pp,phase:$ph,status:$st,note:$n,updatedAt:($ts|tonumber)}' > "$dir/$slug.json"
+file="$dir/$slug.json"
+# One history entry per transition (this call). Append, seeding history[] from the
+# current top-level fields on the first write after the schema change (no migration).
+new_entry=$(jq -cn --arg ph "$phase" --arg st "$status" --arg n "$note" --argjson ts "$ts" \
+              '{phase:$ph,status:$st,note:$n,ts:$ts}')
+if [ -f "$file" ]; then
+  jq -c --argjson e "$new_entry" '
+    ( if (.history|type) == "array" then .history
+      else [ { phase:.phase, status:.status, note:(.note//""), ts:(.updatedAt//0) } ] end ) as $h
+    | { project, path,
+        phase:  $e.phase, status: $e.status, note: $e.note, updatedAt: $e.ts,
+        history: ($h + [$e]) }
+  ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+else
+  jq -cn --arg p "$slug" --arg pp "$proj" --argjson e "$new_entry" \
+    '{project:$p, path:$pp, phase:$e.phase, status:$e.status,
+      note:$e.note, updatedAt:$e.ts, history:[$e]}' > "$file"
+fi
 echo "recorded: $slug → phase $phase / $status"

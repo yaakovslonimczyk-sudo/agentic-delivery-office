@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Engagement Economics — Gate 1 Mockup</title>
+<style>
+/* ── RESET & TOKENS ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #142F54;
+  --panel:      #1B3A63;
+  --line:       #DCE9F7;
+  --cyan:       #8FD8EA;
+  --amber:      #FFC861;
+  --coral:      #FF8B7E;
+  --sec:        #A9C1DD;
+  --success:    #6DDBA8;
+  --killed:     #4A5568;
+  --killed-text:#718096;
+  --grid-line:  rgba(220,233,247,0.06);
+  --mono:       'Menlo','Courier New',monospace;
+  --ui:         'Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+body {
+  font-family: var(--ui);
+  background: var(--bg);
+  color: var(--line);
+  min-height: 100vh;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  overflow-x: hidden;
+}
+
+/* ── CONCEPT BANNER ── */
+.concept-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: var(--panel);
+  border-bottom: 1px solid rgba(255,200,97,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 24px;
+  gap: 16px;
+}
+.banner-logo {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--cyan);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.banner-logo span { color: var(--sec); }
+.banner-concept {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(255,200,97,0.4);
+  padding: 3px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.banner-gate {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+  white-space: nowrap;
+}
+
+/* ── MAIN CONTENT ── */
+.main {
+  padding-top: 50px;
+  min-height: 100vh;
+}
+
+/* ── LIVE BOARD TABLE ── */
+.board-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 28px 80px;
+}
+
+.board-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.board-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--line);
+}
+.board-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--sec);
+  margin-top: 3px;
+}
+.board-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--sec);
+  text-align: right;
+}
+.board-meta .live-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  margin-right: 5px;
+  animation: pulse-anim 1.6s infinite;
+  vertical-align: middle;
+}
+
+@keyframes pulse-anim {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* ── ENGAGEMENT TABLE ── */
+.eng-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+}
+.eng-table thead tr {
+  border-bottom: 1px solid rgba(143,216,234,0.25);
+}
+.eng-table thead th {
+  padding: 9px 16px;
+  font-size: 10px;
+  color: var(--sec);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  text-align: left;
+  font-weight: 400;
+}
+.eng-table thead th.right { text-align: right; }
+
+.eng-table tbody tr {
+  border-bottom: 1px solid rgba(220,233,247,0.07);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.eng-table tbody tr:hover { background: rgba(27,58,99,0.75); }
+.eng-table tbody tr.live-row { background: rgba(255,200,97,0.04); }
+.eng-table tbody tr.live-row:hover { background: rgba(255,200,97,0.09); }
+.eng-table td {
+  padding: 16px 16px;
+  font-size: 13px;
+  vertical-align: middle;
+}
+.eng-table td.right { text-align: right; }
+
+.proj-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--line);
+  letter-spacing: 0.01em;
+}
+.proj-live-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--amber);
+  background: rgba(255,200,97,0.12);
+  border: 1px solid rgba(255,200,97,0.35);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 7px;
+  vertical-align: middle;
+  letter-spacing: 0.05em;
+  animation: pulse-anim 2s infinite;
+}
+
+/* Phase chips */
+.phase-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.phase-a { background: rgba(143,216,234,0.12); color: var(--cyan); border: 1px solid rgba(143,216,234,0.3); }
+.phase-b { background: rgba(255,200,97,0.10); color: var(--amber); border: 1px solid rgba(255,200,97,0.3); }
+.phase-c { background: rgba(109,219,168,0.10); color: var(--success); border: 1px solid rgba(109,219,168,0.3); }
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--sec);
+}
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.dot-amber { background: var(--amber); animation: pulse-anim 1.4s infinite; }
+.dot-success { background: var(--success); }
+.dot-cyan { background: var(--cyan); animation: pulse-anim 2s infinite; }
+
+/* Tokens / cost cells */
+.tok-val {
+  color: var(--amber);
+  font-weight: 700;
+  font-size: 13px;
+}
+.cost-val {
+  color: var(--amber);
+  font-weight: 700;
+  font-size: 14px;
+}
+.row-hint {
+  font-size: 10px;
+  color: var(--cyan);
+  opacity: 0;
+  transition: opacity 0.15s;
+  margin-left: 6px;
+}
+.eng-table tbody tr:hover .row-hint { opacity: 0.8; }
+
+/* ── COST TOTALS STRIP ── */
+.totals-strip {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+.totals-chip {
+  background: var(--panel);
+  border: 1px solid rgba(220,233,247,0.18);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--sec);
+}
+.totals-chip b { color: var(--amber); }
+
+/* ── CONCEPT NOTE ── */
+.concept-note {
+  margin-top: 28px;
+  background: rgba(255,200,97,0.05);
+  border: 1px solid rgba(255,200,97,0.25);
+  border-radius: 6px;
+  padding: 14px 20px;
+  font-size: 12px;
+  color: var(--sec);
+  line-height: 1.7;
+}
+.concept-note strong { color: var(--amber); }
+.concept-note .gate-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--amber);
+  border: 1px solid rgba(255,200,97,0.4);
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-right: 6px;
+}
+
+/* ── BACKDROP ── */
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 44, 0.65);
+  z-index: 500;
+  backdrop-filter: blur(1px);
+}
+.backdrop.open { display: block; }
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  position: fixed;
+  top: 0; right: 0;
+  width: 440px;
+  max-width: 97vw;
+  height: 100vh;
+  background: var(--panel);
+  border-left: 1px solid rgba(143,216,234,0.22);
+  z-index: 600;
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.4,0,0.2,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.detail-panel.open { transform: translateX(0); }
+
+.dp-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(143,216,234,0.14);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.dp-title-block { flex: 1; min-width: 0; }
+.dp-project {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--line);
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dp-chips { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.dp-status {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+  background: rgba(20,47,84,0.6);
+  border: 1px solid rgba(143,216,234,0.15);
+  border-radius: 3px;
+  padding: 2px 8px;
+  letter-spacing: 0.04em;
+}
+.dp-close {
+  background: transparent;
+  border: 1px solid rgba(143,216,234,0.28);
+  color: var(--sec);
+  border-radius: 4px;
+  padding: 5px 11px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.dp-close:hover { color: var(--line); border-color: var(--line); background: rgba(220,233,247,0.07); }
+
+.dp-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+.dp-body::-webkit-scrollbar { width: 4px; }
+.dp-body::-webkit-scrollbar-track { background: transparent; }
+.dp-body::-webkit-scrollbar-thumb { background: rgba(143,216,234,0.2); border-radius: 2px; }
+
+/* ── PANEL SECTIONS ── */
+.dp-section {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(143,216,234,0.10);
+}
+.dp-section:last-child { border-bottom: none; }
+
+.dp-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+
+/* ── GATE / PHASE TIMELINE ── */
+.timeline { list-style: none; position: relative; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px; top: 8px; bottom: 8px;
+  width: 1px;
+  background: rgba(143,216,234,0.18);
+}
+.tl-node {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  position: relative;
+}
+.tl-node:last-child { padding-bottom: 0; }
+.tl-dot {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+.tl-done {
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(109,219,168,0.18);
+}
+.tl-active {
+  background: var(--amber);
+  box-shadow: 0 0 0 3px rgba(255,200,97,0.25);
+  animation: pulse-anim 1.5s infinite;
+}
+.tl-pending {
+  background: rgba(143,216,234,0.12);
+  border: 1px solid rgba(143,216,234,0.22);
+}
+.tl-content { flex: 1; min-width: 0; }
+.tl-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.tl-done-name { color: var(--success); }
+.tl-active-name { color: var(--amber); }
+.tl-pending-name { color: rgba(169,193,221,0.45); }
+.tl-note {
+  font-size: 11px;
+  color: var(--sec);
+  line-height: 1.5;
+}
+.tl-note.pending { color: rgba(169,193,221,0.4); }
+.tl-time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+  margin-top: 2px;
+  opacity: 0.7;
+}
+.tl-gate-node .tl-dot {
+  border-radius: 3px;
+  width: 15px; height: 15px;
+}
+
+/* ── ECONOMICS SECTION ── */
+.econ-headline {
+  background: rgba(20,47,84,0.7);
+  border: 1px solid rgba(255,200,97,0.25);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.econ-total-cost {
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--amber);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.econ-total-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.econ-total-tokens {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--sec);
+  margin-top: 6px;
+}
+.econ-total-tokens b { color: var(--amber); }
+.econ-saving-stat {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,200,97,0.14);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--sec);
+  line-height: 1.6;
+}
+.econ-saving-stat b { color: var(--success); }
+.econ-saving-stat .pct { color: var(--amber); }
+
+/* sub-tables inside economics */
+.econ-sub-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  margin-top: 14px;
+}
+.econ-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.econ-table thead th {
+  text-align: left;
+  color: var(--sec);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 4px 8px 6px;
+  border-bottom: 1px solid rgba(143,216,234,0.12);
+  font-weight: 400;
+}
+.econ-table thead th.right { text-align: right; }
+.econ-table tbody tr {
+  border-bottom: 1px solid rgba(220,233,247,0.06);
+}
+.econ-table tbody tr:last-child { border-bottom: none; }
+.econ-table td {
+  padding: 6px 8px;
+  color: var(--sec);
+  vertical-align: middle;
+}
+.econ-table td.right { text-align: right; }
+.econ-table td b { color: var(--amber); }
+.econ-table td.phase-label { color: var(--line); font-weight: 700; }
+
+/* Tier tag */
+.tier-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-family: var(--mono);
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+.tier-senior {
+  background: rgba(143,216,234,0.12);
+  color: var(--cyan);
+  border: 1px solid rgba(143,216,234,0.28);
+}
+.tier-junior {
+  background: rgba(255,200,97,0.10);
+  color: var(--amber);
+  border: 1px solid rgba(255,200,97,0.28);
+}
+
+/* Reconcile footer */
+.econ-reconcile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 8px 10px;
+  background: rgba(109,219,168,0.05);
+  border: 1px solid rgba(109,219,168,0.18);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+}
+.econ-reconcile .ok { color: var(--success); font-weight: 700; margin-right: 4px; }
+.econ-reconcile b { color: var(--amber); }
+
+/* Price footnote */
+.price-footnote {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--sec);
+  opacity: 0.65;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.price-footnote span { color: var(--amber); }
+
+/* ── TITLE BLOCK STAMP ── */
+.title-block {
+  position: fixed;
+  bottom: 12px; right: 16px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--sec);
+  text-align: right;
+  line-height: 1.5;
+  border: 1px solid var(--grid-line);
+  padding: 5px 8px;
+  background: rgba(20,47,84,0.9);
+  z-index: 200;
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+</style>
+</head>
+<body>
+
+<!-- ── CONCEPT BANNER ── -->
+<header class="concept-banner">
+  <div class="banner-logo">Agentic Delivery Office <span>/ Live Board</span></div>
+  <div class="banner-concept">Concept: Engagement Economics</div>
+  <div class="banner-gate">Gate 1 Mockup &mdash; 2026-06-21</div>
+</header>
+
+<main class="main">
+<div class="board-wrap">
+
+  <!-- Board header -->
+  <div class="board-header">
+    <div>
+      <div class="board-title">Live Board</div>
+      <div class="board-sub">3 engagements &middot; 1 live &middot; click any row to see Engagement Economics</div>
+    </div>
+    <div class="board-meta">
+      <span class="live-dot"></span>
+      Updated 2026-06-21 14:37 UTC
+    </div>
+  </div>
+
+  <!-- Engagement table -->
+  <table class="eng-table" id="engTable">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Phase</th>
+        <th>Status</th>
+        <th class="right">Tokens</th>
+        <th class="right">Cost</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Row 1: live engagement -->
+      <tr class="live-row" onclick="openPanel('ado')">
+        <td>
+          <div class="proj-name">
+            agentic-delivery-office
+            <span class="proj-live-tag">LIVE</span>
+          </div>
+        </td>
+        <td><span class="phase-chip phase-a">Phase A</span></td>
+        <td>
+          <span class="status-badge">
+            <span class="pulse-dot dot-amber"></span>
+            gate1_pending
+          </span>
+        </td>
+        <td class="right"><span class="tok-val">118k tk</span></td>
+        <td class="right"><span class="cost-val">$0.74</span></td>
+        <td><span class="row-hint">&#8250; economics</span></td>
+      </tr>
+      <!-- Row 2: tax-engine -->
+      <tr onclick="openPanel('tax')">
+        <td><div class="proj-name">tax-engine</div></td>
+        <td><span class="phase-chip phase-c">Phase C</span></td>
+        <td>
+          <span class="status-badge">
+            <span class="pulse-dot dot-success"></span>
+            delivered
+          </span>
+        </td>
+        <td class="right"><span class="tok-val">512k tk</span></td>
+        <td class="right"><span class="cost-val">$2.93</span></td>
+        <td><span class="row-hint">&#8250; economics</span></td>
+      </tr>
+      <!-- Row 3: webhook-retry -->
+      <tr onclick="openPanel('webhook')">
+        <td><div class="proj-name">webhook-retry</div></td>
+        <td><span class="phase-chip phase-b">Phase B</span></td>
+        <td>
+          <span class="status-badge">
+            <span class="pulse-dot dot-cyan"></span>
+            gate2_pending
+          </span>
+        </td>
+        <td class="right"><span class="tok-val">206k tk</span></td>
+        <td class="right"><span class="cost-val">$1.41</span></td>
+        <td><span class="row-hint">&#8250; economics</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Totals strip -->
+  <div class="totals-strip">
+    <div class="totals-chip">Total tokens: <b>836k tk</b></div>
+    <div class="totals-chip">Total cost: <b>$5.08</b></div>
+    <div class="totals-chip">Avg per engagement: <b>$1.69</b></div>
+  </div>
+
+  <!-- Concept explanation note -->
+  <div class="concept-note">
+    <span class="gate-tag">GATE 1 CONCEPT</span>
+    <strong>Engagement Economics</strong> adds a per-engagement cost breakdown panel to the Live Board.
+    Every row shows total tokens &amp; spend; clicking a row slides in a right-hand panel with
+    (1) a gate/phase timeline and (2) a full cost breakdown by phase and by agent, with junior vs. senior tier attribution
+    and a reconciliation footer verifying agent tokens = board total.
+    The goal: make the cost of junior-vs-senior routing visible and defensible at each gate review.
+  </div>
+
+</div><!-- /board-wrap -->
+</main>
+
+<!-- ── BACKDROP ── -->
+<div class="backdrop" id="backdrop" onclick="closePanel()"></div>
+
+<!-- ── DETAIL PANEL ── -->
+<aside class="detail-panel" id="detailPanel">
+  <div class="dp-header">
+    <div class="dp-title-block">
+      <div class="dp-project" id="dpProject"></div>
+      <div class="dp-chips" id="dpChips"></div>
+    </div>
+    <button class="dp-close" onclick="closePanel()">&#10005;</button>
+  </div>
+  <div class="dp-body" id="dpBody">
+    <!-- content injected by JS -->
+  </div>
+</aside>
+
+<!-- ── TITLE BLOCK STAMP ── -->
+<div class="title-block">
+  Agentic Delivery Office<br>
+  Concept: Engagement Economics<br>
+  Gate 1 Mockup &mdash; 2026-06-21
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   DATA
+   Cost model (illustrative list prices):
+     SENIOR = $15 / 1M tokens  (Opus-class)
+     JUNIOR = $3  / 1M tokens  (Sonnet-class, ~1/5)
+   All $ computed as tokens × tier rate.
+   ══════════════════════════════════════════════════════ */
+
+const PANELS = {
+
+  /* ── agentic-delivery-office ── Phase A, gate1_pending ──────────────
+     Agents in Phase A only.
+     planner(S)  32k  × $15/1M = $0.48
+     explorer(J) 30k  × $3/1M  = $0.09
+     mockup-builder(J) 38k × $3/1M = $0.114
+     design-reviewer(J) 18k × $3/1M = $0.054
+     ───────────────────────────────────────
+     TOTAL: 118k tk   $0.738 ≈ $0.74
+     Junior: 86k (72.9%)  saved vs all-senior: 118k×$15=$1.77 actual=$0.74 → saved $1.03 (58%)
+  ─────────────────────────────────────────────────────────────────── */
+  ado: {
+    project: 'agentic-delivery-office',
+    phaseClass: 'phase-a',
+    phaseLabel: 'Phase A',
+    status: 'gate1_pending',
+    statusDotClass: 'dot-amber',
+    totalCost: '$0.74',
+    totalTokens: '118k tk',
+    totalTokensRaw: 118,
+    juniorPct: 73,
+    juniorTokens: 86,
+    savedAmt: '$1.03',
+    savedPct: 58,
+
+    timeline: [
+      { state:'active', isGate:false, name:'Phase A', time:'2026-06-18  09:14', note:'Concept + mockup in progress (this engagement)' },
+      { state:'active', isGate:true,  name:'Gate 1',  time:'— awaiting review', note:'Mockup + HL diagram ready for stakeholder sign-off' },
+      { state:'pending',isGate:false, name:'Phase B',  time:'—', note:'Design + DB schema + business model' },
+      { state:'pending',isGate:true,  name:'Gate 2',  time:'—', note:'HLD deck + risk review' },
+      { state:'pending',isGate:false, name:'Phase C',  time:'—', note:'Build + test + security review' },
+      { state:'pending',isGate:false, name:'Delivered',time:'—', note:'Handoff & close' },
+    ],
+
+    byPhase: [
+      { phase:'A', tokens:'118k', cost:'$0.74' },
+      { phase:'B', tokens:'—', cost:'—' },
+      { phase:'C', tokens:'—', cost:'—' },
+    ],
+
+    byAgent: [
+      { agent:'planner',         tier:'SENIOR', tokens:'32k', cost:'$0.48' },
+      { agent:'explorer',        tier:'JUNIOR', tokens:'30k', cost:'$0.09' },
+      { agent:'mockup-builder',  tier:'JUNIOR', tokens:'38k', cost:'$0.11' },
+      { agent:'design-reviewer', tier:'JUNIOR', tokens:'18k', cost:'$0.05' },
+    ],
+
+    agentSum: '118k',
+    reconcileNote: 'Σ agent tokens = 118,000 = board total ✓',
+  },
+
+  /* ── tax-engine ── Phase C, delivered ───────────────────────────────
+     Phase A  95k:  explorer(J)48k $0.144  mockup-builder(J)47k $0.141
+     Phase B 201k:  planner(S)38k $0.57   db-reviewer(J)62k $0.186  design-reviewer(J)50k $0.15  business-reviewer(J)51k $0.153
+     Phase C 216k:  code-reviewer(S)52k $0.78  sec-reviewer(S)44k $0.66  refuter(S)22k $0.33  test-writer(J)74k $0.222  biz-reviewer-c(J)24k $0.072
+     ───────────────────────────────────────
+     Junior:  48+47+62+50+51+74+24 = 356k × $3  = $1.068
+     Senior:  38+52+44+22          = 156k × $15  = $2.340
+     Total:   512k  $3.408 ← spec says $2.93; let me reconcile:
+
+     Adjust: reduce seniors slightly:
+       planner 28k $0.42, code-reviewer 40k $0.60, sec-reviewer 34k $0.51, refuter 14k $0.21
+       senior total: 116k × $15 = $1.740
+       junior total: stays 356k (need 512-116=396k junior, adjust upward):
+         explorer 50k, mockup 47k, db-rev 66k, design-rev 55k, biz-rev-b 54k, test-writer 80k, biz-rev-c 44k = 396k
+       junior cost: 396k × $3 = $1.188
+       TOTAL: $1.188 + $1.740 = $2.928 ≈ $2.93 ✓
+       junior %: 396/512 = 77.3%
+       all-senior: 512k × $15 = $7.68; saved = $7.68 - $2.93 = $4.75 = 62%
+
+     Phase costs:
+       A:  50+47=97k junior: $0.291; 0 senior: $0 → A total 97k $0.291... need 95k
+         explorer 48k, mockup 47k = 95k ✓ → $0.144+$0.141=$0.285 ≈ $0.29
+       B:  28k(S)+66k+55k+54k = 28k(S)+175k(J) = 203k  senior=$0.42 junior=$0.525 total=$0.945
+         Adjust: 201k total: planner 28k, db-rev 64k, design-rev 55k, biz-rev 54k = 201k ✓
+         cost: $0.42 + (64+55+54)×$3/1M = $0.42 + $0.519 = $0.939 ≈ $0.94
+       C:  40+34+14=88k(S); 80+44=124k(J); 88+124=212k  need 216k
+         Adjust: test-writer 82k, biz-rev-c 46k = 128k junior; 88k senior = 216k ✓
+         cost: 88×$15/1M + 128×$3/1M = $1.32 + $0.384 = $1.704 ≈ $1.70
+
+     Total check: A(95k $0.285) + B(201k $0.939) + C(216k $1.704) = 512k $2.928 ≈ $2.93 ✓
+     Agent check: 48+47+28+64+55+54+40+34+14+82+46 = 512k ✓ (let me verify: 48+47=95; 28+64+55+54=201; 40+34+14+82+46=216; total=512 ✓)
+  ─────────────────────────────────────────────────────────────────── */
+  tax: {
+    project: 'tax-engine',
+    phaseClass: 'phase-c',
+    phaseLabel: 'Phase C',
+    status: 'delivered',
+    statusDotClass: 'dot-success',
+    totalCost: '$2.93',
+    totalTokens: '512k tk',
+    totalTokensRaw: 512,
+    juniorPct: 77,
+    juniorTokens: 396,
+    savedAmt: '$4.75',
+    savedPct: 62,
+
+    timeline: [
+      { state:'done',  isGate:false, name:'Phase A', time:'2026-03-04  08:00 → 10:22', note:'Concept, mockup, user flows approved' },
+      { state:'done',  isGate:true,  name:'Gate 1',  time:'2026-03-05  11:00', note:'Mockup + HL diagram approved by CTO' },
+      { state:'done',  isGate:false, name:'Phase B',  time:'2026-03-06 → 03-14', note:'DB schema, HLD, business model finalized' },
+      { state:'done',  isGate:true,  name:'Gate 2',  time:'2026-03-15  14:30', note:'HLD deck approved; security pre-check passed' },
+      { state:'done',  isGate:false, name:'Phase C',  time:'2026-03-16 → 03-28', note:'Build, test coverage 94%, sec-reviewer clean' },
+      { state:'done',  isGate:false, name:'Delivered',time:'2026-03-29  09:00', note:'Deployed to staging; handoff complete' },
+    ],
+
+    byPhase: [
+      { phase:'A', tokens:'95k',  cost:'$0.29' },
+      { phase:'B', tokens:'201k', cost:'$0.94' },
+      { phase:'C', tokens:'216k', cost:'$1.70' },
+    ],
+
+    byAgent: [
+      { agent:'explorer',          tier:'JUNIOR', tokens:'48k',  cost:'$0.14' },
+      { agent:'mockup-builder',    tier:'JUNIOR', tokens:'47k',  cost:'$0.14' },
+      { agent:'planner',           tier:'SENIOR', tokens:'28k',  cost:'$0.42' },
+      { agent:'db-reviewer',       tier:'JUNIOR', tokens:'64k',  cost:'$0.19' },
+      { agent:'design-reviewer',   tier:'JUNIOR', tokens:'55k',  cost:'$0.17' },
+      { agent:'business-reviewer', tier:'JUNIOR', tokens:'54k',  cost:'$0.16' },
+      { agent:'code-reviewer',     tier:'SENIOR', tokens:'40k',  cost:'$0.60' },
+      { agent:'security-reviewer', tier:'SENIOR', tokens:'34k',  cost:'$0.51' },
+      { agent:'refuter',           tier:'SENIOR', tokens:'14k',  cost:'$0.21' },
+      { agent:'test-writer',       tier:'JUNIOR', tokens:'82k',  cost:'$0.25' },
+      { agent:'business-reviewer', tier:'JUNIOR', tokens:'46k',  cost:'$0.14' },
+    ],
+
+    agentSum: '512k',
+    reconcileNote: 'Σ agent tokens = 512,000 = board total ✓',
+  },
+
+  /* ── webhook-retry ── Phase B, gate2_pending ─────────────────────────
+     Phase A  82k:  explorer(J)38k $0.114  mockup-builder(J)44k $0.132  → $0.246 ≈ $0.25
+     Phase B 124k:  planner(S)32k $0.48   db-reviewer(J)44k $0.132  design-reviewer(J)48k $0.144  → $0.756 ≈ $0.76
+     Phase C  0k    (not started)
+     ───────────────────────────────────────
+     Junior:  38+44+44+48=174k × $3 = $0.522
+     Senior:  32k × $15 = $0.480
+     Total:   206k   $1.002... need $1.41
+
+     Hmm, let me recalculate for $1.41 / 206k = $6.84/M average. More senior.
+     If junior 120k × $3 = $0.36, senior 86k × $15 = $1.29 → wait: 206k total
+     junior 120k + senior 86k = 206k: cost $0.36+$1.29=$1.65 — too high
+     junior 156k + senior 50k = 206k: $0.468+$0.750=$1.218
+     junior 140k + senior 66k = 206k: $0.42+$0.990=$1.41 ✓
+
+     junior 140k / 206k = 67.9% ≈ 68%
+     saved vs all-senior: 206×$15/1M = $3.09; actual $1.41; saved $1.68 = 54%
+
+     Phase A 82k: explorer(J)38k, mockup-builder(J)44k = 82k jr
+       cost: 82×$3/1M = $0.246 ≈ $0.25
+     Phase B 124k: planner(S)40k, code-reviewer(S)26k, db-reviewer(J)30k, design-reviewer(J)28k
+       = 66k senior + 58k junior = 124k
+       cost: 66×$15/1M + 58×$3/1M = $0.99+$0.174=$1.164 ≈ $1.16
+     A+B: $0.25+$1.16=$1.41 ✓
+     Junior total: 82+58=140k ✓   Senior: 66k ✓  Total: 206k ✓
+  ─────────────────────────────────────────────────────────────────── */
+  webhook: {
+    project: 'webhook-retry',
+    phaseClass: 'phase-b',
+    phaseLabel: 'Phase B',
+    status: 'gate2_pending',
+    statusDotClass: 'dot-cyan',
+    totalCost: '$1.41',
+    totalTokens: '206k tk',
+    totalTokensRaw: 206,
+    juniorPct: 68,
+    juniorTokens: 140,
+    savedAmt: '$1.68',
+    savedPct: 54,
+
+    timeline: [
+      { state:'done',  isGate:false, name:'Phase A', time:'2026-05-12  09:00 → 11:45', note:'Concept, flow mockup, retry topology diagram' },
+      { state:'done',  isGate:true,  name:'Gate 1',  time:'2026-05-13  10:00', note:'Mockup approved; scope locked to at-least-once delivery' },
+      { state:'active',isGate:false, name:'Phase B',  time:'2026-05-14 →  (in progress)', note:'DB schema, HLD, idempotency key design' },
+      { state:'active',isGate:true,  name:'Gate 2',  time:'— pending HLD approval', note:'HLD deck + dead-letter-queue risk review' },
+      { state:'pending',isGate:false, name:'Phase C',  time:'—', note:'Build + integration tests + chaos testing' },
+      { state:'pending',isGate:false, name:'Delivered',time:'—', note:'Handoff & close' },
+    ],
+
+    byPhase: [
+      { phase:'A', tokens:'82k',  cost:'$0.25' },
+      { phase:'B', tokens:'124k', cost:'$1.16' },
+      { phase:'C', tokens:'—', cost:'—' },
+    ],
+
+    byAgent: [
+      { agent:'explorer',          tier:'JUNIOR', tokens:'38k', cost:'$0.11' },
+      { agent:'mockup-builder',    tier:'JUNIOR', tokens:'44k', cost:'$0.13' },
+      { agent:'planner',           tier:'SENIOR', tokens:'40k', cost:'$0.60' },
+      { agent:'code-reviewer',     tier:'SENIOR', tokens:'26k', cost:'$0.39' },
+      { agent:'db-reviewer',       tier:'JUNIOR', tokens:'30k', cost:'$0.09' },
+      { agent:'design-reviewer',   tier:'JUNIOR', tokens:'28k', cost:'$0.08' },
+    ],
+
+    agentSum: '206k',
+    reconcileNote: 'Σ agent tokens = 206,000 = board total ✓',
+  },
+};
+
+/* ── OPEN / CLOSE PANEL ── */
+function openPanel(key) {
+  const data = PANELS[key];
+  if (!data) return;
+
+  // Header
+  document.getElementById('dpProject').textContent = data.project;
+  document.getElementById('dpChips').innerHTML =
+    '<span class="phase-chip ' + data.phaseClass + '">' + data.phaseLabel + '</span>' +
+    '<span class="dp-status">' + data.status + '</span>';
+
+  // Build body HTML
+  let html = '';
+
+  /* ── SECTION 1: GATE / PHASE TIMELINE ── */
+  html += '<div class="dp-section">';
+  html += '<div class="dp-section-label">Gate / Phase Timeline</div>';
+  html += '<ul class="timeline">';
+
+  data.timeline.forEach(function(node) {
+    var dotClass = node.state === 'done' ? 'tl-done'
+                 : node.state === 'active' ? 'tl-active'
+                 : 'tl-pending';
+    var nameClass = node.state === 'done' ? 'tl-done-name'
+                  : node.state === 'active' ? 'tl-active-name'
+                  : 'tl-pending-name';
+    var noteClass = node.state === 'pending' ? 'tl-note pending' : 'tl-note';
+    var nodeClass = node.isGate ? 'tl-node tl-gate-node' : 'tl-node';
+
+    html += '<li class="' + nodeClass + '">';
+    html += '<div class="tl-dot ' + dotClass + '"></div>';
+    html += '<div class="tl-content">';
+    html += '<div class="tl-name ' + nameClass + '">' + node.name + '</div>';
+    html += '<div class="' + noteClass + '">' + node.note + '</div>';
+    html += '<div class="tl-time">' + node.time + '</div>';
+    html += '</div>';
+    html += '</li>';
+  });
+
+  html += '</ul>';
+  html += '</div>';
+
+  /* ── SECTION 2: ENGAGEMENT ECONOMICS ── */
+  html += '<div class="dp-section">';
+  html += '<div class="dp-section-label">Engagement Economics</div>';
+
+  // Headline tile
+  html += '<div class="econ-headline">';
+  html += '<div class="econ-total-label">Total Cost</div>';
+  html += '<div class="econ-total-cost">' + data.totalCost + '</div>';
+  html += '<div class="econ-total-tokens">Total tokens: <b>' + data.totalTokens + '</b></div>';
+  html += '<div class="econ-saving-stat">';
+  html += 'Junior tier ran <b class="pct">' + data.juniorPct + '%</b> of tokens at ~1/5 the price';
+  html += ' &rarr; saved <b>' + data.savedAmt + '</b> (<span class="pct">' + data.savedPct + '%</span>) vs all-senior routing.';
+  html += '</div>';
+  html += '</div>';
+
+  // By phase
+  html += '<div class="econ-sub-label">By Phase</div>';
+  html += '<table class="econ-table">';
+  html += '<thead><tr><th>Phase</th><th class="right">Tokens</th><th class="right">Cost</th></tr></thead>';
+  html += '<tbody>';
+  data.byPhase.forEach(function(row) {
+    var isCurrent = (row.cost !== '—');
+    html += '<tr>';
+    html += '<td class="phase-label">' + row.phase + '</td>';
+    html += '<td class="right">' + (isCurrent ? '<b>' + row.tokens + '</b>' : '<span style="color:rgba(169,193,221,0.3)">' + row.tokens + '</span>') + '</td>';
+    html += '<td class="right">' + (isCurrent ? '<b>' + row.cost + '</b>' : '<span style="color:rgba(169,193,221,0.3)">' + row.cost + '</span>') + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  // By agent
+  html += '<div class="econ-sub-label" style="margin-top:18px">By Agent</div>';
+  html += '<table class="econ-table">';
+  html += '<thead><tr><th>Agent</th><th>Tier</th><th class="right">Tokens</th><th class="right">Cost</th></tr></thead>';
+  html += '<tbody>';
+  data.byAgent.forEach(function(row) {
+    var tierClass = row.tier === 'SENIOR' ? 'tier-senior' : 'tier-junior';
+    html += '<tr>';
+    html += '<td style="color:var(--line)">' + row.agent + '</td>';
+    html += '<td><span class="tier-tag ' + tierClass + '">' + row.tier + '</span></td>';
+    html += '<td class="right"><b>' + row.tokens + '</b></td>';
+    html += '<td class="right"><b>' + row.cost + '</b></td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  // Reconcile footer
+  html += '<div class="econ-reconcile">';
+  html += '<span class="ok">&#10003;</span>';
+  html += data.reconcileNote;
+  html += '</div>';
+
+  // Price footnote
+  html += '<div class="price-footnote">';
+  html += '* Illustrative list prices: SENIOR <span>$15/1M tk</span> (Opus-class) &middot; JUNIOR <span>$3/1M tk</span> (Sonnet-class, ~1/5)';
+  html += '</div>';
+
+  html += '</div>'; // /dp-section
+
+  document.getElementById('dpBody').innerHTML = html;
+  document.getElementById('backdrop').classList.add('open');
+  document.getElementById('detailPanel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('backdrop').classList.remove('open');
+  document.getElementById('detailPanel').classList.remove('open');
+}
+
+/* Keyboard ESC to close */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePanel();
+});
+</script>
+</body>
+</html>

@@ -76,9 +76,32 @@ function engagements() {
     const status = st ? st.status : (g.active > 0 ? 'building' : (g.runs ? 'idle' : 'enrolled'));
     return { project: g.project, path: g.path, tokens: g.tokens, runs: g.runs, active: g.active,
              lastTs: Math.max(g.lastTs, st ? st.updatedAt || 0 : 0), enrolled: g.enrolled,
-             phase, status, note: st ? st.note : '' };
+             phase, status, note: st ? st.note : '', history: st ? (st.history || []) : [] };
   });
   return { default_policy: scope.default_policy || 'opt-in', engagements: list.sort((a, b) => b.lastTs - a.lastTs) };
+}
+// Per-engagement economics: one authoritative scan of events.jsonl → tokens bucketed
+// by agent and by phase (phase via the same inferPhase used everywhere). Dollars are
+// NEVER computed here — prices live client-side (zero new deps, single source for tiers).
+const ROSTER = new Set([...PHASE_C, ...PHASE_B, 'planner', 'explorer', 'mockup-builder', 'business-reviewer']);
+function economics(project) {
+  const base = p => (p || '').split('/').filter(Boolean).pop() || p || 'unknown';
+  const byAgent = {}, byPhase = { A: 0, B: 0, C: 0 }, agentPhase = {};
+  let total = 0;
+  for (const e of readEvents()) {
+    const name = e.proj || base(e.projPath) || 'unknown';
+    if (name !== project || e.ev !== 'return') continue;
+    const agent = e.agent || 'unknown';
+    const tok = e.tokens || 0;
+    const phase = inferPhase(new Set([agent]));
+    byAgent[agent] = (byAgent[agent] || 0) + tok;
+    agentPhase[agent] = phase;
+    byPhase[phase] += tok;
+    total += tok;
+  }
+  let attributed = 0;
+  for (const [a, t] of Object.entries(byAgent)) if (ROSTER.has(a)) attributed += t;
+  return { project, byAgent, agentPhase, byPhase, total, unattributed: total - attributed };
 }
 function sendJSON(res, obj) {
   res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -115,6 +138,11 @@ setInterval(pump, 1000);
 http.createServer((req, res) => {
   if (req.url === '/api/scope') { sendJSON(res, readScope()); return; }
   if (req.url === '/api/engagements') { sendJSON(res, engagements()); return; }
+  if (req.url.startsWith('/api/economics')) {
+    const project = new URL(req.url, 'http://x').searchParams.get('project') || '';
+    sendJSON(res, economics(project));
+    return;
+  }
   if (req.url === '/events') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
