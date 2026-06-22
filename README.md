@@ -54,6 +54,8 @@ agent-methodology-kit/
 │       ├── explorer.md        ← read-only codebase mapper
 │       ├── mockup-builder.md  ← clickable HTML mockup for Gate 1
 │       ├── planner.md         ← Mode 1: HL component diagram · Mode 2: split build plan
+│       ├── hld-architect.md   ← full HLD with PlantUML diagrams (Phase B / Gate 2)
+│       ├── deck-architect.md  ← executive .pptx derived from the HLD
 │       ├── code-reviewer.md   ← cold diff review, read-only
 │       ├── test-writer.md     ← tests from the SPEC, not the implementation
 │       ├── security-reviewer.md
@@ -138,14 +140,15 @@ mid-run token streaming you'd graduate to Claude Code's OpenTelemetry
 metrics. Agents outside the roster (e.g. ad-hoc general-purpose spawns)
 appear automatically as amber "contractor" cards.
 
-## External agent dependency (Phase B)
+## Phase B design agents
 
-The Design phase uses two user-level agents expected at `~/.claude/agents/`:
-`hld-architect` (full HLD with PlantUML diagrams) and `deck-architect`
-(executive .pptx derived from the HLD). User-scoped agents are available in
-every project on the machine, so the kit references them rather than bundling
-them. On machines without them, use the generic HLD Writer / Deck Builder
-role prompts in `ports/` — the protocol is identical.
+The Design phase uses two SENIOR-tier agents that **ship in the kit**:
+`hld-architect` (full HLD with PlantUML component + sequence diagrams, data
+schemas, and acceptance criteria) and `deck-architect` (executive `.pptx`
+derived from the HLD). `install.sh` places them in `~/.claude/agents/` alongside
+the other nine, so they are available in every project. The Codex and Grok
+ports carry the same two roles as the generic HLD Writer / Deck Builder
+prompts in `ports/` — the protocol is identical.
 
 ## Token cost expectations
 

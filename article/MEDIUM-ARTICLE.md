@@ -149,7 +149,7 @@ That inversion is the point. I didn't remove myself from the process; I moved my
 
 ## Get the kit
 
-Everything in this article ships as an open, portable kit — the nine agent definitions, the orchestration protocol, the quality-gate hooks, the CLAUDE.md template, and ports for other AI coding tools:
+Everything in this article ships as an open, portable kit — the eleven agent definitions, the orchestration protocol, the quality-gate hooks, the CLAUDE.md template, and ports for other AI coding tools:
 
 **[github.com/yaakovslonimczyk-sudo/agentic-delivery-office](https://github.com/yaakovslonimczyk-sudo/agentic-delivery-office)**
 
