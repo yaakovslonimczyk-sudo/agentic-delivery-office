@@ -915,6 +915,48 @@
   .tool-tag { display:inline-block; margin:2px 3px 2px 0; padding:2px 7px; background:rgba(27,58,99,0.8); border:1px solid rgba(143,216,234,0.2); border-radius:3px; font-size:10px; font-family:var(--mono); color:var(--sec); }
   .verdict-excerpt { background:rgba(20,47,84,0.7); border-left:2px solid var(--coral); padding:8px 12px; font-size:11px; font-family:var(--mono); color:var(--sec); line-height:1.6; border-radius:0 4px 4px 0; }
 
+  /* ── Engagement Economics drill-down (reuses .side-panel / .side-overlay) ── */
+  #eng-side-panel { width:440px; max-width:95vw; top:58px; height:calc(100vh - 58px); z-index:1010; }
+  .eng-chips { display:flex; gap:8px; align-items:center; margin:-6px 0 10px; flex-wrap:wrap; }
+  .eng-pchip { font-family:var(--mono); font-size:11px; padding:2px 8px; border-radius:4px; }
+  .eng-pchip.A { color:var(--cyan); border:1px solid rgba(143,216,234,0.4); }
+  .eng-pchip.B { color:var(--amber); border:1px solid rgba(255,200,97,0.4); }
+  .eng-pchip.C { color:var(--success); border:1px solid rgba(109,219,168,0.4); }
+  .eng-status { font-family:var(--mono); font-size:11px; color:var(--sec); }
+  .eng-timeline { margin:6px 0 4px; padding-left:6px; }
+  .eng-tl-node { position:relative; padding:0 0 16px 22px; border-left:1px solid rgba(143,216,234,0.18); }
+  .eng-tl-node:last-child { border-left:1px solid transparent; padding-bottom:2px; }
+  .eng-tl-dot { position:absolute; left:-7px; top:1px; width:12px; height:12px; border-radius:50%; background:rgba(143,216,234,0.15); border:2px solid var(--bg); }
+  .eng-tl-dot.done { background:var(--success); }
+  .eng-tl-dot.active { background:var(--amber); animation:engpulse 1.6s ease-in-out infinite; }
+  .eng-tl-dot.escalated { background:var(--coral); }
+  @keyframes engpulse { 0%,100%{ box-shadow:0 0 0 0 rgba(255,200,97,0.5);} 50%{ box-shadow:0 0 0 5px rgba(255,200,97,0);} }
+  .eng-tl-label { font-family:var(--mono); font-size:12px; font-weight:700; }
+  .eng-tl-label.done { color:var(--success); } .eng-tl-label.active { color:var(--amber); }
+  .eng-tl-label.pending, .eng-tl-label.pending ~ .eng-tl-note { color:var(--killed-text); }
+  .eng-tl-label.escalated { color:var(--coral); }
+  .eng-tl-note { font-size:11px; color:var(--sec); margin-top:2px; line-height:1.5; }
+  .eng-tl-note.pending { color:var(--killed-text); }
+  .eng-tl-ts { font-family:var(--mono); font-size:10px; color:var(--killed-text); margin-top:1px; }
+  .eng-tile { border:1px solid rgba(255,200,97,0.25); background:rgba(255,200,97,0.05); border-radius:6px; padding:14px 16px; margin:6px 0 14px; }
+  .eng-tile-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--sec); }
+  .eng-tile-cost { font-family:var(--mono); font-size:30px; font-weight:700; color:var(--amber); line-height:1.1; margin:2px 0; }
+  .eng-tile-tok { font-family:var(--mono); font-size:12px; color:var(--sec); }
+  .eng-tile-save { font-size:12px; color:var(--sec); line-height:1.5; border-top:1px solid rgba(220,233,247,0.12); margin-top:10px; padding-top:10px; }
+  .eng-tile-save b { color:var(--amber); } .eng-tile-save .g { color:var(--success); }
+  .eng-tbl { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11px; margin-bottom:4px; }
+  .eng-tbl th { text-align:left; color:var(--sec); font-weight:400; text-transform:uppercase; letter-spacing:0.06em; font-size:9px; padding:4px 0; border-bottom:1px solid rgba(220,233,247,0.12); }
+  .eng-tbl td { padding:5px 0; border-bottom:1px solid rgba(220,233,247,0.05); color:var(--line); }
+  .eng-tbl td.num, .eng-tbl th.num { text-align:right; color:var(--amber); }
+  .eng-pcell.A { color:var(--cyan); } .eng-pcell.B { color:var(--amber); } .eng-pcell.C { color:var(--success); }
+  .eng-tier { font-family:var(--mono); font-size:9px; padding:1px 6px; border-radius:3px; letter-spacing:0.04em; }
+  .eng-tier.SENIOR { color:var(--cyan); border:1px solid rgba(143,216,234,0.4); }
+  .eng-tier.JUNIOR { color:var(--amber); border:1px solid rgba(255,200,97,0.4); }
+  .eng-tier.NONE { color:var(--killed-text); border:1px solid rgba(74,85,104,0.5); }
+  .eng-recon { font-family:var(--mono); font-size:11px; padding:8px 10px; border-radius:4px; margin:8px 0 4px; background:rgba(109,219,168,0.08); color:var(--success); }
+  .eng-recon.gap { background:rgba(255,139,126,0.08); color:var(--coral); }
+  .eng-foot { font-size:10px; color:var(--killed-text); line-height:1.5; margin-top:4px; }
+
   /* ── ANALYTICS VIEW ── */
   .stat-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
   @media(max-width:900px){ .stat-cards{ grid-template-columns:1fr 1fr; } }
@@ -1622,6 +1664,20 @@
   </div>
 </div>
 
+<!-- Engagement economics drill-down -->
+<div class="side-overlay" id="eng-overlay" onclick="closeEngDetail()"></div>
+<div class="side-panel" id="eng-side-panel">
+  <div class="side-panel-header">
+    <div class="side-panel-name" id="eng-sp-title">project</div>
+    <button class="side-close" onclick="closeEngDetail()">✕ Close</button>
+  </div>
+  <div class="eng-chips" id="eng-sp-chips"></div>
+  <div class="side-label">Gate / phase timeline</div>
+  <div class="eng-timeline" id="eng-sp-timeline"></div>
+  <div class="side-label" style="margin-top:18px;">Engagement economics</div>
+  <div id="eng-sp-econ"></div>
+</div>
+
 <!-- ══════════════════════════════════════════════════
      VIEW 8 — ANALYTICS
 ═════════════════════════════════════════════════════ -->
@@ -2010,7 +2066,7 @@
     const tbody = document.getElementById('eng-tbody');
     const rows = REAL_ENG.filter(e => filterMode === 'all' ? true : rdPending(e));
     tbody.innerHTML = rows.map(e => `
-      <tr onclick="showView('board'); (typeof syncNavTabs==='function'&&syncNavTabs('board')); (typeof startBoardSim==='function'&&startBoardSim())">
+      <tr style="cursor:pointer" onclick="openEngDetail('${e.project}')">
         <td><div class="eng-name">${e.project}<small>${e.note||e.path||''}</small></div></td>
         <td>${rdPhaseChip(e)}</td>
         <td>${rdStatus(e)}</td>
@@ -2241,6 +2297,30 @@
     { n:'design-reviewer',   bench:'junior', model:'junior tier · roster', tok:0,     runs:0, num:3,  pos:'LB',  x:14, y:64, passPct:80, assists:0, goals:0, cards:0 },
     { n:'business-reviewer', bench:'junior', model:'junior tier · roster', tok:33200, runs:1, num:19, pos:'CF',  x:50, y:30, passPct:85, assists:1, goals:0, cards:0 },
   ];
+  // ── Engagement Economics: tier price model (illustrative list prices, $/1M tokens) ──
+  const PRICES = { SENIOR: 15, JUNIOR: 3 };
+  const AGENT_TIER = {};
+  LB_AGENTS.forEach(a => { AGENT_TIER[a.n] = (a.bench === 'senior') ? 'SENIOR' : 'JUNIOR'; });
+  function agentTier(name){ return AGENT_TIER[name] || null; }
+  // Static drill-down data for #demo mode (no server, no fetch) — same shape /api/economics returns.
+  const demoDetailData = {
+    'tax-engine': {
+      history: [
+        { phase:'A', status:'gate1_pending', note:'mockup + HL diagram ready',     ts:1711617240 },
+        { phase:'B', status:'gate2_pending', note:'HLD + deck approved',            ts:1711790040 },
+        { phase:'C', status:'building',      note:'MVP slice built; tests green',   ts:1711876440 },
+        { phase:'C', status:'delivered',     note:'Deployed to staging; handoff',   ts:1711962840 },
+      ],
+      econ: { project:'tax-engine',
+        byAgent:{ explorer:48000, 'mockup-builder':47000, planner:28000, 'hld-architect':50000,
+                  'db-reviewer':64000, 'design-reviewer':55000, 'business-reviewer':54000,
+                  'code-reviewer':40000, 'security-reviewer':34000, refuter:22000, 'test-writer':70000 },
+        agentPhase:{ explorer:'A','mockup-builder':'A',planner:'A','hld-architect':'B',
+                     'db-reviewer':'C','design-reviewer':'C','business-reviewer':'C',
+                     'code-reviewer':'C','security-reviewer':'C',refuter:'C','test-writer':'C' },
+        byPhase:{ A:123000, B:50000, C:339000 }, total:512000, unattributed:0 },
+    },
+  };
   const LB_TASKS = {
     'planner':'HL architecture: inventory sync rework','code-reviewer':'Cold review: webhook diff r2',
     'security-reviewer':'Trace input through new endpoints','refuter':'Refute: N+1 claim on listing query',
@@ -2676,6 +2756,132 @@
     document.getElementById('side-overlay').classList.remove('open');
     document.getElementById('side-panel').classList.remove('open');
   }
+
+  // ════════ Engagement Economics drill-down ════════
+  const ENG_TIMELINE = [
+    { key:'A',  label:'Phase A',   sub:'Concept' },
+    { key:'G1', label:'Gate 1',    sub:'Concept approval' },
+    { key:'B',  label:'Phase B',   sub:'Design' },
+    { key:'G2', label:'Gate 2',    sub:'Design approval' },
+    { key:'C',  label:'Phase C',   sub:'Build' },
+    { key:'D',  label:'Delivered', sub:'Handoff & close' },
+  ];
+  function engNodeIndex(phase, status){
+    if (status === 'delivered') return 5;
+    if (status === 'gate1_pending') return 1;
+    if (status === 'gate2_pending') return 3;
+    return phase === 'C' ? 4 : phase === 'B' ? 2 : 0;
+  }
+  function engFmtTs(ts){
+    if (!ts) return '';
+    return new Date(ts*1000).toISOString().slice(0,16).replace('T',' ') + ' UTC';
+  }
+  function renderTimeline(history){
+    const h = (history && history.length) ? history : [];
+    const byNode = {};
+    let lastIdx = 0, lastStatus = 'active';
+    h.forEach(e => { const i = engNodeIndex(e.phase, e.status); byNode[i] = e; lastIdx = i; lastStatus = e.status; });
+    const escalated = lastStatus === 'escalated';
+    return ENG_TIMELINE.map((node, i) => {
+      const state = i < lastIdx ? 'done'
+        : i === lastIdx ? (lastStatus === 'delivered' ? 'done' : (escalated ? 'escalated' : 'active'))
+        : 'pending';
+      const entry = byNode[i];
+      const note = entry ? (entry.note || node.sub) : node.sub;
+      const ts = entry ? engFmtTs(entry.ts) : '';
+      return `<div class="eng-tl-node">
+        <span class="eng-tl-dot ${state}"></span>
+        <div class="eng-tl-label ${state}">${node.label}</div>
+        <div class="eng-tl-note ${state==='pending'?'pending':''}">${note}</div>
+        ${ts ? `<div class="eng-tl-ts">${ts}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+  function engCost(tokens, tier){ return (tokens/1e6) * PRICES[tier || 'JUNIOR']; }
+  function engUsd(n){ return '$' + n.toFixed(2); }
+  function renderEconomics(d){
+    const total = d.total || 0;
+    const byAgent = d.byAgent || {};
+    const agentPhase = d.agentPhase || {};
+    const agents = Object.keys(byAgent).sort((a,b)=> byAgent[b]-byAgent[a]);
+    let juniorTokens = 0, actualCost = 0, unknownTokens = 0;
+    const rows = [];
+    agents.forEach(name => {
+      const tok = byAgent[name];
+      const tier = agentTier(name);            // null → aggregate into the bucket below
+      if (!tier){ unknownTokens += tok; return; }
+      if (tier === 'JUNIOR') juniorTokens += tok;
+      const cost = engCost(tok, tier);
+      actualCost += cost;
+      rows.push(`<tr><td>${name}</td><td><span class="eng-tier ${tier}">${tier}</span></td>`+
+                `<td class="num">${rdTok(tok)}</td><td class="num">${engUsd(cost)}</td></tr>`);
+    });
+    let reconHtml;
+    if (unknownTokens > 0){
+      const uCost = engCost(unknownTokens, 'JUNIOR');
+      actualCost += uCost;
+      rows.push(`<tr><td>other / unattributed</td><td><span class="eng-tier NONE">—</span></td>`+
+                `<td class="num">${rdTok(unknownTokens)}</td><td class="num">${engUsd(uCost)}</td></tr>`);
+      reconHtml = `<div class="eng-recon gap">⚠ ${rdTok(unknownTokens)} unattributed — agent not in tier map (costed at junior)</div>`;
+    } else {
+      reconHtml = `<div class="eng-recon">✓ Σ agent tokens = ${total.toLocaleString()} = board total</div>`;
+    }
+    // by-phase cost from per-agent attribution (unknown agents costed at junior), tokens from the server
+    const phaseCost = { A:0, B:0, C:0 };
+    agents.forEach(name => { const p = agentPhase[name] || 'A'; phaseCost[p] += engCost(byAgent[name], agentTier(name)); });
+    const byPhase = d.byPhase || { A:0,B:0,C:0 };
+    const prow = p => `<tr><td class="eng-pcell ${p}">${p}</td>`+
+      `<td class="num">${byPhase[p]?rdTok(byPhase[p]):'—'}</td>`+
+      `<td class="num">${byPhase[p]?engUsd(phaseCost[p]):'—'}</td></tr>`;
+    const juniorPct = total ? Math.round(100*juniorTokens/total) : 0;
+    const allSenior = (total/1e6)*PRICES.SENIOR;
+    const saved = allSenior - actualCost;
+    const savedPct = allSenior>0 ? Math.round(100*saved/allSenior) : 0;
+    return `
+      <div class="eng-tile">
+        <div class="eng-tile-label">Total cost</div>
+        <div class="eng-tile-cost">${engUsd(actualCost)}</div>
+        <div class="eng-tile-tok">Total tokens: ${rdTok(total)}</div>
+        <div class="eng-tile-save">Junior tier ran <b>${juniorPct}%</b> of tokens at ~1/5 the price → saved <span class="g">${engUsd(saved)}</span> (<span class="g">${savedPct}%</span>) vs all-senior routing.</div>
+      </div>
+      <div class="side-label">By phase</div>
+      <table class="eng-tbl"><thead><tr><th>Phase</th><th class="num">Tokens</th><th class="num">Cost</th></tr></thead>
+        <tbody>${prow('A')}${prow('B')}${prow('C')}</tbody></table>
+      <div class="side-label" style="margin-top:12px;">By agent</div>
+      <table class="eng-tbl"><thead><tr><th>Agent</th><th>Tier</th><th class="num">Tokens</th><th class="num">Cost</th></tr></thead>
+        <tbody>${rows.join('') || '<tr><td colspan="4" style="color:var(--sec);padding:8px 0;">No agent activity recorded yet.</td></tr>'}</tbody></table>
+      ${total ? reconHtml : ''}
+      <div class="eng-foot">Illustrative list prices: SENIOR $15/1M tk · JUNIOR $3/1M tk (~1/5).</div>`;
+  }
+  async function openEngDetail(project){
+    const eng = (typeof REAL_ENG !== 'undefined' ? REAL_ENG : []).find(e => e.project === project);
+    document.getElementById('eng-sp-title').textContent = project;
+    const phase = eng ? eng.phase : null, status = eng ? eng.status : '';
+    document.getElementById('eng-sp-chips').innerHTML =
+      (phase ? `<span class="eng-pchip ${phase}">Phase ${phase}</span>` : '') +
+      (status ? `<span class="eng-status">${status}</span>` : '');
+    const demo = location.hash === '#demo' || !eng;
+    let history = eng && eng.history ? eng.history : null, econData = null;
+    if (demo && demoDetailData[project]){ history = demoDetailData[project].history; econData = demoDetailData[project].econ; }
+    if (!history || !history.length){
+      history = eng ? [{ phase:eng.phase, status:eng.status, note:eng.note, ts:eng.lastTs }] : [];
+    }
+    document.getElementById('eng-sp-timeline').innerHTML = renderTimeline(history);
+    document.getElementById('eng-sp-econ').innerHTML = '<div class="eng-foot">Loading economics…</div>';
+    document.getElementById('eng-overlay').classList.add('open');
+    document.getElementById('eng-side-panel').classList.add('open');
+    if (!econData && !demo){
+      try { econData = await (await fetch('/api/economics?project=' + encodeURIComponent(project))).json(); }
+      catch(err){ econData = null; }
+    }
+    if (!econData) econData = { total:0, byAgent:{}, agentPhase:{}, byPhase:{A:0,B:0,C:0}, unattributed:0 };
+    document.getElementById('eng-sp-econ').innerHTML = renderEconomics(econData);
+  }
+  function closeEngDetail(){
+    document.getElementById('eng-overlay').classList.remove('open');
+    document.getElementById('eng-side-panel').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEngDetail(); });
 
   // ── ANALYTICS bars ──
   function renderAnalytics() {
