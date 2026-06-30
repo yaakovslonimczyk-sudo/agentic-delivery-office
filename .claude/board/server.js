@@ -143,6 +143,20 @@ http.createServer((req, res) => {
     sendJSON(res, economics(project));
     return;
   }
+  // How many browser tabs are currently watching (used by office-board-open.sh
+  // to decide open-a-tab vs focus-the-existing-one).
+  if (req.url === '/api/status') {
+    sendJSON(res, { clients: clients.size, port: PORT, pid: process.pid });
+    return;
+  }
+  // Broadcast a focus ping to every open tab. The page raises/flashes itself and
+  // the live SSE stream already keeps its data fresh — no new tab is opened.
+  if (req.url === '/api/focus') {
+    const payload = JSON.stringify({ _ctrl: 'focus', ts: Math.floor(Date.now() / 1000) });
+    for (const c of clients) c.write(`data: ${payload}\n\n`);
+    sendJSON(res, { focused: clients.size });
+    return;
+  }
   if (req.url === '/events') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',

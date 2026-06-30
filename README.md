@@ -140,6 +140,14 @@ mid-run token streaming you'd graduate to Claude Code's OpenTelemetry
 metrics. Agents outside the roster (e.g. ad-hoc general-purpose spawns)
 appear automatically as amber "contractor" cards.
 
+**Auto-open:** in projects where the Office is active, the board opens by
+itself on session start (the `office-scope.sh` SessionStart hook launches the
+server and your browser). It never spawns duplicate tabs — if a board tab is
+already open it focuses/refreshes that one instead. The view stays live via
+SSE, so re-opened sessions show current data. Headless / CI / SSH sessions
+skip the browser and just keep the server running. Opt out with
+`OFFICE_BOARD_AUTO_OPEN=0`; change the port with `OFFICE_BOARD_PORT`.
+
 ## Phase B design agents
 
 The Design phase uses two SENIOR-tier agents that **ship in the kit**:
